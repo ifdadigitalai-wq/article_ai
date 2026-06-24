@@ -1,65 +1,331 @@
-import Image from "next/image";
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { AnimatePresence } from "motion/react";
+import { ARTICLES } from "./data/articles";
+import { BookmarkRecord, Article } from "./types";
+import Header from "./components/Header";
+import BottomNav, { TabId } from "./components/BottomNav";
+import DiscoverTab from "./components/DiscoverTab";
+import LibraryTab from "./components/LibraryTab";
+import SavedTab from "./components/SavedTab";
+import ArticleView from "./components/ArticleView";
+import AudioDigest from "./components/AudioDigest";
+import Newsletter from "./components/Newsletter";
+import NavigationSidebar from "./components/NavigationSidebar";
+import SummaryModal from "./components/SummaryModal";
 
 export default function Home() {
+  const [activeTab, setActiveTab] = useState<TabId>("home");
+  const [activeArticle, setActiveArticle] = useState<Article | null>(null);
+  const [bookmarks, setBookmarks] = useState<BookmarkRecord[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [readHistory, setReadHistory] = useState<string[]>([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [articles, setArticles] = useState<Article[]>(ARTICLES);
+  const [summarizingArticle, setSummarizingArticle] = useState<Article | null>(null);
+
+  // Categories derived from articles
+  const categories = ["All", ...Array.from(new Set(articles.map((a) => a.category)))];
+
+  // Fetch dynamic articles on mount
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const res = await fetch("/api/articles");
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0) {
+            setArticles(data);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch live articles, falling back to local archives", err);
+      }
+    };
+    fetchArticles();
+  }, []);
+
+  // LocalStorage sync
+  useEffect(() => {
+    const stored = localStorage.getItem("editorial_bookmarks");
+    if (stored) {
+      try {
+        setBookmarks(JSON.parse(stored));
+      } catch {}
+    }
+    const storedHistory = localStorage.getItem("editorial_history");
+    if (storedHistory) {
+      try {
+        setReadHistory(JSON.parse(storedHistory));
+      } catch {}
+    }
+  }, []);
+
+  const saveToLocalStorage = (newBookmarks: BookmarkRecord[]) => {
+    setBookmarks(newBookmarks);
+    localStorage.setItem("editorial_bookmarks", JSON.stringify(newBookmarks));
+  };
+
+  const saveHistoryToLocalStorage = (newHistory: string[]) => {
+    setReadHistory(newHistory);
+    localStorage.setItem("editorial_history", JSON.stringify(newHistory));
+  };
+
+  // Check URL parameters on mount to deep-link straight to an article
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const articleId = params.get("article");
+    if (articleId) {
+      const match = articles.find((a) => a.id === articleId) || ARTICLES.find((a) => a.id === articleId);
+      if (match) {
+        setActiveArticle(match);
+      }
+    }
+  }, [articles]);
+
+  const handleToggleSave = (articleId: string) => {
+    const existing = bookmarks.find((b) => b.articleId === articleId);
+    let updated: BookmarkRecord[];
+    if (existing) {
+      updated = bookmarks.filter((b) => b.articleId !== articleId);
+    } else {
+      updated = [
+        ...bookmarks,
+        {
+          id: `b_${Date.now()}`,
+          articleId,
+          bookmarkedAt: new Date().toISOString(),
+          completed: false,
+          progressPercent: 0,
+          lastReadAt: new Date().toISOString(),
+        },
+      ];
+    }
+    saveToLocalStorage(updated);
+  };
+
+  const handleRecordCompleted = (articleId: string) => {
+    const updated = bookmarks.map((b) => {
+      if (b.articleId === articleId) {
+        return { ...b, completed: true, progressPercent: 100, lastReadAt: new Date().toISOString() };
+      }
+      return b;
+    });
+    // If not bookmarked, create a progress tracker
+    const exists = bookmarks.some((b) => b.articleId === articleId);
+    if (!exists) {
+      updated.push({
+        id: `b_${Date.now()}`,
+        articleId,
+        bookmarkedAt: new Date().toISOString(),
+        completed: true,
+        progressPercent: 100,
+        lastReadAt: new Date().toISOString(),
+      });
+    }
+    saveToLocalStorage(updated);
+  };
+
+  // When user opens an article, record it in history
+  const handleReadArticle = (article: Article) => {
+    setActiveArticle(article);
+    if (!readHistory.includes(article.id)) {
+      const updated = [article.id, ...readHistory];
+      saveHistoryToLocalStorage(updated);
+    }
+  };
+
+  // Quick summary handler (passed to DiscoverTab and SavedTab)
+  const handleQuickSummary = (article: Article, e: React.MouseEvent<any>) => {
+    e.stopPropagation();
+    setSummarizingArticle(article);
+  };
+
+  // SavedTab toggle handler (needs Article + event signature)
+  const handleSavedToggle = (article: Article, e: React.MouseEvent<any>) => {
+    e.stopPropagation();
+    handleToggleSave(article.id);
+  };
+
+  const handleClearHistory = () => {
+    saveHistoryToLocalStorage([]);
+  };
+
+  // Compute library stats
+  const completedIds = bookmarks.filter((b) => b.completed).map((b) => b.articleId);
+  const savedIds = bookmarks.map((b) => b.articleId);
+  const stats = {
+    minutesRead: readHistory.reduce((total, id) => {
+      const art = articles.find((a) => a.id === id) || ARTICLES.find((a) => a.id === id);
+      if (art) {
+        const mins = parseInt(art.readTime) || 5;
+        return total + mins;
+      }
+      return total;
+    }, 0),
+    articlesCompleted: completedIds.length,
+    streakDays: Math.min(readHistory.length, 7),
+  };
+
+  // Filter articles by category for the home/discover view
+  const filteredArticles =
+    selectedCategory === "All"
+      ? articles
+      : articles.filter((a) => a.category.toLowerCase() === selectedCategory.toLowerCase());
+
+  // Genre (category) recommendation algorithm
+  const getPreferredGenre = () => {
+    if (readHistory.length === 0) return null;
+    const counts: Record<string, number> = {};
+    readHistory.forEach((id) => {
+      const art = articles.find((a) => a.id === id) || ARTICLES.find((a) => a.id === id);
+      if (art) {
+        counts[art.category] = (counts[art.category] || 0) + 1;
+      }
+    });
+
+    let maxCount = 0;
+    let topGenre: string | null = null;
+    Object.entries(counts).forEach(([genre, count]) => {
+      if (count > maxCount) {
+        maxCount = count;
+        topGenre = genre;
+      }
+    });
+    return topGenre;
+  };
+
+  const preferredGenre = getPreferredGenre();
+
+  const getRecommendedArticles = (genre: string) => {
+    // Try to suggest unread articles of this category first
+    let list = articles.filter(
+      (a) => a.category.toLowerCase() === genre.toLowerCase() && !readHistory.includes(a.id)
+    );
+    // If they read all of them, fall back to showing all in that category
+    if (list.length === 0) {
+      list = articles.filter((a) => a.category.toLowerCase() === genre.toLowerCase());
+    }
+    return list.slice(0, 3);
+  };
+
+  const recommendedArticles = preferredGenre ? getRecommendedArticles(preferredGenre) : [];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="relative flex h-screen w-full md:flex-row flex-col bg-paper overflow-hidden text-charcoal">
+      {activeArticle ? (
+        <ArticleView
+          article={activeArticle}
+          onBack={() => {
+            setActiveArticle(null);
+            // Clean up share URL parameter
+            window.history.replaceState({}, "", window.location.pathname);
+          }}
+          isSaved={bookmarks.some((b) => b.articleId === activeArticle.id)}
+          onToggleSave={() => handleToggleSave(activeArticle.id)}
+          onRecordCompleted={handleRecordCompleted}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+      ) : (
+        <>
+          {/* Persistent Sidebar on Desktop - visible only on md and larger */}
+          <NavigationSidebar
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            stats={stats}
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+            onClearHistory={handleClearHistory}
+            isPersistent={true}
+          />
+
+          <div className="flex-1 flex flex-col h-full overflow-hidden">
+            <Header
+              categories={categories}
+              selectedCategory={selectedCategory}
+              onSelectCategory={setSelectedCategory}
+              onOpenSidebar={() => setIsSidebarOpen(true)}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+            <main className="flex-1 overflow-y-auto pb-20 md:pb-6">
+              {activeTab === "home" && (
+                <DiscoverTab
+                  articles={filteredArticles}
+                  onRead={handleReadArticle}
+                  onQuickSummary={handleQuickSummary}
+                  preferredGenre={preferredGenre}
+                  recommendedArticles={recommendedArticles}
+                />
+              )}
+              {activeTab === "discover" && (
+                <DiscoverTab
+                  articles={articles}
+                  onRead={handleReadArticle}
+                  onQuickSummary={handleQuickSummary}
+                  preferredGenre={preferredGenre}
+                  recommendedArticles={recommendedArticles}
+                />
+              )}
+              {activeTab === "library" && (
+                <LibraryTab
+                  articles={articles}
+                  historyIds={readHistory}
+                  completedIds={completedIds}
+                  stats={stats}
+                  onRead={handleReadArticle}
+                  onClearHistory={handleClearHistory}
+                />
+              )}
+              {activeTab === "saved" && (
+                <SavedTab
+                  articles={articles}
+                  savedIds={savedIds}
+                  onRead={handleReadArticle}
+                  onQuickSummary={handleQuickSummary}
+                  onToggleSave={handleSavedToggle}
+                />
+              )}
+              {activeTab === "digests" && (
+                <AudioDigest 
+                  userInterests={["World", "Tech", "Science"]} 
+                  preferredGenre={preferredGenre}
+                />
+              )}
+
+              {/* Newsletter shown on home tab */}
+              {activeTab === "home" && <Newsletter />}
+            </main>
+            <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+          </div>
+        </>
+      )}
+
+      {/* Global Navigation Sidebar */}
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <NavigationSidebar
+            onClose={() => setIsSidebarOpen(false)}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            stats={stats}
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+            onClearHistory={handleClearHistory}
+            isPersistent={false}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Quick Summary Modal from Feed */}
+      <AnimatePresence>
+        {summarizingArticle && (
+          <SummaryModal
+            article={summarizingArticle}
+            onClose={() => setSummarizingArticle(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
