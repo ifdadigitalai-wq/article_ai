@@ -77,7 +77,7 @@ export default function Newsletter() {
               <button
                 type="submit"
                 disabled={loading || !email.trim()}
-                className="w-full flex items-center justify-center gap-2 bg-secondary-gray text-white py-4 rounded-xl text-xs font-bold hover:bg-primary transition-colors disabled:opacity-40"
+                className="w-full flex items-center justify-center gap-2 bg-primary text-white py-4 rounded-xl text-xs font-bold hover:bg-primary/90 transition-colors disabled:opacity-40"
                 id="newsletter-submit-btn"
               >
                 {loading ? (

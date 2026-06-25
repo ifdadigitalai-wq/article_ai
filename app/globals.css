@@ -1,20 +1,30 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap');
-@import "tailwindcss"; /* Or standard Tailwind imports if using Tailwind v3 */
+@import "tailwindcss";
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Playfair Display", Georgia, serif;
   
-  /* Artistic Flair Theme Palette */
-  --color-primary: #d44d2e;
-  --color-paper: #fcfaf7;
-  --color-charcoal: #1a1a1a;
-  --color-secondary-gray: #5c5a57;
-  --color-border-outline: rgba(26, 26, 26, 0.15);
+  /* Premium Cool Blue & White Palette */
+  --color-primary: #1d4ed8;
+  --color-paper: #f4f7fb;
+  --color-charcoal: #0f172a;
+  --color-secondary-gray: #475569;
+  --color-border-outline: rgba(15, 23, 42, 0.12);
 }
 
+/* Enable class-based dark mode selector in Tailwind v4 */
+@variant dark (&:where(.dark, .dark *));
+
 body {
-  background-color: var(--color-paper);
+  background: linear-gradient(135deg, #f4f7fb 0%, #ffffff 50%, #e8eff7 100%);
+  background-attachment: fixed;
   color: var(--color-charcoal);
   font-family: var(--font-sans);
+  min-height: 100vh;
+}
+
+.dark body {
+  background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #090d16 100%);
+  color: #f8fafc;
 }

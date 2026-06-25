@@ -500,7 +500,7 @@ export default function AudioDigest({ userInterests, preferredGenre }: AudioDige
       {/* Category Customizer section */}
       <div className="mb-8 rounded-2xl border border-border-outline/10 bg-white p-6 shadow-sm">
         <div className="flex items-center gap-2 mb-4">
-          <SlidersHorizontal className="h-4 w-4 text-[#d44d2e]" />
+          <SlidersHorizontal className="h-4 w-4 text-[#1d4ed8]" />
           <h3 className="text-sm font-bold uppercase tracking-wider text-charcoal font-sans">
             Tailor Your Reading History
           </h3>
@@ -517,7 +517,7 @@ export default function AudioDigest({ userInterests, preferredGenre }: AudioDige
                 onClick={() => toggleInterest(category)}
                 className={`rounded-full px-4 py-1.5 text-xs font-semibold tracking-wide transition-all cursor-pointer ${
                   isSelected
-                    ? "bg-[#d44d2e] text-white shadow-sm font-bold"
+                    ? "bg-[#1d4ed8] text-white shadow-sm font-bold"
                     : "bg-paper text-secondary-gray/80 hover:bg-black/5"
                 }`}
               >
@@ -538,14 +538,14 @@ export default function AudioDigest({ userInterests, preferredGenre }: AudioDige
             onChange={(e) => setCustomFocus(e.target.value)}
             disabled={loading}
             placeholder="e.g. Focus on futuristic cities, keep it critical..."
-            className="w-full rounded-xl border border-border-outline/20 bg-[#fcfaf7] px-3.5 py-2.5 text-xs text-charcoal shadow-sm outline-none focus:border-[#d44d2e] focus:ring-1 focus:ring-[#d44d2e] transition-all font-sans"
+            className="w-full rounded-xl border border-border-outline/20 bg-[#f4f7fb] px-3.5 py-2.5 text-xs text-charcoal shadow-sm outline-none focus:border-[#1d4ed8] focus:ring-1 focus:ring-[#1d4ed8] transition-all font-sans"
           />
         </div>
 
         {/* Voice Narration Settings */}
         <div className="mt-6 border-t border-border-outline/10 pt-5">
           <div className="flex items-center gap-2 mb-3">
-            <Volume2 className="h-4 w-4 text-[#d44d2e]" />
+            <Volume2 className="h-4 w-4 text-[#1d4ed8]" />
             <h3 className="text-sm font-bold uppercase tracking-wider text-charcoal font-sans">
               Voice Settings
             </h3>
@@ -564,7 +564,7 @@ export default function AudioDigest({ userInterests, preferredGenre }: AudioDige
                     stopFactSpeech();
                     setSelectedVoiceName(e.target.value);
                   }}
-                  className="w-full max-w-md rounded-xl border border-border-outline/20 bg-[#fcfaf7] px-3 py-2.5 text-xs text-charcoal shadow-sm outline-none focus:border-[#d44d2e] focus:ring-1 focus:ring-[#d44d2e] transition-all font-sans cursor-pointer appearance-none animate-fade-in"
+                  className="w-full max-w-md rounded-xl border border-border-outline/20 bg-[#f4f7fb] px-3 py-2.5 text-xs text-charcoal shadow-sm outline-none focus:border-[#1d4ed8] focus:ring-1 focus:ring-[#1d4ed8] transition-all font-sans cursor-pointer appearance-none animate-fade-in"
                 >
                   {voices.length > 0 ? (
                     voices.map((voice) => (
@@ -598,7 +598,7 @@ export default function AudioDigest({ userInterests, preferredGenre }: AudioDige
         <button
           onClick={fetchDigest}
           disabled={loading}
-          className="mt-5 w-full flex items-center justify-center gap-2 rounded-xl bg-charcoal text-white py-3 text-xs font-bold hover:bg-[#d44d2e] hover:scale-[1.01] transition-all disabled:opacity-40 cursor-pointer"
+          className="mt-5 w-full flex items-center justify-center gap-2 rounded-xl bg-primary text-white py-3 text-xs font-bold hover:bg-primary/90 hover:scale-[1.01] transition-all disabled:opacity-40 cursor-pointer"
           id="recompile-digest-btn"
         >
           {loading ? (
@@ -613,7 +613,7 @@ export default function AudioDigest({ userInterests, preferredGenre }: AudioDige
       {/* Main Player Display */}
       {loading && (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <Loader2 className="h-10 w-10 animate-spin text-[#d44d2e]" />
+          <Loader2 className="h-10 w-10 animate-spin text-[#1d4ed8]" />
           <p className="mt-4 font-serif text-lg font-bold text-charcoal tracking-tight">
             Synthesizing Today's Narrative
           </p>
@@ -628,7 +628,7 @@ export default function AudioDigest({ userInterests, preferredGenre }: AudioDige
           <p className="text-sm font-bold text-red-600 font-sans">{error}</p>
           <button
             onClick={fetchDigest}
-            className="mt-3 inline-block rounded-lg bg-charcoal text-white px-4 py-2 text-xs font-bold shadow-sm hover:bg-[#d44d2e] transition-colors cursor-pointer"
+            className="mt-3 inline-block rounded-lg bg-primary text-white px-4 py-2 text-xs font-bold shadow-sm hover:bg-primary/90 transition-colors cursor-pointer"
           >
             Reconnect Press Wires
           </button>
@@ -638,7 +638,7 @@ export default function AudioDigest({ userInterests, preferredGenre }: AudioDige
       {digest && !loading && (
         <div className="space-y-8">
           {/* Terracotta/Charcoal Premium Player Deck */}
-          <div className="relative overflow-hidden rounded-2xl bg-[#d44d2e] px-6 py-8 text-white shadow-lg">
+          <div className="relative overflow-hidden rounded-2xl bg-[#1d4ed8] px-6 py-8 text-white shadow-lg">
             {/* Design circle backdrop */}
             <div className="absolute -right-12 -top-12 h-64 w-64 rounded-full bg-white/5 blur-3xl" />
 
@@ -717,13 +717,13 @@ export default function AudioDigest({ userInterests, preferredGenre }: AudioDige
                 {/* Play / Pause button */}
                 <button
                   onClick={isPlaying ? stopNarrative : handleResume}
-                  className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-[#d44d2e] shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                  className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-[#1d4ed8] shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
                   id="play-digest-btn"
                 >
                   {isPlaying ? (
-                    <Pause className="h-6 w-6 text-[#d44d2e] fill-[#d44d2e]" />
+                    <Pause className="h-6 w-6 text-[#1d4ed8] fill-[#1d4ed8]" />
                   ) : (
-                    <Play className="h-6 w-6 text-[#d44d2e] fill-[#d44d2e] translate-x-[1px]" />
+                    <Play className="h-6 w-6 text-[#1d4ed8] fill-[#1d4ed8] translate-x-[1px]" />
                   )}
                 </button>
 
@@ -748,8 +748,8 @@ export default function AudioDigest({ userInterests, preferredGenre }: AudioDige
           </div>
 
           {/* Karaoke Transcript Segment */}
-          <div className="rounded-2xl border border-border-outline/10 bg-[#fcfaf7] p-6 shadow-sm">
-            <h3 className="mb-4 font-serif text-sm font-bold tracking-tight text-[#d44d2e]">
+          <div className="rounded-2xl border border-border-outline/10 bg-[#f4f7fb] p-6 shadow-sm">
+            <h3 className="mb-4 font-serif text-sm font-bold tracking-tight text-[#1d4ed8]">
               Live Transcript
             </h3>
 
@@ -763,7 +763,7 @@ export default function AudioDigest({ userInterests, preferredGenre }: AudioDige
                     key={idx}
                     className={`inline transition-all duration-300 ${
                       isCurrent
-                        ? "text-charcoal font-bold not-italic underline decoration-[#d44d2e]/25 decoration-2 underline-offset-4 bg-[#d44d2e]/5 rounded px-1"
+                        ? "text-charcoal font-bold not-italic underline decoration-[#1d4ed8]/25 decoration-2 underline-offset-4 bg-[#1d4ed8]/5 rounded px-1"
                         : isRead
                         ? "text-charcoal/80 not-italic"
                         : "text-secondary-gray/30"
@@ -785,7 +785,7 @@ export default function AudioDigest({ userInterests, preferredGenre }: AudioDige
       {/* AI Fact Compiler Section */}
       <div className="rounded-2xl border border-border-outline/10 bg-white p-6 shadow-sm mb-12">
         <div className="flex items-center gap-2 mb-4">
-          <Sparkles className="h-4 w-4 text-[#d44d2e]" />
+          <Sparkles className="h-4 w-4 text-[#1d4ed8]" />
           <h3 className="text-sm font-bold uppercase tracking-wider text-charcoal font-sans">
             AI Fact Compiler
           </h3>
@@ -808,7 +808,7 @@ export default function AudioDigest({ userInterests, preferredGenre }: AudioDige
                   handleCompileFact(topic);
                 }}
                 disabled={isFactGenerating || isFactStreaming}
-                className="rounded-full bg-paper px-3.5 py-1.5 text-xs font-semibold text-secondary-gray hover:bg-[#d44d2e] hover:text-white transition-all cursor-pointer disabled:opacity-50"
+                className="rounded-full bg-paper px-3.5 py-1.5 text-xs font-semibold text-secondary-gray hover:bg-[#1d4ed8] hover:text-white transition-all cursor-pointer disabled:opacity-50"
               >
                 {topic}
               </button>
@@ -830,12 +830,12 @@ export default function AudioDigest({ userInterests, preferredGenre }: AudioDige
             onChange={(e) => setFactPrompt(e.target.value)}
             disabled={isFactGenerating || isFactStreaming}
             placeholder="Type a topic (e.g. History of Coffee, Voyager Probes)..."
-            className="flex-1 rounded-xl border border-border-outline/20 bg-[#fcfaf7] px-4 py-3 text-xs text-charcoal shadow-sm outline-none focus:border-[#d44d2e] focus:ring-1 focus:ring-[#d44d2e] transition-all font-sans"
+            className="flex-1 rounded-xl border border-border-outline/20 bg-[#f4f7fb] px-4 py-3 text-xs text-charcoal shadow-sm outline-none focus:border-[#1d4ed8] focus:ring-1 focus:ring-[#1d4ed8] transition-all font-sans"
           />
           <button
             type="submit"
             disabled={!factPrompt.trim() || isFactGenerating || isFactStreaming}
-            className="rounded-xl bg-charcoal px-5 py-3 text-xs font-bold text-white hover:bg-[#d44d2e] transition-all disabled:opacity-40 flex items-center gap-1.5 cursor-pointer shrink-0"
+            className="rounded-xl bg-primary px-5 py-3 text-xs font-bold text-white hover:bg-primary/90 transition-all disabled:opacity-40 flex items-center gap-1.5 cursor-pointer shrink-0"
           >
             {isFactGenerating ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -853,11 +853,11 @@ export default function AudioDigest({ userInterests, preferredGenre }: AudioDige
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 15 }}
-              className="mt-6 rounded-2xl border border-border-outline/10 bg-[#fcfaf7] p-6 shadow-sm relative overflow-hidden"
+              className="mt-6 rounded-2xl border border-border-outline/10 bg-[#f4f7fb] p-6 shadow-sm relative overflow-hidden"
             >
               {isFactGenerating ? (
                 <div className="flex flex-col items-center justify-center py-10 text-center">
-                  <Loader2 className="h-8 w-8 animate-spin text-[#d44d2e]" />
+                  <Loader2 className="h-8 w-8 animate-spin text-[#1d4ed8]" />
                   <p className="mt-3 font-serif text-sm font-bold text-charcoal">
                     Compiling Fact Sheet...
                   </p>
@@ -870,7 +870,7 @@ export default function AudioDigest({ userInterests, preferredGenre }: AudioDige
                   {/* Card Header Info */}
                   <div className="flex items-center justify-between border-b border-border-outline/5 pb-3">
                     <div className="flex items-center gap-2">
-                      <span className="rounded bg-[#d44d2e]/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#d44d2e]">
+                      <span className="rounded bg-[#1d4ed8]/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#1d4ed8]">
                         {generatedFact.category}
                       </span>
                       <span className="text-[10px] text-secondary-gray font-sans font-semibold">
@@ -881,7 +881,7 @@ export default function AudioDigest({ userInterests, preferredGenre }: AudioDige
                     {speechSupported && !isFactStreaming && (
                       <button
                         onClick={isFactPlaying ? stopFactSpeech : playFactSpeech}
-                        className="flex items-center gap-1 rounded-lg bg-charcoal/5 px-2.5 py-1 text-[10px] font-bold text-charcoal hover:bg-[#d44d2e] hover:text-white transition-all cursor-pointer"
+                        className="flex items-center gap-1 rounded-lg bg-primary/5 px-2.5 py-1 text-[10px] font-bold text-primary hover:bg-primary hover:text-white transition-all cursor-pointer"
                       >
                         {isFactPlaying ? (
                           <>
@@ -908,7 +908,7 @@ export default function AudioDigest({ userInterests, preferredGenre }: AudioDige
                     {isFactStreaming ? (
                       <p className="whitespace-pre-line italic">
                         {displayedContent}
-                        <span className="inline-block w-1.5 h-4 ml-0.5 bg-[#d44d2e] animate-pulse" />
+                        <span className="inline-block w-1.5 h-4 ml-0.5 bg-[#1d4ed8] animate-pulse" />
                       </p>
                     ) : (
                       <div className="space-y-4">
@@ -922,7 +922,7 @@ export default function AudioDigest({ userInterests, preferredGenre }: AudioDige
                                   key={idx}
                                   className={`transition-all duration-300 ${
                                     isCurrent
-                                      ? "text-charcoal font-bold not-italic underline decoration-[#d44d2e]/25 decoration-2 underline-offset-4 bg-[#d44d2e]/5 rounded px-1"
+                                      ? "text-charcoal font-bold not-italic underline decoration-[#1d4ed8]/25 decoration-2 underline-offset-4 bg-[#1d4ed8]/5 rounded px-1"
                                       : isRead
                                       ? "text-charcoal/80 not-italic"
                                       : "text-secondary-gray/30"

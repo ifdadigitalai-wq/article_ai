@@ -121,7 +121,7 @@ export default function SummaryModal({
       }
       // Type takeaway
       else if (currentCharIndex < takeaway.length) {
-        setDisplayedTakeaway((prev) => prev + takeaway.charAt(currentCharIndex));
+        setDisplayedTakeaway((prev) => prev + takeaway.charAt(currentCharIndex-1));
         currentCharIndex++;
         setTimeout(typeNext, 10);
       } else {
@@ -135,10 +135,13 @@ export default function SummaryModal({
       }
     };
 
-    typeNext();
+    const startTimer = setTimeout(() => {
+      typeNext();
+    }, 50);
 
     return () => {
       active = false;
+      clearTimeout(startTimer);
     };
   }, [localSummary]);
 
@@ -297,7 +300,7 @@ export default function SummaryModal({
                         displayedBullets[idx] && 
                         (idx === localSummary.bulletPoints.length - 1 || !displayedBullets[idx + 1]);
                       return (
-                        <li key={idx} className="flex items-start gap-3 text-xs text-charcoal/90 font-medium leading-relaxed font-sans">
+                        <li key={idx} className="flex items-start gap-3 text-xs text-charcoal font-semibold leading-relaxed font-sans">
                           <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
                           <span>
                             {bullet}
@@ -317,7 +320,7 @@ export default function SummaryModal({
                     <h3 className="mb-2 text-[10px] font-bold uppercase tracking-wider text-primary">
                       Editorial Takeaway
                     </h3>
-                    <p className="font-serif text-[15px] font-semibold leading-relaxed text-charcoal">
+                    <p className="font-serif text-[15px] font-bold leading-relaxed text-charcoal">
                       "{displayedTakeaway}"
                       {!isTypingCompleted && (
                         <span className="inline-block w-1.5 h-3.5 ml-0.5 bg-primary/70 animate-pulse" />
@@ -370,7 +373,7 @@ export default function SummaryModal({
                         className={`flex flex-col ${isUser ? "items-end" : "items-start"}`}
                       >
                         <div
-                          className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-xs leading-relaxed shadow-sm ${
+                          className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-xs font-semibold leading-relaxed shadow-sm ${
                             isUser
                               ? "bg-primary text-white"
                               : "bg-white text-charcoal border border-border-outline/15"
@@ -378,7 +381,7 @@ export default function SummaryModal({
                         >
                           {msg.text}
                         </div>
-                        <span className="mt-1 text-[8px] text-secondary-gray/50 px-1 font-mono">
+                        <span className="mt-1 text-[8px] text-charcoal font-bold px-1 font-mono">
                           {msg.timestamp}
                         </span>
                       </div>
@@ -386,7 +389,7 @@ export default function SummaryModal({
                   })}
 
                   {chatLoading && (
-                    <div className="flex items-center gap-2 text-secondary-gray">
+                    <div className="flex items-center gap-2 text-charcoal font-semibold">
                       <Loader2 className="h-4 w-4 animate-spin text-primary" />
                       <span className="text-[10px] italic">Editor is formulating a reply...</span>
                     </div>
@@ -408,7 +411,7 @@ export default function SummaryModal({
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
                 disabled={chatLoading}
-                className="flex-1 rounded-xl border border-border-outline/30 bg-white px-4 py-2.5 text-xs focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20"
+                className="flex-1 rounded-xl border border-border-outline/30 bg-white px-4 py-2.5 text-xs focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/20 text-charcoal font-semibold placeholder:text-secondary-gray/60"
                 id="chat-input"
                 autoComplete="off"
               />

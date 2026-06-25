@@ -3,14 +3,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import { X, Sparkles, Send, Loader2, MessageSquare, Quote } from "lucide-react";
-import { ChatMessage, Summary } from "../types";
+import { ChatMessage, Summary, Article } from "../types";
 
 interface AISidebarProps {
-  articleId: string;
+  article: Article;
   onClose: () => void;
 }
 
-export default function AISidebar({ articleId, onClose }: AISidebarProps) {
+export default function AISidebar({ article, onClose }: AISidebarProps) {
   const [activeTab, setActiveTab] = useState<"summary" | "discuss">("summary");
   const [summary, setSummary] = useState<Summary | null>(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
@@ -18,17 +18,26 @@ export default function AISidebar({ articleId, onClose }: AISidebarProps) {
 
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState("");
+  const [followUpInput, setFollowUpInput] = useState("");
   const [chatLoading, setChatLoading] = useState(false);
 
   const chatBottomRef = useRef<HTMLDivElement>(null);
   const contentContainerRef = useRef<HTMLDivElement>(null);
+
+  // Reset state when article changes
+  useEffect(() => {
+    setSummary(null);
+    setChatMessages([]);
+    setSummaryError(null);
+    setFollowUpInput("");
+  }, [article.id]);
 
   // 1. Fetch AI Summary on tab click/mount
   useEffect(() => {
     if (activeTab === "summary" && !summary) {
       fetchSummary();
     }
-  }, [activeTab, articleId]);
+  }, [activeTab, article.id, summary]);
 
   // Scroll chat to bottom on new messages
   useEffect(() => {
@@ -37,6 +46,61 @@ export default function AISidebar({ articleId, onClose }: AISidebarProps) {
     }
   }, [chatMessages, chatLoading]);
 
+  const handleFollowUpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!followUpInput.trim() || chatLoading) return;
+
+    const query = followUpInput.trim();
+    setFollowUpInput("");
+    setActiveTab("discuss");
+
+    const newMsg: ChatMessage = {
+      id: Math.random().toString(36).substr(2, 9),
+      role: "user",
+      text: query,
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    };
+
+    const updatedHistory = [...chatMessages, newMsg];
+    setChatMessages(updatedHistory);
+    setChatLoading(true);
+
+    try {
+      const res = await fetch("/api/discuss", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          articleId: article.id,
+          articleContent: article.content,
+          messages: updatedHistory,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Connection to AI Editorial board failed");
+      const data = await res.json();
+
+      const aiMsg: ChatMessage = {
+        id: Math.random().toString(36).substr(2, 9),
+        role: "model",
+        text: data.reply,
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      };
+
+      setChatMessages((prev) => [...prev, aiMsg]);
+    } catch (err) {
+      console.error(err);
+      const errorMsg: ChatMessage = {
+        id: Math.random().toString(36).substr(2, 9),
+        role: "model",
+        text: "My apologies. I lost connection to the press wires. Could you repeat that?",
+        timestamp: Math.random().toString(36).substr(2, 9),
+      };
+      setChatMessages((prev) => [...prev, errorMsg]);
+    } finally {
+      setChatLoading(false);
+    }
+  };
+
   const fetchSummary = async () => {
     setSummaryLoading(true);
     setSummaryError(null);
@@ -44,7 +108,10 @@ export default function AISidebar({ articleId, onClose }: AISidebarProps) {
       const res = await fetch("/api/summarize", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ articleId }),
+        body: JSON.stringify({
+          articleId: article.id,
+          articleContent: article.content
+        }),
       });
       if (!res.ok) throw new Error("Failed to reach summarizer engine");
       const data = await res.json();
@@ -80,7 +147,8 @@ export default function AISidebar({ articleId, onClose }: AISidebarProps) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          articleId,
+          articleId: article.id,
+          articleContent: article.content,
           messages: updatedHistory,
         }),
       });
@@ -102,7 +170,7 @@ export default function AISidebar({ articleId, onClose }: AISidebarProps) {
         id: Math.random().toString(36).substr(2, 9),
         role: "model",
         text: "My apologies. I lost connection to the press wires. Could you repeat that?",
-        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        timestamp: Math.random().toString(36).substr(2, 9),
       };
       setChatMessages((prev) => [...prev, errorMsg]);
     } finally {
@@ -139,13 +207,13 @@ export default function AISidebar({ articleId, onClose }: AISidebarProps) {
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         transition={{ type: "spring", damping: 25, stiffness: 220 }}
-        className="fixed md:relative right-0 top-0 z-30 h-full w-full border-l border-charcoal/10 bg-[#fcfaf7] shadow-xl md:w-96 flex flex-col backdrop-blur-sm"
+        className="fixed md:relative right-0 top-0 z-30 h-full w-full border-l border-charcoal/10 bg-[#f4f7fb] shadow-xl md:w-96 flex flex-col backdrop-blur-sm"
         id="ai-sidebar"
       >
         {/* Sidebar Header */}
         <div className="flex items-center justify-between border-b border-charcoal/10 p-4 bg-white/40 backdrop-blur-sm">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-[#d44d2e]" />
+            <Sparkles className="h-5 w-5 text-[#1d4ed8]" />
             <h2 className="font-serif text-base tracking-tight font-bold text-charcoal">
               AI Editorial Companion
             </h2>
@@ -165,7 +233,7 @@ export default function AISidebar({ articleId, onClose }: AISidebarProps) {
             onClick={() => setActiveTab("summary")}
             className={`flex-1 rounded-lg py-2 font-sans text-[10px] uppercase font-bold tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
               activeTab === "summary"
-                ? "bg-[#d44d2e] text-[#fcfaf7] shadow-sm"
+                ? "bg-[#1d4ed8] text-[#f4f7fb] shadow-sm"
                 : "text-secondary-gray/80 hover:text-charcoal hover:bg-black/5"
             }`}
             id="sidebar-summary-tab"
@@ -177,7 +245,7 @@ export default function AISidebar({ articleId, onClose }: AISidebarProps) {
             onClick={() => setActiveTab("discuss")}
             className={`flex-1 rounded-lg py-2 font-sans text-[10px] uppercase font-bold tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
               activeTab === "discuss"
-                ? "bg-[#d44d2e] text-[#fcfaf7] shadow-sm"
+                ? "bg-[#1d4ed8] text-[#f4f7fb] shadow-sm"
                 : "text-secondary-gray/80 hover:text-charcoal hover:bg-black/5"
             }`}
             id="sidebar-discuss-tab"
@@ -194,7 +262,7 @@ export default function AISidebar({ articleId, onClose }: AISidebarProps) {
             <div className="space-y-6">
               {summaryLoading && (
                 <div className="flex flex-col items-center justify-center py-20 text-center">
-                  <Loader2 className="h-8 w-8 animate-spin text-[#d44d2e]" />
+                  <Loader2 className="h-8 w-8 animate-spin text-[#1d4ed8]" />
                   <p className="mt-4 text-xs font-semibold text-secondary-gray/80 font-sans">
                     Synthesizing article context...
                   </p>
@@ -209,14 +277,14 @@ export default function AISidebar({ articleId, onClose }: AISidebarProps) {
                   <p className="text-xs font-semibold text-red-600 font-sans">{summaryError}</p>
                   <button
                     onClick={fetchSummary}
-                    className="mt-2 text-xs font-bold text-[#d44d2e] hover:underline font-sans cursor-pointer"
+                    className="mt-2 text-xs font-bold text-[#1d4ed8] hover:underline font-sans cursor-pointer"
                   >
                     Retry Analysis
                   </button>
                 </div>
               )}
 
-              {summary && !summaryLoading && (
+               {summary && !summaryLoading && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -224,7 +292,7 @@ export default function AISidebar({ articleId, onClose }: AISidebarProps) {
                 >
                   {/* Bullet Points */}
                   <div>
-                    <h3 className="mb-3 font-serif tracking-tight font-bold text-[#d44d2e] text-sm">
+                    <h3 className="mb-3 font-serif tracking-tight font-bold text-[#1d4ed8] text-sm">
                       Core Arguments
                     </h3>
                     <ul className="space-y-3">
@@ -234,9 +302,9 @@ export default function AISidebar({ articleId, onClose }: AISidebarProps) {
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: i * 0.1 }}
                           key={i}
-                          className="flex items-start gap-2.5 text-xs text-secondary-gray/80 leading-relaxed font-sans"
+                          className="flex items-start gap-2.5 text-xs text-charcoal font-semibold leading-relaxed font-sans"
                         >
-                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#d44d2e]" />
+                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#1d4ed8]" />
                           <span>{point}</span>
                         </motion.li>
                       ))}
@@ -244,14 +312,33 @@ export default function AISidebar({ articleId, onClose }: AISidebarProps) {
                   </div>
 
                   {/* Key Takeaway */}
-                  <div className="rounded-xl border border-charcoal/10 bg-[#e5e2dd]/30 backdrop-blur-sm p-4">
-                    <h3 className="mb-2 font-serif tracking-tight font-bold text-[#d44d2e] text-sm">
+                  <div className="rounded-xl border border-charcoal/10 bg-[#e2e8f0]/30 backdrop-blur-sm p-4">
+                    <h3 className="mb-2 font-serif tracking-tight font-bold text-[#1d4ed8] text-sm">
                       Editorial Takeaway
                     </h3>
-                    <p className="font-serif text-sm italic leading-relaxed text-charcoal">
+                    <p className="font-serif text-sm italic leading-relaxed text-charcoal font-bold">
                       "{summary.keyTakeaway}"
                     </p>
                   </div>
+
+                  {/* Follow-up Question Input Box in Quick Summary */}
+                  <form onSubmit={handleFollowUpSubmit} className="mt-6 flex gap-2 border-t border-charcoal/10 pt-4 bg-white/20">
+                    <input
+                      type="text"
+                      placeholder="Ask a follow-up question..."
+                      value={followUpInput}
+                      onChange={(e) => setFollowUpInput(e.target.value)}
+                      disabled={chatLoading}
+                      className="flex-1 rounded-xl border border-charcoal/20 bg-[#f4f7fb] px-4 py-2 text-xs text-charcoal font-semibold placeholder:text-secondary-gray/60 focus:border-[#1d4ed8] focus:outline-none focus:ring-1 focus:ring-[#1d4ed8]/20 font-sans"
+                    />
+                    <button
+                      type="submit"
+                      disabled={chatLoading || !followUpInput.trim()}
+                      className="rounded-xl bg-[#1d4ed8] p-2 text-[#f4f7fb] hover:bg-[#1d4ed8]/90 disabled:opacity-40 transition-all cursor-pointer flex items-center justify-center"
+                    >
+                      <Send className="h-4 w-4" />
+                    </button>
+                  </form>
                 </motion.div>
               )}
             </div>
@@ -260,11 +347,11 @@ export default function AISidebar({ articleId, onClose }: AISidebarProps) {
             <div className="flex h-full flex-col">
               {chatMessages.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-20 text-center flex-1">
-                  <MessageSquare className="h-8 w-8 text-[#d44d2e]/30 mb-3" />
+                  <MessageSquare className="h-8 w-8 text-[#1d4ed8]/30 mb-3" />
                   <p className="font-serif tracking-tight font-bold text-charcoal text-sm">
                     Consult the Chief Editor
                   </p>
-                  <p className="mt-1 px-4 font-sans text-[10px] text-secondary-gray/80 leading-normal">
+                  <p className="mt-1 px-4 font-sans text-[10px] text-charcoal font-semibold leading-normal">
                     Ask deep, analytical questions about this piece or explore counter-perspectives directly with our AI editor.
                   </p>
                 </div>
@@ -278,15 +365,15 @@ export default function AISidebar({ articleId, onClose }: AISidebarProps) {
                         className={`flex flex-col ${isUser ? "items-end" : "items-start"}`}
                       >
                         <div
-                          className={`max-w-[85%] rounded-2xl px-4 py-2.5 font-sans text-xs leading-relaxed shadow-sm ${
+                          className={`max-w-[85%] rounded-2xl px-4 py-2.5 font-sans text-xs font-semibold leading-relaxed shadow-sm ${
                             isUser
-                              ? "bg-[#d44d2e] text-[#fcfaf7]"
-                              : "bg-[#e5e2dd]/40 text-charcoal border border-charcoal/10 backdrop-blur-sm"
+                              ? "bg-[#1d4ed8] text-[#f4f7fb]"
+                              : "bg-[#e2e8f0]/40 text-charcoal border border-charcoal/10 backdrop-blur-sm"
                           }`}
                         >
                           {msg.text}
                         </div>
-                        <span className="mt-1 font-sans text-[9px] text-secondary-gray/80 px-1">
+                        <span className="mt-1 font-sans text-[9px] text-charcoal font-bold px-1">
                           {msg.timestamp}
                         </span>
                       </div>
@@ -294,8 +381,8 @@ export default function AISidebar({ articleId, onClose }: AISidebarProps) {
                   })}
 
                   {chatLoading && (
-                    <div className="flex items-center gap-2 text-secondary-gray/80 font-sans">
-                      <Loader2 className="h-4.5 w-4.5 animate-spin text-[#d44d2e]" />
+                    <div className="flex items-center gap-2 text-charcoal font-semibold font-sans">
+                      <Loader2 className="h-4.5 w-4.5 animate-spin text-[#1d4ed8]" />
                       <span className="text-[10px] italic">Editor is formulating a response...</span>
                     </div>
                   )}
@@ -311,13 +398,13 @@ export default function AISidebar({ articleId, onClose }: AISidebarProps) {
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   disabled={chatLoading}
-                  className="flex-1 rounded-xl border border-charcoal/20 bg-[#fcfaf7] px-4 py-2 text-xs text-charcoal placeholder:text-secondary-gray/50 focus:border-[#d44d2e] focus:outline-none focus:ring-1 focus:ring-[#d44d2e]/20 font-sans"
+                  className="flex-1 rounded-xl border border-charcoal/20 bg-[#f4f7fb] px-4 py-2 text-xs text-charcoal font-semibold placeholder:text-secondary-gray/60 focus:border-[#1d4ed8] focus:outline-none focus:ring-1 focus:ring-[#1d4ed8]/20 font-sans"
                   id="chat-input"
                 />
                 <button
                   type="submit"
                   disabled={chatLoading || !chatInput.trim()}
-                  className="rounded-xl bg-[#d44d2e] p-2 text-[#fcfaf7] hover:bg-[#d44d2e]/90 disabled:opacity-40 transition-all cursor-pointer flex items-center justify-center"
+                  className="rounded-xl bg-[#1d4ed8] p-2 text-[#f4f7fb] hover:bg-[#1d4ed8]/90 disabled:opacity-40 transition-all cursor-pointer flex items-center justify-center"
                   id="send-chat-btn"
                 >
                   <Send className="h-4 w-4" />

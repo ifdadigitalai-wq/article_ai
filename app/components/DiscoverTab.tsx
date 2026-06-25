@@ -12,6 +12,7 @@ interface DiscoverTabProps {
   onQuickSummary: (article: Article, e: React.MouseEvent<any>) => void;
   preferredGenre?: string | null;
   recommendedArticles?: Article[];
+  assignedArticleIds?: string[];
 }
 
 export default function DiscoverTab({
@@ -19,12 +20,14 @@ export default function DiscoverTab({
   onRead,
   onQuickSummary,
   preferredGenre = null,
-  recommendedArticles = []
+  recommendedArticles = [],
+  assignedArticleIds = [],
 }: DiscoverTabProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [selectedDept, setSelectedDept] = useState<string>("All");
+  const [readingLists, setReadingLists] = useState<any[]>([]);
 
-  // API search states
   const [apiResults, setApiResults] = useState<Article[]>([]);
   const [apiResultsQuery, setApiResultsQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
@@ -32,29 +35,46 @@ export default function DiscoverTab({
 
   const categories = ["All", "Technology", "Environment", "Architecture", "Science", "International"];
 
-  // Suggestion pool generated from categories and articles
-  const suggestionPool = Array.from(new Set([
-    ...categories.filter(c => c !== "All"),
-    ...(articles || []).map(a => a.title),
-    ...(articles || []).map(a => a.category),
-    "Quantum Computing",
-    "Deep Sea Discoveries",
-    "The Library of Alexandria",
-    "Voyager Space Probes",
-    "Artificial Intelligence",
-    "Climate Change"
-  ])).filter(Boolean);
+  useEffect(() => {
+    const fetchLists = async () => {
+      try {
+        const res = await fetch("/api/reading-lists");
+        if (res.ok) {
+          const data = await res.json();
+          setReadingLists(data);
+        }
+      } catch (err) {
+        console.error("Failed to load reading lists in DiscoverTab:", err);
+      }
+    };
+    fetchLists();
+  }, []);
 
-  const activeSuggestions = searchQuery.trim().length > 0
-    ? suggestionPool
-        .filter(item => 
-          item.toLowerCase().includes(searchQuery.toLowerCase()) && 
-          item.toLowerCase() !== searchQuery.toLowerCase()
-        )
-        .slice(0, 5)
-    : [];
+  const suggestionPool = Array.from(
+    new Set([
+      ...categories.filter((c) => c !== "All"),
+      ...(articles || []).map((a) => a.title),
+      ...(articles || []).map((a) => a.category),
+      "Quantum Computing",
+      "Deep Sea Discoveries",
+      "The Library of Alexandria",
+      "Voyager Space Probes",
+      "Artificial Intelligence",
+      "Climate Change",
+    ])
+  ).filter(Boolean);
 
-  // Auto-reset category to "All" when user searches to prevent filtering out results
+  const activeSuggestions =
+    searchQuery.trim().length > 0
+      ? suggestionPool
+          .filter(
+            (item) =>
+              item.toLowerCase().includes(searchQuery.toLowerCase()) &&
+              item.toLowerCase() !== searchQuery.toLowerCase()
+          )
+          .slice(0, 5)
+      : [];
+
   useEffect(() => {
     if (searchQuery.trim()) {
       setSelectedCategory("All");
@@ -79,7 +99,6 @@ export default function DiscoverTab({
     }
   };
 
-  // Debounced API fetch for global matching
   useEffect(() => {
     if (!searchQuery.trim()) {
       setIsSearching(false);
@@ -88,7 +107,6 @@ export default function DiscoverTab({
       return;
     }
 
-    // Skip if we already fetched for this query
     if (apiResultsQuery === searchQuery) {
       setIsSearching(false);
       return;
@@ -120,13 +138,10 @@ export default function DiscoverTab({
     };
   }, [searchQuery]);
 
-  // Determine what base list of articles to use
   let baseArticles: Article[] = [];
   if (!searchQuery.trim()) {
     baseArticles = articles || [];
   } else {
-    // If the API results are for the current search query, use them.
-    // Otherwise, show the instant local matches.
     if (apiResultsQuery === searchQuery) {
       baseArticles = apiResults;
     } else {
@@ -141,28 +156,33 @@ export default function DiscoverTab({
     }
   }
 
-  // Filter based on selectedCategory
   const filteredArticles = baseArticles.filter((article) => {
     if (!article || !article.category) return false;
-    const matchesCategory =
-      selectedCategory === "All" ||
-      article.category.toLowerCase() === selectedCategory.toLowerCase();
 
-    return matchesCategory;
+    const matchesCategory =
+      selectedCategory === "All" || article.category.toLowerCase() === selectedCategory.toLowerCase();
+
+    const matchesDept =
+      selectedDept === "All" ||
+      readingLists
+        .filter((l) => l.department.toLowerCase() === selectedDept.toLowerCase())
+        .flatMap((l) => l.articleIds)
+        .includes(article.id);
+
+    return matchesCategory && matchesDept;
   });
 
-  // Trending articles mapped to design
-  const trendingArticles = articles.slice(0, 3); // Grab some for list
+  const trendingArticles = articles.slice(0, 3);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-6 pb-24" id="discover-view">
-      {/* 1. Styled Search Box */}
+      {/* Search & Department Selector */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
           triggerSearch();
         }}
-        className="relative mb-8 flex gap-2"
+        className="relative mb-8 flex flex-col sm:flex-row gap-2.5"
       >
         <div className="relative flex-1">
           <input
@@ -172,18 +192,17 @@ export default function DiscoverTab({
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => setShowSuggestions(true)}
             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-            className="w-full rounded-2xl border border-border-outline/30 bg-white py-4 pl-12 pr-12 text-sm shadow-sm transition-all focus:border-[#d44d2e] focus:outline-none focus:ring-1 focus:ring-[#d44d2e]/15"
+            className="w-full rounded-2xl border border-slate-200/50 dark:border-slate-800 bg-white dark:bg-slate-900 py-3.5 pl-12 pr-12 text-sm shadow-xs focus:outline-none focus:ring-1 focus:ring-indigo-500 text-slate-800 dark:text-slate-100"
             id="search-input"
             autoComplete="off"
           />
-          <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-secondary-gray pointer-events-none" />
+          <Search className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-slate-400 pointer-events-none" />
           {isSearching && (
-            <Loader2 className="absolute top-1/2 right-4 h-5 w-5 -translate-y-1/2 text-[#d44d2e] animate-spin" />
+            <Loader2 className="absolute top-1/2 right-4 h-5 w-5 -translate-y-1/2 text-indigo-500 animate-spin" />
           )}
 
-          {/* Floating Auto-suggestions Dropdown */}
           {showSuggestions && activeSuggestions.length > 0 && (
-            <div className="absolute left-0 right-0 top-full mt-2.5 z-50 rounded-xl border border-border-outline/10 bg-[#fcfaf7] shadow-lg overflow-hidden py-1 animate-fade-in">
+            <div className="absolute left-0 right-0 top-full mt-2 z-50 rounded-xl border border-slate-200/40 bg-white dark:bg-slate-900 shadow-lg overflow-hidden py-1">
               {activeSuggestions.map((sug) => (
                 <button
                   type="button"
@@ -209,7 +228,7 @@ export default function DiscoverTab({
                     searchImmediate();
                     setShowSuggestions(false);
                   }}
-                  className="w-full text-left px-4 py-2.5 text-xs hover:bg-[#d44d2e] hover:text-white transition-colors cursor-pointer flex items-center justify-between text-charcoal font-sans"
+                  className="w-full text-left px-4 py-2.5 text-xs hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-700 dark:hover:text-white transition-colors cursor-pointer flex items-center justify-between text-slate-700 dark:text-slate-200"
                 >
                   <span className="font-semibold">{sug}</span>
                   <span className="text-[9px] uppercase tracking-wider opacity-60 font-bold">
@@ -220,25 +239,40 @@ export default function DiscoverTab({
             </div>
           )}
         </div>
+
+        <select
+          value={selectedDept}
+          onChange={(e) => setSelectedDept(e.target.value)}
+          className="rounded-2xl border border-slate-200/50 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3.5 text-xs font-bold text-slate-600 dark:text-slate-300 focus:outline-none transition-all cursor-pointer"
+        >
+          <option value="All">All Departments</option>
+          <option value="CSE">CSE Recommended</option>
+          <option value="ECE">ECE Recommended</option>
+          <option value="EEE">EEE Recommended</option>
+          <option value="MECH">MECH Recommended</option>
+          <option value="CIVIL">CIVIL Recommended</option>
+          <option value="MBA">MBA Recommended</option>
+        </select>
+
         <button
           type="submit"
-          className="rounded-2xl bg-charcoal px-6 py-4 text-xs font-bold text-white hover:bg-[#d44d2e] transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
+          className="rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3.5 text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm"
         >
           <Search className="h-4 w-4" />
           <span>Search</span>
         </button>
       </form>
 
-      {/* 1.5. Recommended For You (Personalization section) */}
+      {/* Recommended For You */}
       {preferredGenre && recommendedArticles.length > 0 && (
-        <section className="mb-12 rounded-2xl border border-primary/25 bg-primary/2 p-6 shadow-sm">
-          <div className="flex items-center justify-between border-b border-primary/10 pb-4 mb-6">
+        <section className="mb-12 rounded-2xl border border-indigo-200/55 dark:border-indigo-950/60 bg-indigo-50/20 dark:bg-indigo-950/10 p-6 shadow-xs">
+          <div className="flex items-center justify-between border-b border-indigo-100/50 dark:border-indigo-900/20 pb-4 mb-6">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary animate-pulse" />
-              <h3 className="font-serif text-lg font-bold text-charcoal">Recommended For You</h3>
+              <Sparkles className="h-5 w-5 text-indigo-600 dark:text-indigo-400 animate-pulse" />
+              <h3 className="font-serif text-lg font-bold text-slate-800 dark:text-white">Recommended For You</h3>
             </div>
-            <span className="text-[10px] font-bold text-primary uppercase tracking-wider bg-primary/10 px-2.5 py-0.5 rounded-full">
-              Based on your interest in {preferredGenre}
+            <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider bg-indigo-100/50 dark:bg-indigo-950/30 px-2.5 py-0.5 rounded-full">
+              Based on interest in {preferredGenre}
             </span>
           </div>
 
@@ -248,16 +282,18 @@ export default function DiscoverTab({
                 key={art.id}
                 onClick={() => onRead(art)}
                 whileHover={{ y: -4, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.05)" }}
-                className="flex flex-col bg-white border border-border-outline/10 p-4 rounded-xl cursor-pointer transition-all"
+                className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-xl p-4 cursor-pointer hover:border-indigo-150 dark:hover:border-indigo-900 flex flex-col justify-between group h-full"
               >
-                <span className="text-[8px] font-bold text-primary uppercase tracking-wider self-start bg-primary/5 px-2 py-0.5 rounded mb-2">
-                  {art.category}
-                </span>
-                <h4 className="font-serif text-sm font-bold text-charcoal leading-snug line-clamp-2 mb-2 hover:text-primary transition-colors">
-                  {art.title}
-                </h4>
-                <p className="text-[10px] text-secondary-gray mt-auto">
-                  {art.readTime} • {art.date}
+                <div className="space-y-2">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                    {art.category}
+                  </span>
+                  <h4 className="font-serif text-sm font-bold text-slate-850 dark:text-slate-250 leading-snug group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                    {art.title}
+                  </h4>
+                </div>
+                <p className="text-[10px] text-slate-450 dark:text-slate-500 font-semibold uppercase mt-3">
+                  {art.readTime} read
                 </p>
               </motion.div>
             ))}
@@ -265,44 +301,7 @@ export default function DiscoverTab({
         </section>
       )}
 
-      {/* 2. Trending Now Section (Literal matching to screenshot design) */}
-      <section className="mb-12 rounded-2xl border border-border-outline/10 bg-white p-6 shadow-sm">
-        <div className="flex items-center justify-between border-b border-border-outline/10 pb-4 mb-6">
-          <div className="flex items-center gap-2">
-            <Compass className="h-5 w-5 text-primary animate-pulse" />
-            <h3 className="font-serif text-lg font-bold text-charcoal">Trending Now</h3>
-          </div>
-          <span className="text-xs font-semibold text-secondary-gray font-mono">01 — 03</span>
-        </div>
-
-        <div className="space-y-6">
-          {trendingArticles.map((art, idx) => {
-            const indexStr = `0${idx + 1}`;
-            return (
-              <motion.div
-                key={art.id}
-                onClick={() => onRead(art)}
-                className="flex gap-4 items-start group cursor-pointer border-b border-border-outline/5 pb-4 last:border-none last:pb-0"
-                whileHover={{ x: 4 }}
-              >
-                <span className="font-serif text-4xl font-extrabold text-border-outline/30 select-none tracking-tight leading-none">
-                  {indexStr}
-                </span>
-                <div className="flex-1">
-                  <h4 className="font-serif text-base font-bold text-charcoal leading-snug group-hover:text-primary transition-colors">
-                    {art.title}
-                  </h4>
-                  <p className="text-xs text-secondary-gray mt-1.5 font-semibold tracking-wide">
-                    {art.readTime} • {art.category}
-                  </p>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* 3. Filter category chips inside discover tab */}
+      {/* Category chips */}
       <div className="mb-8 flex space-x-2 overflow-x-auto pb-2 scrollbar-none">
         {categories.map((cat) => {
           const isActive = selectedCategory === cat;
@@ -310,10 +309,10 @@ export default function DiscoverTab({
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`rounded-xl px-4 py-1.5 text-xs font-bold whitespace-nowrap transition-all ${
+              className={`rounded-xl px-4 py-2 text-[10px] font-sans font-bold uppercase tracking-wider whitespace-nowrap transition-all border cursor-pointer ${
                 isActive
-                  ? "bg-primary text-white shadow-sm"
-                  : "bg-white border border-border-outline/20 text-secondary-gray hover:bg-black/2"
+                  ? "bg-indigo-700 border-indigo-700 text-white dark:bg-indigo-600 dark:border-indigo-600 dark:text-white shadow-xs"
+                  : "bg-slate-100/50 dark:bg-slate-900/50 border-slate-200/50 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200/80 dark:hover:bg-slate-800/80 hover:text-indigo-600 dark:hover:text-indigo-400"
               }`}
             >
               {cat}
@@ -322,23 +321,21 @@ export default function DiscoverTab({
         })}
       </div>
 
-      {/* 4. Results feed */}
+      {/* Results feed */}
       <div>
         <div className="flex items-center gap-2 mb-6">
-          <Sparkles className="h-4 w-4 text-primary" />
-          <h3 className="text-xs font-bold uppercase tracking-wider text-charcoal">
-            {searchQuery ? `Results for "${searchQuery}"` : "Explore curated releases"}
+          <Sparkles className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            {searchQuery ? `Results for "${searchQuery}"` : "Explore curated publications"}
           </h3>
-          {isSearching && (
-            <Loader2 className="h-4 w-4 text-primary animate-spin ml-1" />
-          )}
+          {isSearching && <Loader2 className="h-4 w-4 text-indigo-500 animate-spin ml-1" />}
         </div>
 
         {filteredArticles.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-border-outline/40 py-20 text-center">
-            <Compass className="h-10 w-10 text-border-outline/40 mx-auto mb-3" />
-            <p className="text-sm font-semibold text-charcoal">No documents matched your filter</p>
-            <p className="text-xs text-secondary-gray mt-1">Try clarifying keywords or adjusting filters.</p>
+          <div className="rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 py-20 text-center">
+            <Compass className="h-10 w-10 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
+            <p className="text-sm font-semibold text-slate-800 dark:text-slate-250">No documents matched your filters</p>
+            <p className="text-xs text-slate-400 mt-1">Try clarifying keywords or adjusting selectors.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -348,6 +345,7 @@ export default function DiscoverTab({
                 article={art}
                 onRead={onRead}
                 onQuickSummary={onQuickSummary}
+                isAssigned={assignedArticleIds.includes(art.id)}
               />
             ))}
           </div>

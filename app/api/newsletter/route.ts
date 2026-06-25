@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
 
 export async function POST(request: Request) {
   try {
@@ -11,7 +13,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
@@ -20,10 +21,26 @@ export async function POST(request: Request) {
       );
     }
 
-    // In a production app, you'd persist this to a database or email service.
-    // For now, we acknowledge the subscription.
+    // Check if already subscribed
+    const existing = await prisma.newsletter.findUnique({
+      where: { email: email.trim().toLowerCase() },
+    });
+
+    if (existing) {
+      return NextResponse.json({
+        message: `You are already subscribed to The Editorial's Weekly Read. Your curated digest will arrive every Sunday at ${email.trim()}.`,
+      });
+    }
+
+    // Persist subscription
+    await prisma.newsletter.create({
+      data: {
+        email: email.trim().toLowerCase(),
+      },
+    });
+
     return NextResponse.json({
-      message: `Welcome to The Editorial's Weekly Read. Your curated digest will arrive every Sunday at ${email}.`,
+      message: `Welcome to The Editorial's Weekly Read. Your curated digest will arrive every Sunday at ${email.trim()}.`,
     });
   } catch (error: any) {
     return NextResponse.json(

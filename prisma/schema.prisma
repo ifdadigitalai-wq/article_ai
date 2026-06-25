@@ -1,0 +1,110 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id              String           @id @default(uuid())
+  name            String
+  email           String           @unique
+  passwordHash    String
+  rollNumber      String?
+  department      String
+  batch           String
+  role            String           // "student" | "faculty" | "admin"
+  avatar          String           @default("scholar")
+  createdAt       DateTime         @default(now())
+  
+  savedArticles   SavedArticle[]
+  readingHistories ReadingHistory[]
+  comments        Comment[]
+  readingStreaks  ReadingStreak[]
+  quizAttempts    QuizAttempt[]
+}
+
+model SavedArticle {
+  id              String   @id @default(uuid())
+  userId          String
+  articleId       String
+  articleTitle    String
+  articleUrl      String?
+  completed       Boolean  @default(false)
+  progressPercent Int      @default(0)
+  lastReadAt      DateTime @default(now())
+  savedAt         DateTime @default(now())
+  
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, articleId])
+}
+
+model ReadingHistory {
+  id                String   @id @default(uuid())
+  userId            String
+  articleId         String
+  articleTitle      String
+  readAt            DateTime @default(now())
+  timeSpentSeconds  Int
+  
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id         String   @id @default(uuid())
+  userId     String
+  articleId  String
+  content    String
+  createdAt  DateTime @default(now())
+  likes      Int      @default(0)
+  parentId   String?  // for replies
+  
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ReadingStreak {
+  id     String   @id @default(uuid())
+  userId String
+  date   DateTime
+  count  Int
+  
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, date])
+}
+
+model Quiz {
+  id        String   @id @default(uuid())
+  articleId String   @unique
+  questions Json     // Array of MCQs: [{question: string, options: string[], answer: number}]
+  createdAt DateTime @default(now())
+}
+
+model QuizAttempt {
+  id          String   @id @default(uuid())
+  userId      String
+  quizId      String
+  score       Int
+  answers     Json     // Selected options list: [0, 2, 1, ...]
+  attemptedAt DateTime @default(now())
+  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ReadingList {
+  id         String   @id @default(uuid())
+  createdBy  String   // userId of faculty
+  title      String
+  articleIds String[]
+  isPublic   Boolean  @default(true)
+  department String
+}
+
+model Newsletter {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  subscribedAt DateTime @default(now())
+}

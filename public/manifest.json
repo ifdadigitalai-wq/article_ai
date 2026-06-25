@@ -1,0 +1,17 @@
+{
+  "name": "ArticleAI - Institute Reading Platform",
+  "short_name": "ArticleAI",
+  "description": "Syllabus-aligned readings, comprehension quizzes, and reading analytics for students and faculty.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1d4ed8",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

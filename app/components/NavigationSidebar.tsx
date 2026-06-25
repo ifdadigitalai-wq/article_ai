@@ -6,18 +6,34 @@ import {
   X,
   Home,
   Compass,
-  BookOpen,
+  Layers,
   Bookmark,
-  Sparkles,
-  Clock,
   Award,
+  Clock,
   Flame,
   Trash2,
   User,
-  ExternalLink
+  ShieldAlert,
+  ExternalLink,
+  LogOut,
 } from "lucide-react";
 import { TabId } from "./BottomNav";
-import { LibraryStats } from "../types";
+import DarkModeToggle from "./DarkModeToggle";
+
+interface UserProfile {
+  name: string;
+  email: string;
+  role: string;
+  department: string;
+  batch: string;
+  avatar: string;
+}
+
+interface LibraryStats {
+  minutesRead: number;
+  articlesCompleted: number;
+  streakDays: number;
+}
 
 interface NavigationSidebarProps {
   onClose?: () => void;
@@ -29,7 +45,16 @@ interface NavigationSidebarProps {
   onSelectCategory: (category: string) => void;
   onClearHistory: () => void;
   isPersistent?: boolean;
+  user: UserProfile | null;
 }
+
+const AVATAR_OPTIONS = [
+  { id: "scholar", emoji: "🎓" },
+  { id: "creator", emoji: "💡" },
+  { id: "artist", emoji: "🎨" },
+  { id: "explorer", emoji: "🚀" },
+  { id: "researcher", emoji: "🔬" },
+];
 
 export default function NavigationSidebar({
   onClose,
@@ -40,15 +65,23 @@ export default function NavigationSidebar({
   selectedCategory,
   onSelectCategory,
   onClearHistory,
-  isPersistent = false
+  isPersistent = false,
+  user,
 }: NavigationSidebarProps) {
+  const isFaculty = user?.role === "faculty" || user?.role === "admin";
+
   const navItems = [
     { id: "home" as TabId, label: "Home Edition", icon: Home },
     { id: "discover" as TabId, label: "Discover Feed", icon: Compass },
-    { id: "library" as TabId, label: "My Library", icon: BookOpen },
+    { id: "reading-lists" as TabId, label: "Reading Lists", icon: Layers },
     { id: "saved" as TabId, label: "Saved Articles", icon: Bookmark },
-    { id: "digests" as TabId, label: "AI Digests", icon: Sparkles }
+    { id: "leaderboard" as TabId, label: "Leaderboard", icon: Award },
+    { id: "profile" as TabId, label: "My Profile", icon: User },
   ];
+
+  if (isFaculty) {
+    navItems.push({ id: "admin" as TabId, label: "Admin Panel", icon: ShieldAlert });
+  }
 
   const handleTabClick = (tabId: TabId) => {
     onTabChange(tabId);
@@ -57,9 +90,22 @@ export default function NavigationSidebar({
 
   const handleCategoryClick = (category: string) => {
     onSelectCategory(category);
-    onTabChange("home"); // default to home when changing category
+    onTabChange("home");
     if (onClose) onClose();
   };
+
+  const handleLogout = async () => {
+    try {
+      const res = await fetch("/api/auth/logout", { method: "POST" });
+      if (res.ok) {
+        window.location.href = "/login";
+      }
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
+
+  const activeAvatar = AVATAR_OPTIONS.find((a) => a.id === user?.avatar) || AVATAR_OPTIONS[0];
 
   const sidebarContent = (
     <>
@@ -71,16 +117,16 @@ export default function NavigationSidebar({
           background: transparent;
         }
         .minimal-scrollbar::-webkit-scrollbar-thumb {
-          background-color: rgba(26, 26, 26, 0.15);
+          background-color: rgba(99, 102, 241, 0.15);
           border-radius: 4px;
         }
       `}</style>
-      {/* Close button top right of drawer */}
+      
       {!isPersistent && onClose && (
         <div className="absolute top-4 right-4">
           <button
             onClick={onClose}
-            className="rounded-full p-2 text-secondary-gray hover:bg-black/5 hover:text-charcoal transition-colors"
+            className="rounded-full p-2 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-700 dark:hover:text-slate-200 transition-colors cursor-pointer"
             id="close-sidebar-btn"
             aria-label="Close menu"
           >
@@ -90,49 +136,50 @@ export default function NavigationSidebar({
       )}
 
       {/* Drawer Header (Branding) */}
-      <div className="mb-8 mt-4 flex flex-col">
-        <span className="text-[9px] uppercase tracking-[0.25em] font-sans font-bold opacity-45">
-          Volume 04 // Issue 12
+      <div className="mb-6 mt-2 flex flex-col">
+        <span className="text-[9px] uppercase tracking-[0.25em] font-sans font-bold text-slate-400 dark:text-slate-500">
+          Institute Hub // Volume 01
         </span>
-        <h2 className="font-serif text-2xl font-black tracking-tighter leading-none mt-1 text-charcoal">
-          THE EDITORIAL
-        </h2>
-        <span className="text-[10px] font-sans text-secondary-gray/70 mt-1 uppercase tracking-wider font-semibold">
-          Press Navigation
+        <div className="flex items-center justify-between mt-1">
+          <h2 className="font-serif text-2xl font-black tracking-tighter leading-none text-slate-850 dark:text-white">
+            ARTICLEAI
+          </h2>
+          <DarkModeToggle />
+        </div>
+        <span className="text-[10px] font-sans text-slate-500 dark:text-slate-400 mt-1 uppercase tracking-wider font-semibold">
+          Digital Library Navigator
         </span>
       </div>
 
       {/* Scrollable Container */}
-      <div className="flex-1 overflow-y-auto space-y-5 pr-2 minimal-scrollbar">
-        {/* User Profile Card */}
-        <div className="rounded-2xl border border-border-outline/10 bg-white/60 p-4 shadow-sm backdrop-blur-md">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-              <User className="h-5 w-5" />
+      <div className="flex-1 overflow-y-auto space-y-5 pr-1 minimal-scrollbar">
+        
+        {/* Dynamic User Profile Card */}
+        {user && (
+          <button
+            onClick={() => handleTabClick("profile")}
+            className="w-full text-left rounded-2xl border border-slate-200/60 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 p-4 shadow-xs backdrop-blur-md hover:border-slate-350 dark:hover:border-slate-700 transition-all cursor-pointer group"
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 text-2xl shadow-inner border border-indigo-100/30 dark:border-indigo-900/20">
+                {activeAvatar.emoji}
+              </div>
+              <div className="flex flex-col min-w-0">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                  {user.name}
+                </span>
+                <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">
+                  {user.role.toUpperCase()} • {user.department}
+                </span>
+              </div>
             </div>
-            <div className="flex flex-col min-w-0">
-              <span className="text-xs font-bold text-charcoal truncate">
-                Arthur Pendelton
-              </span>
-              <span className="text-[10px] text-secondary-gray/80">
-                Premium Subscriber
-              </span>
-            </div>
-          </div>
-          <div className="mt-3 flex items-center justify-between border-t border-border-outline/5 pt-2.5">
-            <span className="text-[9px] font-bold uppercase tracking-wider text-primary bg-primary/5 px-2 py-0.5 rounded">
-              Active Member
-            </span>
-            <span className="text-[9px] font-medium text-secondary-gray/60 italic">
-              Since Sept 2024
-            </span>
-          </div>
-        </div>
+          </button>
+        )}
 
         {/* Navigation Links */}
         <div>
-          <h3 className="mb-3 text-[10px] font-bold uppercase tracking-wider text-secondary-gray/60">
-            Sections
+          <h3 className="mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-550">
+            Syllabus Navigation
           </h3>
           <nav className="space-y-1">
             {navItems.map((item) => {
@@ -143,10 +190,10 @@ export default function NavigationSidebar({
                 <button
                   key={item.id}
                   onClick={() => handleTabClick(item.id)}
-                  className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-bold transition-all ${
+                  className={`flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all cursor-pointer ${
                     isActive
-                      ? "bg-primary/15 text-primary"
-                      : "text-secondary-gray hover:bg-black/5 hover:text-charcoal"
+                      ? "bg-indigo-600 dark:bg-indigo-500/20 text-white dark:text-indigo-400 shadow-sm shadow-indigo-500/10"
+                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100/60 dark:hover:bg-slate-800/40 hover:text-slate-850 dark:hover:text-slate-200"
                   }`}
                   id={`sidebar-link-${item.id}`}
                 >
@@ -160,8 +207,8 @@ export default function NavigationSidebar({
 
         {/* Categories Shortcut */}
         <div>
-          <h3 className="mb-3 text-[10px] font-bold uppercase tracking-wider text-secondary-gray/60">
-            Categories
+          <h3 className="mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-550">
+            Topic Categories
           </h3>
           <div className="grid grid-cols-2 gap-2">
             {categories.map((category) => {
@@ -170,10 +217,10 @@ export default function NavigationSidebar({
                 <button
                   key={category}
                   onClick={() => handleCategoryClick(category)}
-                  className={`rounded-lg px-2.5 py-1.5 text-left text-[11px] font-semibold tracking-wide truncate border transition-all ${
+                  className={`rounded-xl px-2.5 py-2 text-left text-[10px] font-sans font-bold uppercase tracking-wider truncate border transition-all cursor-pointer ${
                     isActive
-                      ? "bg-primary text-white border-primary shadow-sm"
-                      : "border-border-outline/10 hover:border-border-outline bg-white/40 hover:bg-white text-secondary-gray hover:text-charcoal"
+                      ? "bg-indigo-700 border-indigo-700 text-white dark:bg-indigo-600 dark:border-indigo-600 dark:text-white shadow-xs"
+                      : "border-slate-200/50 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/50 text-slate-600 dark:text-slate-400 hover:bg-slate-200/80 dark:hover:bg-slate-800/80 hover:text-slate-800 dark:hover:text-slate-200"
                   }`}
                 >
                   {category}
@@ -183,44 +230,44 @@ export default function NavigationSidebar({
           </div>
         </div>
 
-        {/* Library Stats */}
+        {/* Library Stats Heatmap overview */}
         <div>
-          <h3 className="mb-3 text-[10px] font-bold uppercase tracking-wider text-secondary-gray/60">
+          <h3 className="mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-550">
             Reading Progress
           </h3>
           <div className="grid grid-cols-3 gap-2">
-            <div className="rounded-xl border border-border-outline/10 bg-white/40 p-2.5 text-center shadow-sm">
-              <Clock className="h-4 w-4 text-primary mx-auto mb-1 opacity-80" />
-              <div className="text-xs font-extrabold text-charcoal">
+            <div className="rounded-xl border border-slate-200/60 dark:border-slate-800 bg-white/40 dark:bg-slate-900/30 p-2 text-center shadow-xs">
+              <Clock className="h-4 w-4 text-indigo-500 mx-auto mb-1 opacity-80" />
+              <div className="text-xs font-extrabold text-slate-800 dark:text-slate-200">
                 {stats.minutesRead}
               </div>
-              <div className="text-[8px] text-secondary-gray/70 font-semibold uppercase mt-0.5 leading-none">
+              <div className="text-[8px] text-slate-400 dark:text-slate-500 font-bold uppercase mt-0.5 leading-none">
                 Mins Read
               </div>
             </div>
-            <div className="rounded-xl border border-border-outline/10 bg-white/40 p-2.5 text-center shadow-sm">
-              <Award className="h-4 w-4 text-primary mx-auto mb-1 opacity-80" />
-              <div className="text-xs font-extrabold text-charcoal">
+            <div className="rounded-xl border border-slate-200/60 dark:border-slate-800 bg-white/40 dark:bg-slate-900/30 p-2 text-center shadow-xs">
+              <Award className="h-4 w-4 text-indigo-500 mx-auto mb-1 opacity-80" />
+              <div className="text-xs font-extrabold text-slate-800 dark:text-slate-200">
                 {stats.articlesCompleted}
               </div>
-              <div className="text-[8px] text-secondary-gray/70 font-semibold uppercase mt-0.5 leading-none">
+              <div className="text-[8px] text-slate-400 dark:text-slate-500 font-bold uppercase mt-0.5 leading-none">
                 Finished
               </div>
             </div>
-            <div className="rounded-xl border border-border-outline/10 bg-white/40 p-2.5 text-center shadow-sm">
-              <Flame className="h-4 w-4 text-primary mx-auto mb-1 opacity-80" />
-              <div className="text-xs font-extrabold text-charcoal">
+            <div className="rounded-xl border border-slate-200/60 dark:border-slate-800 bg-white/40 dark:bg-slate-900/30 p-2 text-center shadow-xs">
+              <Flame className="h-4 w-4 text-indigo-500 mx-auto mb-1 opacity-80" />
+              <div className="text-xs font-extrabold text-slate-800 dark:text-slate-200">
                 {stats.streakDays}
               </div>
-              <div className="text-[8px] text-secondary-gray/70 font-semibold uppercase mt-0.5 leading-none">
-                Day Streak
+              <div className="text-[8px] text-slate-400 dark:text-slate-500 font-bold uppercase mt-0.5 leading-none">
+                Streak
               </div>
             </div>
           </div>
         </div>
 
-        {/* Actions & Danger Zone */}
-        <div className="pt-2 border-t border-border-outline/15">
+        {/* Action Buttons */}
+        <div className="pt-2 border-t border-slate-200/60 dark:border-slate-800/80 flex flex-col gap-1">
           <button
             onClick={() => {
               if (confirm("Are you sure you want to clear your reading history?")) {
@@ -228,24 +275,32 @@ export default function NavigationSidebar({
                 if (onClose) onClose();
               }
             }}
-            className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50/50 transition-colors"
+            className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50/50 dark:hover:bg-rose-950/20 transition-colors cursor-pointer"
             id="sidebar-clear-history-btn"
           >
             <Trash2 className="h-4 w-4 shrink-0" />
-            <span>Clear Reading History</span>
+            <span>Clear History</span>
+          </button>
+          
+          <button
+            onClick={handleLogout}
+            className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:bg-slate-105/50 dark:hover:bg-slate-800/40 transition-colors cursor-pointer"
+          >
+            <LogOut className="h-4 w-4 shrink-0" />
+            <span>Logout Account</span>
           </button>
         </div>
       </div>
 
       {/* Drawer Footer */}
-      <div className="mt-auto pt-4 border-t border-border-outline/10 flex flex-col gap-1 text-[9px] text-secondary-gray/50">
+      <div className="mt-auto pt-4 border-t border-slate-200/50 dark:border-slate-800/80 flex flex-col gap-1 text-[9px] text-slate-400 dark:text-slate-500">
         <div className="flex items-center justify-between">
-          <span>The Editorial Client v1.2.0</span>
-          <span className="flex items-center gap-0.5 font-bold hover:text-charcoal cursor-pointer">
-            Docs <ExternalLink className="h-2 w-2" />
+          <span>ArticleAI Client v2.0.0</span>
+          <span className="flex items-center gap-0.5 font-bold hover:text-indigo-600 cursor-pointer">
+            Library Docs <ExternalLink className="h-2 w-2" />
           </span>
         </div>
-        <span>© 2026 The Editorial Board. All Rights Reserved.</span>
+        <span>© 2026 Institute Editorial Board. All Rights Reserved.</span>
       </div>
     </>
   );
@@ -253,7 +308,7 @@ export default function NavigationSidebar({
   if (isPersistent) {
     return (
       <aside
-        className="hidden md:flex relative h-full w-64 flex-col border-r border-border-outline/25 bg-paper p-6 text-charcoal shrink-0"
+        className="hidden md:flex relative h-full w-64 flex-col border-r border-slate-200/45 dark:border-slate-800 bg-white dark:bg-slate-950 p-6 text-slate-700 dark:text-slate-300 shrink-0"
         id="nav-sidebar-persistent"
       >
         {sidebarContent}
@@ -263,23 +318,21 @@ export default function NavigationSidebar({
 
   return (
     <div className="fixed inset-0 z-50 flex overflow-hidden md:hidden">
-      {/* Backdrop overlay */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="fixed inset-0 bg-charcoal/40 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-slate-950/40 backdrop-blur-xs transition-opacity"
         id="sidebar-backdrop"
       />
 
-      {/* Drawer panel */}
       <motion.div
         initial={{ x: "-100%" }}
         animate={{ x: 0 }}
         exit={{ x: "-100%" }}
         transition={{ type: "spring", damping: 25, stiffness: 220 }}
-        className="relative flex h-full w-full max-w-xs flex-col border-r border-border-outline/25 bg-paper p-6 shadow-2xl text-charcoal"
+        className="relative flex h-full w-full max-w-xs flex-col border-r border-slate-200/45 dark:border-slate-800 bg-white dark:bg-slate-950 p-6 shadow-2xl text-slate-700 dark:text-slate-350"
         id="nav-sidebar"
       >
         {sidebarContent}

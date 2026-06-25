@@ -41,9 +41,12 @@ export interface Comment {
   id: string;
   articleId: string;
   author: string;
+  authorRole?: string;
+  authorDept?: string;
   content: string;
   parentId: string | null;
   createdAt: string;
+  likes?: number;
 }
 
 export interface BookmarkRecord {

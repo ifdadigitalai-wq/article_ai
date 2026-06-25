@@ -30,7 +30,7 @@ export async function POST(request: Request) {
             messages: [
               {
                 role: "system",
-                content: "You are an AI summarizer. Respond ONLY with a JSON object containing 'bulletPoints' (an array of strings) and 'keyTakeaway' (a string). Do not include any markdown styling like ```json ... ```, just output raw JSON."
+                content: "You are an AI summarizer. Respond ONLY with a JSON object containing 'bulletPoints' (an array of strings) and 'keyTakeaway' (a string). Do not include any markdown styling like ```json ... ```, just output raw JSON. Ensure all bullet points and takeaways are grammatically correct, capitalized, and start with correct words (e.g. 'The' instead of 'he' or other typos)."
               },
               {
                 role: "user",

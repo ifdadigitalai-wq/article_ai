@@ -2,6 +2,32 @@ import { NextResponse } from "next/server";
 import { ARTICLES } from "../../data/articles";
 import { Article } from "../../types";
 
+// Helper to consistently map author names to a set of diverse, professional Unsplash portraits
+function getDynamicAvatar(authorName: string): string {
+  const avatars = [
+    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80", // Woman, professional neutral
+    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80", // Man, professional warm
+    "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80", // Woman, corporate profile
+    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80", // Man, executive profile
+    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&q=80", // Woman, creative/editorial
+    "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&q=80", // Man, classic portrait
+    "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=100&q=80", // Woman, modernist portrait
+    "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&q=80", // Man, studio clean
+    "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&q=80", // Woman, analyst/editor
+    "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&q=80", // Man, business analyst
+    "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=100&q=80", // Woman, field correspondent
+    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&q=80"  // Man, senior editor
+  ];
+
+  let hash = 0;
+  const nameToHash = authorName || "Associated Press";
+  for (let i = 0; i < nameToHash.length; i++) {
+    hash = nameToHash.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % avatars.length;
+  return avatars[index];
+}
+
 // Helper to map NewsAPI article items to our Article model
 function mapNewsApiArticles(articles: any[], categoryName: string): Article[] {
   const mapped: Article[] = [];
@@ -49,6 +75,8 @@ This report was sourced in real-time. Full details, follow-ups, and subsequent b
 
 *Source: ${item.source?.name || "Global News Wire"}. Published on ${displayDate}.*`;
 
+    const authorName = item.author || item.source?.name || "Associated Press";
+
     mapped.push({
       id,
       category: displayCategory,
@@ -61,9 +89,9 @@ This report was sourced in real-time. Full details, follow-ups, and subsequent b
       readTime: `${Math.max(3, Math.ceil((item.content?.length || 300) / 200))} min read`,
       date: displayDate,
       author: {
-        name: item.author || item.source?.name || "Associated Press",
+        name: authorName,
         role: `${item.source?.name || "Staff"} Correspondent`,
-        avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&q=80"
+        avatar: getDynamicAvatar(authorName)
       }
     });
   });

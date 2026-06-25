@@ -1,4 +1,5 @@
 import { Menu } from "lucide-react";
+import DarkModeToggle from "./DarkModeToggle";
 
 interface HeaderProps {
   categories: string[];
@@ -35,12 +36,11 @@ export default function Header({
             </h1>
           </div>
 
-          {/* Spacer to keep the title centered */}
-          <div className="w-9 h-9" />
+          <DarkModeToggle />
         </div>
 
         {/* Category chips */}
-        <nav className="flex space-x-6 overflow-x-auto pb-3 pt-1 scrollbar-none scroll-smooth justify-center">
+        <nav className="flex space-x-6 overflow-x-auto pb-3 pt-1 scrollbar-none scroll-smooth justify-start md:justify-center">
           {categories.map((category) => {
             const isActive = selectedCategory.toLowerCase() === category.toLowerCase();
             return (
@@ -49,13 +49,13 @@ export default function Header({
                 onClick={() => onSelectCategory(category)}
                 className={`relative whitespace-nowrap pb-1.5 text-xs font-sans font-bold uppercase tracking-widest transition-colors ${
                   isActive
-                    ? "text-primary font-bold"
-                    : "text-secondary-gray/70 hover:text-primary"
+                    ? "text-indigo-700 dark:text-indigo-400 font-bold"
+                    : "text-secondary-gray/70 hover:text-indigo-700 dark:hover:text-indigo-400"
                 }`}
               >
                 {category}
                 {isActive && (
-                  <div className="absolute bottom-0 left-0 h-[2px] w-full bg-primary" />
+                  <div className="absolute bottom-0 left-0 h-[2px] w-full bg-indigo-700 dark:bg-indigo-400" />
                 )}
               </button>
             );

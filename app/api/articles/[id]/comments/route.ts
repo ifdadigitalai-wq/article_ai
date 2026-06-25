@@ -1,62 +1,102 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
-
-const COMMENTS_FILE = path.join(process.cwd(), "app", "data", "comments.json");
-
-const loadComments = (): any[] => {
-  try {
-    if (fs.existsSync(COMMENTS_FILE)) {
-      const data = fs.readFileSync(COMMENTS_FILE, "utf-8");
-      return JSON.parse(data);
-    }
-  } catch (err) {
-    console.error("Error reading comments file:", err);
-  }
-  return [];
-};
-
-const saveComments = (comments: any[]) => {
-  try {
-    const dir = path.dirname(COMMENTS_FILE);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    fs.writeFileSync(COMMENTS_FILE, JSON.stringify(comments, null, 2), "utf-8");
-  } catch (err) {
-    console.error("Error writing comments file:", err);
-  }
-};
+import { cookies } from "next/headers";
+import { prisma } from "@/lib/prisma";
+import { verifyJWT } from "@/lib/auth";
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const { id: articleId } = await params;
-  const comments = loadComments();
-  const articleComments = comments.filter((c) => c.articleId === articleId);
-  return NextResponse.json(articleComments);
+  try {
+    const { id: articleId } = await params;
+
+    const dbComments = await prisma.comment.findMany({
+      where: { articleId },
+      include: {
+        user: {
+          select: {
+            name: true,
+            role: true,
+            department: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "asc" },
+    });
+
+    const comments = dbComments.map((c: { id: any; articleId: any; user: { name: any; role: any; department: any; }; content: any; parentId: any; createdAt: { toISOString: () => any; }; likes: any; }) => ({
+      id: c.id,
+      articleId: c.articleId,
+      author: c.user.name,
+      authorRole: c.user.role,
+      authorDept: c.user.department,
+      content: c.content,
+      parentId: c.parentId,
+      createdAt: c.createdAt.toISOString(),
+      likes: c.likes,
+    }));
+
+    return NextResponse.json(comments);
+  } catch (error: any) {
+    console.error("GET Comments API Error:", error);
+    return NextResponse.json({ error: "Failed to load comments" }, { status: 500 });
+  }
 }
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const { id: articleId } = await params;
-  const { author, content, parentId } = await req.json();
+  try {
+    const { id: articleId } = await params;
+    const { content, parentId } = await req.json();
 
-  if (!content || !content.trim()) {
-    return NextResponse.json({ error: "Comment content is required" }, { status: 400 });
+    if (!content || !content.trim()) {
+      return NextResponse.json({ error: "Comment content is required" }, { status: 400 });
+    }
+
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
+
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const payload = await verifyJWT(token);
+    if (!payload || !payload.userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const comment = await prisma.comment.create({
+      data: {
+        articleId,
+        content: content.trim(),
+        parentId: parentId || null,
+        userId: payload.userId as string,
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+            role: true,
+            department: true,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json(
+      {
+        id: comment.id,
+        articleId: comment.articleId,
+        author: comment.user.name,
+        authorRole: comment.user.role,
+        authorDept: comment.user.department,
+        content: comment.content,
+        parentId: comment.parentId,
+        createdAt: comment.createdAt.toISOString(),
+        likes: comment.likes,
+      },
+      { status: 201 }
+    );
+  } catch (error: any) {
+    console.error("POST Comment API Error:", error);
+    return NextResponse.json({ error: "Failed to post comment" }, { status: 500 });
   }
-
-  const comments = loadComments();
-  const newComment = {
-    id: `comment_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-    articleId,
-    author: author && author.trim() ? author.trim() : "Anonymous Scholar",
-    content: content.trim(),
-    parentId: parentId || null,
-    createdAt: new Date().toISOString(),
-  };
-
-  comments.push(newComment);
-  saveComments(comments);
-
-  return NextResponse.json(newComment, { status: 201 });
 }
