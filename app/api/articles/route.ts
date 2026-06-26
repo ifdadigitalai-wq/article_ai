@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { ARTICLES } from "../../data/articles";
 import { Article } from "../../types";
+import { prisma } from "@/lib/prisma";
+import { verifyJWT } from "@/lib/auth";
 
 // Helper to consistently map author names to a set of diverse, professional Unsplash portraits
 function getDynamicAvatar(authorName: string): string {
@@ -103,17 +106,54 @@ export async function GET(request: Request) {
   const q = searchParams.get("q");
   const apiKey = process.env.NEWS_API_KEY;
 
-  // 1. If API Key is missing, search static ARTICLES locally
+  // Query custom articles from DB first
+  let dbArticles: any[] = [];
+  try {
+    dbArticles = await prisma.customArticle.findMany({
+      orderBy: { createdAt: "desc" }
+    });
+  } catch (err) {
+    console.error("Error fetching custom articles from DB:", err);
+  }
+
+  const mappedDbArticles: Article[] = dbArticles.map((art) => ({
+    id: art.id,
+    category: art.category,
+    title: art.title,
+    subtitle: art.subtitle,
+    content: art.content,
+    snippet: art.snippet,
+    imageUrl: art.imageUrl || "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&q=80",
+    imageAlt: art.imageAlt || art.title,
+    readTime: art.readTime || "5 min read",
+    date: new Date(art.createdAt).toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric"
+    }),
+    author: {
+      name: art.authorName,
+      role: art.authorRole,
+      avatar: art.authorAvatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80"
+    }
+  }));
+
+  // 1. If API Key is missing, search static + custom articles locally
   if (!apiKey || apiKey.trim() === "") {
     if (q && q.trim() !== "") {
-      const filtered = ARTICLES.filter(a =>
+      const filteredLocal = ARTICLES.filter(a =>
         a.title.toLowerCase().includes(q.toLowerCase()) ||
         a.subtitle.toLowerCase().includes(q.toLowerCase()) ||
         a.content.toLowerCase().includes(q.toLowerCase())
       );
-      return NextResponse.json(filtered);
+      const filteredCustom = mappedDbArticles.filter(a =>
+        a.title.toLowerCase().includes(q.toLowerCase()) ||
+        a.subtitle.toLowerCase().includes(q.toLowerCase()) ||
+        a.content.toLowerCase().includes(q.toLowerCase())
+      );
+      return NextResponse.json([...filteredCustom, ...filteredLocal]);
     }
-    return NextResponse.json(ARTICLES);
+    return NextResponse.json([...mappedDbArticles, ...ARTICLES]);
   }
 
   try {
@@ -134,10 +174,16 @@ export async function GET(request: Request) {
         a.subtitle.toLowerCase().includes(q.toLowerCase()) ||
         a.content.toLowerCase().includes(q.toLowerCase())
       );
+      
+      const customMatching = mappedDbArticles.filter(a =>
+        a.title.toLowerCase().includes(q.toLowerCase()) ||
+        a.subtitle.toLowerCase().includes(q.toLowerCase()) ||
+        a.content.toLowerCase().includes(q.toLowerCase())
+      );
 
       // Merge and remove duplicate titles
-      const merged = [...apiArticles];
-      const seenTitles = new Set(apiArticles.map(a => a.title.toLowerCase()));
+      const merged = [...customMatching, ...apiArticles];
+      const seenTitles = new Set(merged.map(a => a.title.toLowerCase()));
       localMatching.forEach((art) => {
         if (!seenTitles.has(art.title.toLowerCase())) {
           merged.push(art);
@@ -167,8 +213,8 @@ export async function GET(request: Request) {
       apiArticles.push(...mapped);
     });
 
-    const merged = [...apiArticles];
-    const seenTitles = new Set(apiArticles.map(a => a.title.toLowerCase()));
+    const merged = [...mappedDbArticles, ...apiArticles];
+    const seenTitles = new Set(merged.map(a => a.title.toLowerCase()));
 
     ARTICLES.forEach((art) => {
       if (!seenTitles.has(art.title.toLowerCase())) {
@@ -179,15 +225,81 @@ export async function GET(request: Request) {
     return NextResponse.json(merged);
   } catch (error) {
     console.error("Error in articles API:", error);
-    // Fall back to static articles if there's any network or parse issue
+    // Fall back to static + custom articles if there's any network or parse issue
     if (q && q.trim() !== "") {
-      const filtered = ARTICLES.filter(a =>
+      const filteredLocal = ARTICLES.filter(a =>
         a.title.toLowerCase().includes(q.toLowerCase()) ||
         a.subtitle.toLowerCase().includes(q.toLowerCase()) ||
         a.content.toLowerCase().includes(q.toLowerCase())
       );
-      return NextResponse.json(filtered);
+      const filteredCustom = mappedDbArticles.filter(a =>
+        a.title.toLowerCase().includes(q.toLowerCase()) ||
+        a.subtitle.toLowerCase().includes(q.toLowerCase()) ||
+        a.content.toLowerCase().includes(q.toLowerCase())
+      );
+      return NextResponse.json([...filteredCustom, ...filteredLocal]);
     }
-    return NextResponse.json(ARTICLES);
+    return NextResponse.json([...mappedDbArticles, ...ARTICLES]);
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
+
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const payload = await verifyJWT(token);
+    if (!payload || !payload.userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const userRole = payload.role as string;
+    if (userRole !== "faculty" && userRole !== "admin") {
+      return NextResponse.json({ error: "Forbidden: Admins/Faculty only" }, { status: 403 });
+    }
+
+    const body = await request.json();
+    const {
+      title,
+      subtitle,
+      category,
+      snippet,
+      content,
+      imageUrl,
+      imageAlt,
+      readTime,
+      authorName,
+      authorRole,
+      authorAvatar,
+    } = body;
+
+    if (!title || !subtitle || !category || !snippet || !content || !authorName || !authorRole) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    const customArticle = await prisma.customArticle.create({
+      data: {
+        title,
+        subtitle,
+        category,
+        snippet,
+        content,
+        imageUrl: imageUrl || undefined,
+        imageAlt: imageAlt || undefined,
+        readTime: readTime || undefined,
+        authorName,
+        authorRole,
+        authorAvatar: authorAvatar || undefined,
+      },
+    });
+
+    return NextResponse.json(customArticle, { status: 201 });
+  } catch (error: any) {
+    console.error("POST Custom Article API Error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

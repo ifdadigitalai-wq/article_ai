@@ -28,11 +28,21 @@ export async function GET() {
         batch: true,
         role: true,
         createdAt: true,
+        isPaid: true,
+        isActive: true,
       },
     });
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    if (user.role === "student") {
+      if (!user.isPaid || !user.isActive) {
+        const response = NextResponse.json({ error: "Access denied" }, { status: 403 });
+        response.cookies.set("token", "", { maxAge: 0, path: "/" });
+        return response;
+      }
     }
 
     return NextResponse.json(user);

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Home, Compass, Bookmark, Layers, User, Award, ShieldAlert } from "lucide-react";
+import { Home, Compass, Bookmark, Layers, User, Award, ShieldAlert, MessageSquare, Users } from "lucide-react";
 
 export type TabId =
   | "home"
@@ -12,6 +12,8 @@ export type TabId =
   | "profile"
   | "leaderboard"
   | "reading-lists"
+  | "discussions"
+  | "students"
   | "admin";
 
 interface BottomNavProps {
@@ -23,17 +25,25 @@ interface BottomNavProps {
 export default function BottomNav({ activeTab, onTabChange, userRole }: BottomNavProps) {
   const isFaculty = userRole === "faculty" || userRole === "admin";
 
-  const navItems = [
-    { id: "home" as TabId, label: "Home", icon: Home },
-    { id: "reading-lists" as TabId, label: "Reading Lists", icon: Layers },
-    { id: "saved" as TabId, label: "Saved", icon: Bookmark },
-    { id: "leaderboard" as TabId, label: "Leaderboard", icon: Award },
-    { id: "profile" as TabId, label: "Profile", icon: User },
-  ];
-
-  if (isFaculty) {
-    // Replace Leaderboard in mobile bottom nav with Admin dashboard if they are faculty
-    navItems[3] = { id: "admin" as TabId, label: "Admin Panel", icon: ShieldAlert };
+  let navItems = [];
+  if (userRole === "admin") {
+    navItems = [
+      { id: "admin" as TabId, label: "Admin", icon: ShieldAlert },
+      { id: "students" as TabId, label: "Students", icon: Users },
+      { id: "discussions" as TabId, label: "Discussions", icon: MessageSquare },
+      { id: "profile" as TabId, label: "Profile", icon: User },
+    ];
+  } else {
+    navItems = [
+      { id: "home" as TabId, label: "Home", icon: Home },
+      { id: "reading-lists" as TabId, label: "Reading Lists", icon: Layers },
+      { id: "saved" as TabId, label: "Saved", icon: Bookmark },
+      { id: "leaderboard" as TabId, label: "Leaderboard", icon: Award },
+      { id: "profile" as TabId, label: "Profile", icon: User },
+    ];
+    if (isFaculty) {
+      navItems[3] = { id: "admin" as TabId, label: "Admin Panel", icon: ShieldAlert };
+    }
   }
 
   return (

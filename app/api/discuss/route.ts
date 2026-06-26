@@ -1,14 +1,29 @@
 import { NextResponse } from "next/server";
 import { GoogleGenAI } from "@google/genai";
 import { ARTICLES } from "../../data/articles";
+import { prisma } from "@/lib/prisma";
 
 const ai = process.env.GEMINI_API_KEY ? new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }) : null;
 
 export async function POST(request: Request) {
   try {
     const { articleId, articleContent, messages } = await request.json();
+    let content = articleContent;
     const article = ARTICLES.find((a) => a.id === articleId);
-    const content = article ? article.content : articleContent;
+    if (article) {
+      content = article.content;
+    } else if (articleId) {
+      try {
+        const customArt = await prisma.customArticle.findUnique({
+          where: { id: articleId }
+        });
+        if (customArt) {
+          content = customArt.content;
+        }
+      } catch (err) {
+        console.error("Error looking up custom article for discuss:", err);
+      }
+    }
 
     if (!content) {
       return NextResponse.json({ reply: "I apologize, but I lost context of the article content. Could you re-open it?" });

@@ -9,7 +9,7 @@
       "source_file": "F:\\projects\\article_ai\\eslint.config.mjs",
       "source_location": "L1",
       "id": "f_projects_article_ai_eslint_config_mjs",
-      "community": 11,
+      "community": 23,
       "norm_label": "eslint.config.mjs"
     },
     {
@@ -18,7 +18,7 @@
       "source_file": "F:\\projects\\article_ai\\next-env.d.ts",
       "source_location": "L1",
       "id": "f_projects_article_ai_next_env_d_ts",
-      "community": 12,
+      "community": 24,
       "norm_label": "next-env.d.ts"
     },
     {
@@ -27,7 +27,7 @@
       "source_file": "F:\\projects\\article_ai\\next.config.ts",
       "source_location": "L1",
       "id": "f_projects_article_ai_next_config_ts",
-      "community": 13,
+      "community": 25,
       "norm_label": "next.config.ts"
     },
     {
@@ -36,8 +36,26 @@
       "source_file": "F:\\projects\\article_ai\\postcss.config.mjs",
       "source_location": "L1",
       "id": "f_projects_article_ai_postcss_config_mjs",
-      "community": 14,
+      "community": 26,
       "norm_label": "postcss.config.mjs"
+    },
+    {
+      "label": "proxy.ts",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\proxy.ts",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_proxy_ts",
+      "community": 16,
+      "norm_label": "proxy.ts"
+    },
+    {
+      "label": "proxy()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\proxy.ts",
+      "source_location": "L8",
+      "id": "proxy_proxy",
+      "community": 16,
+      "norm_label": "proxy()"
     },
     {
       "label": "layout.tsx",
@@ -45,17 +63,8 @@
       "source_file": "F:\\projects\\article_ai\\app\\layout.tsx",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_layout_tsx",
-      "community": 7,
+      "community": 27,
       "norm_label": "layout.tsx"
-    },
-    {
-      "label": "RootLayout()",
-      "file_type": "code",
-      "source_file": "F:\\projects\\article_ai\\app\\layout.tsx",
-      "source_location": "L20",
-      "id": "layout_rootlayout",
-      "community": 7,
-      "norm_label": "rootlayout()"
     },
     {
       "label": "page.tsx",
@@ -63,106 +72,133 @@
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_page_tsx",
-      "community": 2,
+      "community": 1,
       "norm_label": "page.tsx"
+    },
+    {
+      "label": "initApp()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
+      "source_location": "L59",
+      "id": "page_initapp",
+      "community": 1,
+      "norm_label": "initapp()"
     },
     {
       "label": "fetchArticles()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L33",
+      "source_location": "L86",
       "id": "page_fetcharticles",
-      "community": 2,
+      "community": 1,
       "norm_label": "fetcharticles()"
     },
     {
-      "label": "saveToLocalStorage()",
+      "label": "fetchBookmarks()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L65",
-      "id": "page_savetolocalstorage",
-      "community": 2,
-      "norm_label": "savetolocalstorage()"
+      "source_location": "L137",
+      "id": "page_fetchbookmarks",
+      "community": 1,
+      "norm_label": "fetchbookmarks()"
     },
     {
-      "label": "saveHistoryToLocalStorage()",
+      "label": "fetchReadHistory()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L70",
-      "id": "page_savehistorytolocalstorage",
-      "community": 2,
-      "norm_label": "savehistorytolocalstorage()"
+      "source_location": "L149",
+      "id": "page_fetchreadhistory",
+      "community": 1,
+      "norm_label": "fetchreadhistory()"
+    },
+    {
+      "label": "fetchLibraryStats()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
+      "source_location": "L161",
+      "id": "page_fetchlibrarystats",
+      "community": 1,
+      "norm_label": "fetchlibrarystats()"
+    },
+    {
+      "label": "fetchReadingLists()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
+      "source_location": "L177",
+      "id": "page_fetchreadinglists",
+      "community": 1,
+      "norm_label": "fetchreadinglists()"
     },
     {
       "label": "handleToggleSave()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L87",
+      "source_location": "L201",
       "id": "page_handletogglesave",
-      "community": 2,
+      "community": 1,
       "norm_label": "handletogglesave()"
     },
     {
       "label": "handleRecordCompleted()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L108",
+      "source_location": "L222",
       "id": "page_handlerecordcompleted",
-      "community": 2,
+      "community": 1,
       "norm_label": "handlerecordcompleted()"
     },
     {
       "label": "handleReadArticle()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L131",
+      "source_location": "L244",
       "id": "page_handlereadarticle",
-      "community": 2,
+      "community": 1,
       "norm_label": "handlereadarticle()"
     },
     {
       "label": "handleQuickSummary()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L140",
+      "source_location": "L279",
       "id": "page_handlequicksummary",
-      "community": 2,
+      "community": 1,
       "norm_label": "handlequicksummary()"
     },
     {
       "label": "handleSavedToggle()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L146",
+      "source_location": "L284",
       "id": "page_handlesavedtoggle",
-      "community": 2,
+      "community": 1,
       "norm_label": "handlesavedtoggle()"
     },
     {
       "label": "handleClearHistory()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L151",
+      "source_location": "L289",
       "id": "page_handleclearhistory",
-      "community": 2,
+      "community": 1,
       "norm_label": "handleclearhistory()"
     },
     {
       "label": "getPreferredGenre()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L178",
+      "source_location": "L304",
       "id": "page_getpreferredgenre",
-      "community": 2,
+      "community": 1,
       "norm_label": "getpreferredgenre()"
     },
     {
       "label": "getRecommendedArticles()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L201",
+      "source_location": "L327",
       "id": "page_getrecommendedarticles",
-      "community": 2,
+      "community": 1,
       "norm_label": "getrecommendedarticles()"
     },
     {
@@ -171,8 +207,26 @@
       "source_file": "F:\\projects\\article_ai\\app\\types.ts",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_types_ts",
-      "community": 15,
+      "community": 28,
       "norm_label": "types.ts"
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\admin\\analytics\\route.ts",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_api_admin_analytics_route_ts",
+      "community": 3,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "GET()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\user\\stats\\route.ts",
+      "source_location": "L7",
+      "id": "route_get",
+      "community": 3,
+      "norm_label": "get()"
     },
     {
       "label": "route.ts",
@@ -180,7 +234,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\route.ts",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_api_articles_route_ts",
-      "community": 0,
+      "community": 3,
       "norm_label": "route.ts"
     },
     {
@@ -189,7 +243,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\route.ts",
       "source_location": "L6",
       "id": "route_getdynamicavatar",
-      "community": 0,
+      "community": 3,
       "norm_label": "getdynamicavatar()"
     },
     {
@@ -198,17 +252,8 @@
       "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\route.ts",
       "source_location": "L32",
       "id": "route_mapnewsapiarticles",
-      "community": 0,
+      "community": 3,
       "norm_label": "mapnewsapiarticles()"
-    },
-    {
-      "label": "GET()",
-      "file_type": "code",
-      "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\[id]\\comments\\route.ts",
-      "source_location": "L33",
-      "id": "route_get",
-      "community": 0,
-      "norm_label": "get()"
     },
     {
       "label": "route.ts",
@@ -216,16 +261,16 @@
       "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\expand\\route.ts",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_api_articles_expand_route_ts",
-      "community": 0,
+      "community": 2,
       "norm_label": "route.ts"
     },
     {
       "label": "POST()",
       "file_type": "code",
-      "source_file": "F:\\projects\\article_ai\\app\\api\\summarize\\route.ts",
-      "source_location": "L7",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\user\\saved\\route.ts",
+      "source_location": "L42",
       "id": "route_post",
-      "community": 0,
+      "community": 2,
       "norm_label": "post()"
     },
     {
@@ -234,7 +279,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\quick-summary\\route.ts",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_api_articles_quick_summary_route_ts",
-      "community": 0,
+      "community": 2,
       "norm_label": "route.ts"
     },
     {
@@ -243,26 +288,26 @@
       "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\[id]\\comments\\route.ts",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_api_articles_id_comments_route_ts",
-      "community": 0,
+      "community": 3,
       "norm_label": "route.ts"
     },
     {
-      "label": "loadComments()",
+      "label": "route.ts",
       "file_type": "code",
-      "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\[id]\\comments\\route.ts",
-      "source_location": "L9",
-      "id": "route_loadcomments",
-      "community": 0,
-      "norm_label": "loadcomments()"
+      "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\[id]\\comments\\[commentId]\\like\\route.ts",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_api_articles_id_comments_commentid_like_route_ts",
+      "community": 12,
+      "norm_label": "route.ts"
     },
     {
-      "label": "saveComments()",
+      "label": "PATCH()",
       "file_type": "code",
-      "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\[id]\\comments\\route.ts",
-      "source_location": "L21",
-      "id": "route_savecomments",
-      "community": 0,
-      "norm_label": "savecomments()"
+      "source_file": "F:\\projects\\article_ai\\app\\api\\user\\saved\\route.ts",
+      "source_location": "L109",
+      "id": "route_patch",
+      "community": 12,
+      "norm_label": "patch()"
     },
     {
       "label": "route.ts",
@@ -270,7 +315,43 @@
       "source_file": "F:\\projects\\article_ai\\app\\api\\ask-editor\\route.ts",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_api_ask_editor_route_ts",
-      "community": 0,
+      "community": 2,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\auth\\login\\route.ts",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_api_auth_login_route_ts",
+      "community": 2,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\auth\\logout\\route.ts",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_api_auth_logout_route_ts",
+      "community": 2,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\auth\\me\\route.ts",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_api_auth_me_route_ts",
+      "community": 3,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\auth\\register\\route.ts",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_api_auth_register_route_ts",
+      "community": 2,
       "norm_label": "route.ts"
     },
     {
@@ -279,7 +360,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\api\\discuss\\route.ts",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_api_discuss_route_ts",
-      "community": 0,
+      "community": 2,
       "norm_label": "route.ts"
     },
     {
@@ -288,7 +369,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\api\\generate-fact\\route.ts",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_api_generate_fact_route_ts",
-      "community": 0,
+      "community": 2,
       "norm_label": "route.ts"
     },
     {
@@ -297,7 +378,16 @@
       "source_file": "F:\\projects\\article_ai\\app\\api\\generate-podcast\\route.ts",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_api_generate_podcast_route_ts",
-      "community": 0,
+      "community": 2,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\leaderboard\\route.ts",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_api_leaderboard_route_ts",
+      "community": 3,
       "norm_label": "route.ts"
     },
     {
@@ -306,7 +396,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\api\\morning-digest\\route.ts",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_api_morning_digest_route_ts",
-      "community": 0,
+      "community": 2,
       "norm_label": "route.ts"
     },
     {
@@ -315,7 +405,61 @@
       "source_file": "F:\\projects\\article_ai\\app\\api\\newsletter\\route.ts",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_api_newsletter_route_ts",
-      "community": 0,
+      "community": 2,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\quiz\\generate\\route.ts",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_api_quiz_generate_route_ts",
+      "community": 2,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\quiz\\submit\\route.ts",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_api_quiz_submit_route_ts",
+      "community": 2,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\reading-history\\route.ts",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_api_reading_history_route_ts",
+      "community": 6,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "DELETE()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\reading-history\\route.ts",
+      "source_location": "L74",
+      "id": "route_delete",
+      "community": 6,
+      "norm_label": "delete()"
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\reading-lists\\route.ts",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_api_reading_lists_route_ts",
+      "community": 3,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\reading-streak\\route.ts",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_api_reading_streak_route_ts",
+      "community": 3,
       "norm_label": "route.ts"
     },
     {
@@ -324,8 +468,53 @@
       "source_file": "F:\\projects\\article_ai\\app\\api\\summarize\\route.ts",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_api_summarize_route_ts",
-      "community": 0,
+      "community": 2,
       "norm_label": "route.ts"
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\user\\profile\\route.ts",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_api_user_profile_route_ts",
+      "community": 3,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\user\\saved\\route.ts",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_api_user_saved_route_ts",
+      "community": 12,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "route.ts",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\user\\stats\\route.ts",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_api_user_stats_route_ts",
+      "community": 3,
+      "norm_label": "route.ts"
+    },
+    {
+      "label": "AdminDashboard.tsx",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\AdminDashboard.tsx",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_components_admindashboard_tsx",
+      "community": 17,
+      "norm_label": "admindashboard.tsx"
+    },
+    {
+      "label": "fetchAnalytics()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\AdminDashboard.tsx",
+      "source_location": "L33",
+      "id": "admindashboard_fetchanalytics",
+      "community": 17,
+      "norm_label": "fetchanalytics()"
     },
     {
       "label": "AISidebar.tsx",
@@ -333,7 +522,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\AISidebar.tsx",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_components_aisidebar_tsx",
-      "community": 5,
+      "community": 8,
       "norm_label": "aisidebar.tsx"
     },
     {
@@ -342,7 +531,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\AISidebar.tsx",
       "source_location": "L49",
       "id": "aisidebar_handlefollowupsubmit",
-      "community": 5,
+      "community": 8,
       "norm_label": "handlefollowupsubmit()"
     },
     {
@@ -351,7 +540,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\AISidebar.tsx",
       "source_location": "L104",
       "id": "aisidebar_fetchsummary",
-      "community": 5,
+      "community": 8,
       "norm_label": "fetchsummary()"
     },
     {
@@ -360,7 +549,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\AISidebar.tsx",
       "source_location": "L127",
       "id": "aisidebar_handlesendmessage",
-      "community": 5,
+      "community": 8,
       "norm_label": "handlesendmessage()"
     },
     {
@@ -369,7 +558,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\ArticleCard.tsx",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_components_articlecard_tsx",
-      "community": 16,
+      "community": 29,
       "norm_label": "articlecard.tsx"
     },
     {
@@ -378,71 +567,89 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\ArticleView.tsx",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_components_articleview_tsx",
-      "community": 3,
+      "community": 4,
       "norm_label": "articleview.tsx"
     },
     {
       "label": "expandArticle()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\components\\ArticleView.tsx",
-      "source_location": "L54",
+      "source_location": "L83",
       "id": "articleview_expandarticle",
-      "community": 3,
+      "community": 4,
       "norm_label": "expandarticle()"
     },
     {
       "label": "autoFetchSummary()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\components\\ArticleView.tsx",
-      "source_location": "L90",
+      "source_location": "L119",
       "id": "articleview_autofetchsummary",
-      "community": 3,
+      "community": 4,
       "norm_label": "autofetchsummary()"
     },
     {
       "label": "handleScroll()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\components\\ArticleView.tsx",
-      "source_location": "L134",
+      "source_location": "L152",
       "id": "articleview_handlescroll",
-      "community": 3,
+      "community": 4,
       "norm_label": "handlescroll()"
     },
     {
       "label": "fetchComments()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\components\\ArticleView.tsx",
-      "source_location": "L162",
+      "source_location": "L178",
       "id": "articleview_fetchcomments",
-      "community": 3,
+      "community": 4,
       "norm_label": "fetchcomments()"
     },
     {
       "label": "handleAddComment()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\components\\ArticleView.tsx",
-      "source_location": "L192",
+      "source_location": "L200",
       "id": "articleview_handleaddcomment",
-      "community": 3,
+      "community": 4,
       "norm_label": "handleaddcomment()"
+    },
+    {
+      "label": "handleLikeComment()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\ArticleView.tsx",
+      "source_location": "L234",
+      "id": "articleview_handlelikecomment",
+      "community": 4,
+      "norm_label": "handlelikecomment()"
     },
     {
       "label": "handleShare()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\components\\ArticleView.tsx",
-      "source_location": "L229",
+      "source_location": "L250",
       "id": "articleview_handleshare",
-      "community": 3,
+      "community": 4,
       "norm_label": "handleshare()"
     },
     {
       "label": "scrollToComments()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\components\\ArticleView.tsx",
-      "source_location": "L240",
+      "source_location": "L263",
       "id": "articleview_scrolltocomments",
-      "community": 3,
+      "community": 4,
       "norm_label": "scrolltocomments()"
+    },
+    {
+      "label": "parseMarkdown()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\ArticleView.tsx",
+      "source_location": "L267",
+      "id": "articleview_parsemarkdown",
+      "community": 4,
+      "norm_label": "parsemarkdown()"
     },
     {
       "label": "AudioDigest.tsx",
@@ -450,7 +657,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\AudioDigest.tsx",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_components_audiodigest_tsx",
-      "community": 1,
+      "community": 0,
       "norm_label": "audiodigest.tsx"
     },
     {
@@ -459,7 +666,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\AudioDigest.tsx",
       "source_location": "L63",
       "id": "audiodigest_loadvoices",
-      "community": 1,
+      "community": 0,
       "norm_label": "loadvoices()"
     },
     {
@@ -468,7 +675,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\AudioDigest.tsx",
       "source_location": "L98",
       "id": "audiodigest_fetchdigest",
-      "community": 1,
+      "community": 0,
       "norm_label": "fetchdigest()"
     },
     {
@@ -477,7 +684,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\AudioDigest.tsx",
       "source_location": "L136",
       "id": "audiodigest_toggleinterest",
-      "community": 1,
+      "community": 0,
       "norm_label": "toggleinterest()"
     },
     {
@@ -486,7 +693,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\AudioDigest.tsx",
       "source_location": "L147",
       "id": "audiodigest_playnarrative",
-      "community": 1,
+      "community": 0,
       "norm_label": "playnarrative()"
     },
     {
@@ -495,7 +702,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\AudioDigest.tsx",
       "source_location": "L156",
       "id": "audiodigest_startsystemspeech",
-      "community": 1,
+      "community": 0,
       "norm_label": "startsystemspeech()"
     },
     {
@@ -504,7 +711,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\AudioDigest.tsx",
       "source_location": "L211",
       "id": "audiodigest_stopnarrative",
-      "community": 1,
+      "community": 0,
       "norm_label": "stopnarrative()"
     },
     {
@@ -513,7 +720,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\AudioDigest.tsx",
       "source_location": "L227",
       "id": "audiodigest_handleresume",
-      "community": 1,
+      "community": 0,
       "norm_label": "handleresume()"
     },
     {
@@ -522,7 +729,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\AudioDigest.tsx",
       "source_location": "L238",
       "id": "audiodigest_startsimulation",
-      "community": 1,
+      "community": 0,
       "norm_label": "startsimulation()"
     },
     {
@@ -531,7 +738,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\AudioDigest.tsx",
       "source_location": "L274",
       "id": "audiodigest_handlerewind",
-      "community": 1,
+      "community": 0,
       "norm_label": "handlerewind()"
     },
     {
@@ -540,7 +747,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\AudioDigest.tsx",
       "source_location": "L293",
       "id": "audiodigest_handlefastforward",
-      "community": 1,
+      "community": 0,
       "norm_label": "handlefastforward()"
     },
     {
@@ -549,7 +756,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\AudioDigest.tsx",
       "source_location": "L312",
       "id": "audiodigest_toggleplaybackrate",
-      "community": 1,
+      "community": 0,
       "norm_label": "toggleplaybackrate()"
     },
     {
@@ -558,7 +765,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\AudioDigest.tsx",
       "source_location": "L332",
       "id": "audiodigest_getdynamicsuggestions",
-      "community": 1,
+      "community": 0,
       "norm_label": "getdynamicsuggestions()"
     },
     {
@@ -567,7 +774,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\AudioDigest.tsx",
       "source_location": "L396",
       "id": "audiodigest_handlecompilefact",
-      "community": 1,
+      "community": 0,
       "norm_label": "handlecompilefact()"
     },
     {
@@ -576,7 +783,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\AudioDigest.tsx",
       "source_location": "L441",
       "id": "audiodigest_playfactspeech",
-      "community": 1,
+      "community": 0,
       "norm_label": "playfactspeech()"
     },
     {
@@ -585,7 +792,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\AudioDigest.tsx",
       "source_location": "L490",
       "id": "audiodigest_stopfactspeech",
-      "community": 1,
+      "community": 0,
       "norm_label": "stopfactspeech()"
     },
     {
@@ -594,8 +801,26 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\BottomNav.tsx",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_components_bottomnav_tsx",
-      "community": 17,
+      "community": 30,
       "norm_label": "bottomnav.tsx"
+    },
+    {
+      "label": "DarkModeToggle.tsx",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\DarkModeToggle.tsx",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_components_darkmodetoggle_tsx",
+      "community": 18,
+      "norm_label": "darkmodetoggle.tsx"
+    },
+    {
+      "label": "DarkModeToggle()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\DarkModeToggle.tsx",
+      "source_location": "L6",
+      "id": "darkmodetoggle_darkmodetoggle",
+      "community": 18,
+      "norm_label": "darkmodetoggle()"
     },
     {
       "label": "DiscoverTab.tsx",
@@ -603,16 +828,25 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\DiscoverTab.tsx",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_components_discovertab_tsx",
-      "community": 8,
+      "community": 13,
       "norm_label": "discovertab.tsx"
+    },
+    {
+      "label": "fetchLists()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\DiscoverTab.tsx",
+      "source_location": "L39",
+      "id": "discovertab_fetchlists",
+      "community": 13,
+      "norm_label": "fetchlists()"
     },
     {
       "label": "triggerSearch()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\components\\DiscoverTab.tsx",
-      "source_location": "L64",
+      "source_location": "L84",
       "id": "discovertab_triggersearch",
-      "community": 8,
+      "community": 13,
       "norm_label": "triggersearch()"
     },
     {
@@ -621,17 +855,44 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\Header.tsx",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_components_header_tsx",
-      "community": 9,
+      "community": 19,
       "norm_label": "header.tsx"
     },
     {
       "label": "Header()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\components\\Header.tsx",
-      "source_location": "L10",
+      "source_location": "L11",
       "id": "header_header",
-      "community": 9,
+      "community": 19,
       "norm_label": "header()"
+    },
+    {
+      "label": "Leaderboard.tsx",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\Leaderboard.tsx",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_components_leaderboard_tsx",
+      "community": 14,
+      "norm_label": "leaderboard.tsx"
+    },
+    {
+      "label": "fetchLeaderboard()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\Leaderboard.tsx",
+      "source_location": "L23",
+      "id": "leaderboard_fetchleaderboard",
+      "community": 14,
+      "norm_label": "fetchleaderboard()"
+    },
+    {
+      "label": "getRankBadge()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\Leaderboard.tsx",
+      "source_location": "L37",
+      "id": "leaderboard_getrankbadge",
+      "community": 14,
+      "norm_label": "getrankbadge()"
     },
     {
       "label": "LibraryTab.tsx",
@@ -639,7 +900,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\LibraryTab.tsx",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_components_librarytab_tsx",
-      "community": 18,
+      "community": 31,
       "norm_label": "librarytab.tsx"
     },
     {
@@ -648,26 +909,35 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\NavigationSidebar.tsx",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_components_navigationsidebar_tsx",
-      "community": 6,
+      "community": 9,
       "norm_label": "navigationsidebar.tsx"
     },
     {
       "label": "handleTabClick()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\components\\NavigationSidebar.tsx",
-      "source_location": "L53",
+      "source_location": "L86",
       "id": "navigationsidebar_handletabclick",
-      "community": 6,
+      "community": 9,
       "norm_label": "handletabclick()"
     },
     {
       "label": "handleCategoryClick()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\components\\NavigationSidebar.tsx",
-      "source_location": "L58",
+      "source_location": "L91",
       "id": "navigationsidebar_handlecategoryclick",
-      "community": 6,
+      "community": 9,
       "norm_label": "handlecategoryclick()"
+    },
+    {
+      "label": "handleLogout()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\NavigationSidebar.tsx",
+      "source_location": "L97",
+      "id": "navigationsidebar_handlelogout",
+      "community": 9,
+      "norm_label": "handlelogout()"
     },
     {
       "label": "Newsletter.tsx",
@@ -675,7 +945,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\Newsletter.tsx",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_components_newsletter_tsx",
-      "community": 10,
+      "community": 20,
       "norm_label": "newsletter.tsx"
     },
     {
@@ -684,8 +954,143 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\Newsletter.tsx",
       "source_location": "L13",
       "id": "newsletter_handlesubscribe",
-      "community": 10,
+      "community": 20,
       "norm_label": "handlesubscribe()"
+    },
+    {
+      "label": "ProfilePage.tsx",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\ProfilePage.tsx",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_components_profilepage_tsx",
+      "community": 10,
+      "norm_label": "profilepage.tsx"
+    },
+    {
+      "label": "fetchProfileAndStats()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\ProfilePage.tsx",
+      "source_location": "L51",
+      "id": "profilepage_fetchprofileandstats",
+      "community": 10,
+      "norm_label": "fetchprofileandstats()"
+    },
+    {
+      "label": "handleSave()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\ProfilePage.tsx",
+      "source_location": "L82",
+      "id": "profilepage_handlesave",
+      "community": 10,
+      "norm_label": "handlesave()"
+    },
+    {
+      "label": "handleLogout()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\ProfilePage.tsx",
+      "source_location": "L111",
+      "id": "profilepage_handlelogout",
+      "community": 10,
+      "norm_label": "handlelogout()"
+    },
+    {
+      "label": "QuizModal.tsx",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\QuizModal.tsx",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_components_quizmodal_tsx",
+      "community": 5,
+      "norm_label": "quizmodal.tsx"
+    },
+    {
+      "label": "generateQuiz()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\QuizModal.tsx",
+      "source_location": "L42",
+      "id": "quizmodal_generatequiz",
+      "community": 5,
+      "norm_label": "generatequiz()"
+    },
+    {
+      "label": "handleSelectOption()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\QuizModal.tsx",
+      "source_location": "L65",
+      "id": "quizmodal_handleselectoption",
+      "community": 5,
+      "norm_label": "handleselectoption()"
+    },
+    {
+      "label": "handleNext()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\QuizModal.tsx",
+      "source_location": "L71",
+      "id": "quizmodal_handlenext",
+      "community": 5,
+      "norm_label": "handlenext()"
+    },
+    {
+      "label": "handlePrev()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\QuizModal.tsx",
+      "source_location": "L77",
+      "id": "quizmodal_handleprev",
+      "community": 5,
+      "norm_label": "handleprev()"
+    },
+    {
+      "label": "handleSubmit()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\QuizModal.tsx",
+      "source_location": "L83",
+      "id": "quizmodal_handlesubmit",
+      "community": 5,
+      "norm_label": "handlesubmit()"
+    },
+    {
+      "label": "triggerConfetti()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\QuizModal.tsx",
+      "source_location": "L116",
+      "id": "quizmodal_triggerconfetti",
+      "community": 5,
+      "norm_label": "triggerconfetti()"
+    },
+    {
+      "label": "ReadingListTab.tsx",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\ReadingListTab.tsx",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_components_readinglisttab_tsx",
+      "community": 11,
+      "norm_label": "readinglisttab.tsx"
+    },
+    {
+      "label": "fetchReadingLists()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\ReadingListTab.tsx",
+      "source_location": "L37",
+      "id": "readinglisttab_fetchreadinglists",
+      "community": 11,
+      "norm_label": "fetchreadinglists()"
+    },
+    {
+      "label": "handleArticleToggle()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\ReadingListTab.tsx",
+      "source_location": "L52",
+      "id": "readinglisttab_handlearticletoggle",
+      "community": 11,
+      "norm_label": "handlearticletoggle()"
+    },
+    {
+      "label": "handleCreateList()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\ReadingListTab.tsx",
+      "source_location": "L60",
+      "id": "readinglisttab_handlecreatelist",
+      "community": 11,
+      "norm_label": "handlecreatelist()"
     },
     {
       "label": "SavedTab.tsx",
@@ -693,8 +1098,44 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\SavedTab.tsx",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_components_savedtab_tsx",
-      "community": 19,
+      "community": 32,
       "norm_label": "savedtab.tsx"
+    },
+    {
+      "label": "StatsCard.tsx",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\StatsCard.tsx",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_components_statscard_tsx",
+      "community": 21,
+      "norm_label": "statscard.tsx"
+    },
+    {
+      "label": "StatsCard()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\StatsCard.tsx",
+      "source_location": "L11",
+      "id": "statscard_statscard",
+      "community": 21,
+      "norm_label": "statscard()"
+    },
+    {
+      "label": "StreakCalendar.tsx",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\StreakCalendar.tsx",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_components_streakcalendar_tsx",
+      "community": 22,
+      "norm_label": "streakcalendar.tsx"
+    },
+    {
+      "label": "getColorClass()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\StreakCalendar.tsx",
+      "source_location": "L26",
+      "id": "streakcalendar_getcolorclass",
+      "community": 22,
+      "norm_label": "getcolorclass()"
     },
     {
       "label": "SummaryModal.tsx",
@@ -702,7 +1143,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\SummaryModal.tsx",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_components_summarymodal_tsx",
-      "community": 4,
+      "community": 7,
       "norm_label": "summarymodal.tsx"
     },
     {
@@ -711,7 +1152,7 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\SummaryModal.tsx",
       "source_location": "L51",
       "id": "summarymodal_fetchsummarylocally",
-      "community": 4,
+      "community": 7,
       "norm_label": "fetchsummarylocally()"
     },
     {
@@ -720,25 +1161,25 @@
       "source_file": "F:\\projects\\article_ai\\app\\components\\SummaryModal.tsx",
       "source_location": "L99",
       "id": "summarymodal_typenext",
-      "community": 4,
+      "community": 7,
       "norm_label": "typenext()"
     },
     {
       "label": "handleSendQuestion()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\components\\SummaryModal.tsx",
-      "source_location": "L152",
+      "source_location": "L155",
       "id": "summarymodal_handlesendquestion",
-      "community": 4,
+      "community": 7,
       "norm_label": "handlesendquestion()"
     },
     {
       "label": "handleSkipAnimation()",
       "file_type": "code",
       "source_file": "F:\\projects\\article_ai\\app\\components\\SummaryModal.tsx",
-      "source_location": "L207",
+      "source_location": "L210",
       "id": "summarymodal_handleskipanimation",
-      "community": 4,
+      "community": 7,
       "norm_label": "handleskipanimation()"
     },
     {
@@ -747,28 +1188,115 @@
       "source_file": "F:\\projects\\article_ai\\app\\data\\articles.ts",
       "source_location": "L1",
       "id": "f_projects_article_ai_app_data_articles_ts",
-      "community": 20,
+      "community": 33,
       "norm_label": "articles.ts"
+    },
+    {
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\login\\page.tsx",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_login_page_tsx",
+      "community": 15,
+      "norm_label": "page.tsx"
+    },
+    {
+      "label": "handleSubmit()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\register\\page.tsx",
+      "source_location": "L20",
+      "id": "page_handlesubmit",
+      "community": 15,
+      "norm_label": "handlesubmit()"
+    },
+    {
+      "label": "page.tsx",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\app\\register\\page.tsx",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_app_register_page_tsx",
+      "community": 15,
+      "norm_label": "page.tsx"
+    },
+    {
+      "label": "auth.ts",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\lib\\auth.ts",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_lib_auth_ts",
+      "community": 6,
+      "norm_label": "auth.ts"
+    },
+    {
+      "label": "signJWT()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\lib\\auth.ts",
+      "source_location": "L6",
+      "id": "auth_signjwt",
+      "community": 6,
+      "norm_label": "signjwt()"
+    },
+    {
+      "label": "verifyJWT()",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\lib\\auth.ts",
+      "source_location": "L14",
+      "id": "auth_verifyjwt",
+      "community": 6,
+      "norm_label": "verifyjwt()"
+    },
+    {
+      "label": "prisma.ts",
+      "file_type": "code",
+      "source_file": "F:\\projects\\article_ai\\lib\\prisma.ts",
+      "source_location": "L1",
+      "id": "f_projects_article_ai_lib_prisma_ts",
+      "community": 34,
+      "norm_label": "prisma.ts"
     }
   ],
   "links": [
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "F:\\projects\\article_ai\\app\\layout.tsx",
-      "source_location": "L20",
+      "source_file": "F:\\projects\\article_ai\\proxy.ts",
+      "source_location": "L8",
       "weight": 1.0,
-      "_src": "f_projects_article_ai_app_layout_tsx",
-      "_tgt": "layout_rootlayout",
-      "source": "f_projects_article_ai_app_layout_tsx",
-      "target": "layout_rootlayout",
+      "_src": "f_projects_article_ai_proxy_ts",
+      "_tgt": "proxy_proxy",
+      "source": "f_projects_article_ai_proxy_ts",
+      "target": "proxy_proxy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "F:\\projects\\article_ai\\proxy.ts",
+      "source_location": "L32",
+      "weight": 1.0,
+      "_src": "proxy_proxy",
+      "_tgt": "route_get",
+      "source": "proxy_proxy",
+      "target": "route_get"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
+      "source_location": "L59",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_page_tsx",
+      "_tgt": "page_initapp",
+      "source": "f_projects_article_ai_app_page_tsx",
+      "target": "page_initapp",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L33",
+      "source_location": "L86",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_page_tsx",
       "_tgt": "page_fetcharticles",
@@ -780,31 +1308,55 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L65",
+      "source_location": "L137",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_page_tsx",
-      "_tgt": "page_savetolocalstorage",
+      "_tgt": "page_fetchbookmarks",
       "source": "f_projects_article_ai_app_page_tsx",
-      "target": "page_savetolocalstorage",
+      "target": "page_fetchbookmarks",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L70",
+      "source_location": "L149",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_page_tsx",
-      "_tgt": "page_savehistorytolocalstorage",
+      "_tgt": "page_fetchreadhistory",
       "source": "f_projects_article_ai_app_page_tsx",
-      "target": "page_savehistorytolocalstorage",
+      "target": "page_fetchreadhistory",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L87",
+      "source_location": "L161",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_page_tsx",
+      "_tgt": "page_fetchlibrarystats",
+      "source": "f_projects_article_ai_app_page_tsx",
+      "target": "page_fetchlibrarystats",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
+      "source_location": "L177",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_page_tsx",
+      "_tgt": "page_fetchreadinglists",
+      "source": "f_projects_article_ai_app_page_tsx",
+      "target": "page_fetchreadinglists",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
+      "source_location": "L201",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_page_tsx",
       "_tgt": "page_handletogglesave",
@@ -816,7 +1368,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L108",
+      "source_location": "L222",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_page_tsx",
       "_tgt": "page_handlerecordcompleted",
@@ -828,7 +1380,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L131",
+      "source_location": "L244",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_page_tsx",
       "_tgt": "page_handlereadarticle",
@@ -840,7 +1392,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L140",
+      "source_location": "L279",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_page_tsx",
       "_tgt": "page_handlequicksummary",
@@ -852,7 +1404,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L146",
+      "source_location": "L284",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_page_tsx",
       "_tgt": "page_handlesavedtoggle",
@@ -864,7 +1416,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L151",
+      "source_location": "L289",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_page_tsx",
       "_tgt": "page_handleclearhistory",
@@ -876,7 +1428,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L178",
+      "source_location": "L304",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_page_tsx",
       "_tgt": "page_getpreferredgenre",
@@ -888,7 +1440,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L201",
+      "source_location": "L327",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_page_tsx",
       "_tgt": "page_getrecommendedarticles",
@@ -900,11 +1452,59 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L105",
+      "source_location": "L67",
+      "weight": 1.0,
+      "_src": "page_initapp",
+      "_tgt": "page_fetchbookmarks",
+      "source": "page_initapp",
+      "target": "page_fetchbookmarks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
+      "source_location": "L68",
+      "weight": 1.0,
+      "_src": "page_initapp",
+      "_tgt": "page_fetchreadhistory",
+      "source": "page_initapp",
+      "target": "page_fetchreadhistory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
+      "source_location": "L69",
+      "weight": 1.0,
+      "_src": "page_initapp",
+      "_tgt": "page_fetchlibrarystats",
+      "source": "page_initapp",
+      "target": "page_fetchlibrarystats",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
+      "source_location": "L70",
+      "weight": 1.0,
+      "_src": "page_initapp",
+      "_tgt": "page_fetchreadinglists",
+      "source": "page_initapp",
+      "target": "page_fetchreadinglists",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
+      "source_location": "L214",
       "weight": 1.0,
       "_src": "page_handletogglesave",
-      "_tgt": "page_savetolocalstorage",
-      "source": "page_savetolocalstorage",
+      "_tgt": "page_fetchbookmarks",
+      "source": "page_fetchbookmarks",
       "target": "page_handletogglesave",
       "confidence_score": 1.0
     },
@@ -912,11 +1512,11 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L127",
+      "source_location": "L236",
       "weight": 1.0,
       "_src": "page_handlerecordcompleted",
-      "_tgt": "page_savetolocalstorage",
-      "source": "page_savetolocalstorage",
+      "_tgt": "page_fetchbookmarks",
+      "source": "page_fetchbookmarks",
       "target": "page_handlerecordcompleted",
       "confidence_score": 1.0
     },
@@ -924,23 +1524,35 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L135",
+      "source_location": "L215",
       "weight": 1.0,
-      "_src": "page_handlereadarticle",
-      "_tgt": "page_savehistorytolocalstorage",
-      "source": "page_savehistorytolocalstorage",
-      "target": "page_handlereadarticle",
+      "_src": "page_handletogglesave",
+      "_tgt": "page_fetchlibrarystats",
+      "source": "page_fetchlibrarystats",
+      "target": "page_handletogglesave",
       "confidence_score": 1.0
     },
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L152",
+      "source_location": "L237",
+      "weight": 1.0,
+      "_src": "page_handlerecordcompleted",
+      "_tgt": "page_fetchlibrarystats",
+      "source": "page_fetchlibrarystats",
+      "target": "page_handlerecordcompleted",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
+      "source_location": "L294",
       "weight": 1.0,
       "_src": "page_handleclearhistory",
-      "_tgt": "page_savehistorytolocalstorage",
-      "source": "page_savehistorytolocalstorage",
+      "_tgt": "page_fetchlibrarystats",
+      "source": "page_fetchlibrarystats",
       "target": "page_handleclearhistory",
       "confidence_score": 1.0
     },
@@ -948,13 +1560,205 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\page.tsx",
-      "source_location": "L148",
+      "source_location": "L286",
       "weight": 1.0,
       "_src": "page_handlesavedtoggle",
       "_tgt": "page_handletogglesave",
       "source": "page_handletogglesave",
       "target": "page_handlesavedtoggle",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\admin\\analytics\\route.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_api_admin_analytics_route_ts",
+      "_tgt": "route_get",
+      "source": "f_projects_article_ai_app_api_admin_analytics_route_ts",
+      "target": "route_get",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\route.ts",
+      "source_location": "L101",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_api_articles_route_ts",
+      "_tgt": "route_get",
+      "source": "route_get",
+      "target": "f_projects_article_ai_app_api_articles_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\route.ts",
+      "source_location": "L129",
+      "weight": 1.0,
+      "_src": "route_get",
+      "_tgt": "route_mapnewsapiarticles",
+      "source": "route_get",
+      "target": "route_mapnewsapiarticles",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\[id]\\comments\\route.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_api_articles_id_comments_route_ts",
+      "_tgt": "route_get",
+      "source": "route_get",
+      "target": "f_projects_article_ai_app_api_articles_id_comments_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\user\\saved\\route.ts",
+      "source_location": "L45",
+      "weight": 1.0,
+      "_src": "route_post",
+      "_tgt": "route_get",
+      "source": "route_get",
+      "target": "route_post",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\auth\\me\\route.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_api_auth_me_route_ts",
+      "_tgt": "route_get",
+      "source": "route_get",
+      "target": "f_projects_article_ai_app_api_auth_me_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\leaderboard\\route.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_api_leaderboard_route_ts",
+      "_tgt": "route_get",
+      "source": "route_get",
+      "target": "f_projects_article_ai_app_api_leaderboard_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\reading-history\\route.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_api_reading_history_route_ts",
+      "_tgt": "route_get",
+      "source": "route_get",
+      "target": "f_projects_article_ai_app_api_reading_history_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\reading-history\\route.ts",
+      "source_location": "L77",
+      "weight": 1.0,
+      "_src": "route_delete",
+      "_tgt": "route_get",
+      "source": "route_get",
+      "target": "route_delete",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\reading-lists\\route.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_api_reading_lists_route_ts",
+      "_tgt": "route_get",
+      "source": "route_get",
+      "target": "f_projects_article_ai_app_api_reading_lists_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\reading-streak\\route.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_api_reading_streak_route_ts",
+      "_tgt": "route_get",
+      "source": "route_get",
+      "target": "f_projects_article_ai_app_api_reading_streak_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\user\\profile\\route.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_api_user_profile_route_ts",
+      "_tgt": "route_get",
+      "source": "route_get",
+      "target": "f_projects_article_ai_app_api_user_profile_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\user\\saved\\route.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_api_user_saved_route_ts",
+      "_tgt": "route_get",
+      "source": "route_get",
+      "target": "f_projects_article_ai_app_api_user_saved_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\user\\saved\\route.ts",
+      "source_location": "L112",
+      "weight": 1.0,
+      "_src": "route_patch",
+      "_tgt": "route_get",
+      "source": "route_get",
+      "target": "route_patch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\user\\stats\\route.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_api_user_stats_route_ts",
+      "_tgt": "route_get",
+      "source": "route_get",
+      "target": "f_projects_article_ai_app_api_user_stats_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "F:\\projects\\article_ai\\app\\api\\admin\\analytics\\route.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_src": "route_get",
+      "_tgt": "auth_verifyjwt",
+      "source": "route_get",
+      "target": "auth_verifyjwt"
     },
     {
       "relation": "contains",
@@ -978,54 +1782,6 @@
       "_tgt": "route_mapnewsapiarticles",
       "source": "f_projects_article_ai_app_api_articles_route_ts",
       "target": "route_mapnewsapiarticles",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\route.ts",
-      "source_location": "L101",
-      "weight": 1.0,
-      "_src": "f_projects_article_ai_app_api_articles_route_ts",
-      "_tgt": "route_get",
-      "source": "f_projects_article_ai_app_api_articles_route_ts",
-      "target": "route_get",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\route.ts",
-      "source_location": "L129",
-      "weight": 1.0,
-      "_src": "route_get",
-      "_tgt": "route_mapnewsapiarticles",
-      "source": "route_mapnewsapiarticles",
-      "target": "route_get",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\[id]\\comments\\route.ts",
-      "source_location": "L33",
-      "weight": 1.0,
-      "_src": "f_projects_article_ai_app_api_articles_id_comments_route_ts",
-      "_tgt": "route_get",
-      "source": "route_get",
-      "target": "f_projects_article_ai_app_api_articles_id_comments_route_ts",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\[id]\\comments\\route.ts",
-      "source_location": "L35",
-      "weight": 1.0,
-      "_src": "route_get",
-      "_tgt": "route_loadcomments",
-      "source": "route_get",
-      "target": "route_loadcomments",
       "confidence_score": 1.0
     },
     {
@@ -1056,36 +1812,12 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\[id]\\comments\\route.ts",
-      "source_location": "L40",
+      "source_location": "L45",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_api_articles_id_comments_route_ts",
       "_tgt": "route_post",
       "source": "route_post",
       "target": "f_projects_article_ai_app_api_articles_id_comments_route_ts",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\[id]\\comments\\route.ts",
-      "source_location": "L48",
-      "weight": 1.0,
-      "_src": "route_post",
-      "_tgt": "route_loadcomments",
-      "source": "route_post",
-      "target": "route_loadcomments",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\[id]\\comments\\route.ts",
-      "source_location": "L59",
-      "weight": 1.0,
-      "_src": "route_post",
-      "_tgt": "route_savecomments",
-      "source": "route_post",
-      "target": "route_savecomments",
       "confidence_score": 1.0
     },
     {
@@ -1098,6 +1830,42 @@
       "_tgt": "route_post",
       "source": "route_post",
       "target": "f_projects_article_ai_app_api_ask_editor_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\auth\\login\\route.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_api_auth_login_route_ts",
+      "_tgt": "route_post",
+      "source": "route_post",
+      "target": "f_projects_article_ai_app_api_auth_login_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\auth\\logout\\route.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_api_auth_logout_route_ts",
+      "_tgt": "route_post",
+      "source": "route_post",
+      "target": "f_projects_article_ai_app_api_auth_logout_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\auth\\register\\route.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_api_auth_register_route_ts",
+      "_tgt": "route_post",
+      "source": "route_post",
+      "target": "f_projects_article_ai_app_api_auth_register_route_ts",
       "confidence_score": 1.0
     },
     {
@@ -1152,12 +1920,60 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\api\\newsletter\\route.ts",
-      "source_location": "L3",
+      "source_location": "L5",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_api_newsletter_route_ts",
       "_tgt": "route_post",
       "source": "route_post",
       "target": "f_projects_article_ai_app_api_newsletter_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\quiz\\generate\\route.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_api_quiz_generate_route_ts",
+      "_tgt": "route_post",
+      "source": "route_post",
+      "target": "f_projects_article_ai_app_api_quiz_generate_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\quiz\\submit\\route.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_api_quiz_submit_route_ts",
+      "_tgt": "route_post",
+      "source": "route_post",
+      "target": "f_projects_article_ai_app_api_quiz_submit_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\reading-history\\route.ts",
+      "source_location": "L37",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_api_reading_history_route_ts",
+      "_tgt": "route_post",
+      "source": "route_post",
+      "target": "f_projects_article_ai_app_api_reading_history_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\reading-lists\\route.ts",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_api_reading_lists_route_ts",
+      "_tgt": "route_post",
+      "source": "route_post",
+      "target": "f_projects_article_ai_app_api_reading_lists_route_ts",
       "confidence_score": 1.0
     },
     {
@@ -1175,25 +1991,133 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\[id]\\comments\\route.ts",
-      "source_location": "L9",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\user\\profile\\route.ts",
+      "source_location": "L46",
       "weight": 1.0,
-      "_src": "f_projects_article_ai_app_api_articles_id_comments_route_ts",
-      "_tgt": "route_loadcomments",
-      "source": "f_projects_article_ai_app_api_articles_id_comments_route_ts",
-      "target": "route_loadcomments",
+      "_src": "f_projects_article_ai_app_api_user_profile_route_ts",
+      "_tgt": "route_post",
+      "source": "route_post",
+      "target": "f_projects_article_ai_app_api_user_profile_route_ts",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\[id]\\comments\\route.ts",
-      "source_location": "L21",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\user\\saved\\route.ts",
+      "source_location": "L42",
       "weight": 1.0,
-      "_src": "f_projects_article_ai_app_api_articles_id_comments_route_ts",
-      "_tgt": "route_savecomments",
-      "source": "f_projects_article_ai_app_api_articles_id_comments_route_ts",
-      "target": "route_savecomments",
+      "_src": "f_projects_article_ai_app_api_user_saved_route_ts",
+      "_tgt": "route_post",
+      "source": "route_post",
+      "target": "f_projects_article_ai_app_api_user_saved_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\[id]\\comments\\route.ts",
+      "source_location": "L61",
+      "weight": 1.0,
+      "_src": "route_post",
+      "_tgt": "auth_verifyjwt",
+      "source": "route_post",
+      "target": "auth_verifyjwt"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "F:\\projects\\article_ai\\app\\api\\auth\\login\\route.ts",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_src": "route_post",
+      "_tgt": "auth_signjwt",
+      "source": "route_post",
+      "target": "auth_signjwt"
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "F:\\projects\\article_ai\\app\\api\\user\\saved\\route.ts",
+      "source_location": "L73",
+      "weight": 1.0,
+      "_src": "route_post",
+      "_tgt": "route_delete",
+      "source": "route_post",
+      "target": "route_delete"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\articles\\[id]\\comments\\[commentId]\\like\\route.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_api_articles_id_comments_commentid_like_route_ts",
+      "_tgt": "route_patch",
+      "source": "f_projects_article_ai_app_api_articles_id_comments_commentid_like_route_ts",
+      "target": "route_patch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\user\\saved\\route.ts",
+      "source_location": "L109",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_api_user_saved_route_ts",
+      "_tgt": "route_patch",
+      "source": "route_patch",
+      "target": "f_projects_article_ai_app_api_user_saved_route_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "F:\\projects\\article_ai\\app\\api\\user\\saved\\route.ts",
+      "source_location": "L118",
+      "weight": 1.0,
+      "_src": "route_patch",
+      "_tgt": "auth_verifyjwt",
+      "source": "route_patch",
+      "target": "auth_verifyjwt"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\api\\reading-history\\route.ts",
+      "source_location": "L74",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_api_reading_history_route_ts",
+      "_tgt": "route_delete",
+      "source": "f_projects_article_ai_app_api_reading_history_route_ts",
+      "target": "route_delete",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "F:\\projects\\article_ai\\app\\api\\reading-history\\route.ts",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_src": "route_delete",
+      "_tgt": "auth_verifyjwt",
+      "source": "route_delete",
+      "target": "auth_verifyjwt"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\AdminDashboard.tsx",
+      "source_location": "L33",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_admindashboard_tsx",
+      "_tgt": "admindashboard_fetchanalytics",
+      "source": "f_projects_article_ai_app_components_admindashboard_tsx",
+      "target": "admindashboard_fetchanalytics",
       "confidence_score": 1.0
     },
     {
@@ -1236,7 +2160,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\components\\ArticleView.tsx",
-      "source_location": "L54",
+      "source_location": "L83",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_components_articleview_tsx",
       "_tgt": "articleview_expandarticle",
@@ -1248,7 +2172,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\components\\ArticleView.tsx",
-      "source_location": "L90",
+      "source_location": "L119",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_components_articleview_tsx",
       "_tgt": "articleview_autofetchsummary",
@@ -1260,7 +2184,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\components\\ArticleView.tsx",
-      "source_location": "L134",
+      "source_location": "L152",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_components_articleview_tsx",
       "_tgt": "articleview_handlescroll",
@@ -1272,7 +2196,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\components\\ArticleView.tsx",
-      "source_location": "L162",
+      "source_location": "L178",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_components_articleview_tsx",
       "_tgt": "articleview_fetchcomments",
@@ -1284,7 +2208,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\components\\ArticleView.tsx",
-      "source_location": "L192",
+      "source_location": "L200",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_components_articleview_tsx",
       "_tgt": "articleview_handleaddcomment",
@@ -1296,7 +2220,19 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\components\\ArticleView.tsx",
-      "source_location": "L229",
+      "source_location": "L234",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_articleview_tsx",
+      "_tgt": "articleview_handlelikecomment",
+      "source": "f_projects_article_ai_app_components_articleview_tsx",
+      "target": "articleview_handlelikecomment",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\ArticleView.tsx",
+      "source_location": "L250",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_components_articleview_tsx",
       "_tgt": "articleview_handleshare",
@@ -1308,12 +2244,24 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\components\\ArticleView.tsx",
-      "source_location": "L240",
+      "source_location": "L263",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_components_articleview_tsx",
       "_tgt": "articleview_scrolltocomments",
       "source": "f_projects_article_ai_app_components_articleview_tsx",
       "target": "articleview_scrolltocomments",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\ArticleView.tsx",
+      "source_location": "L267",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_articleview_tsx",
+      "_tgt": "articleview_parsemarkdown",
+      "source": "f_projects_article_ai_app_components_articleview_tsx",
+      "target": "articleview_parsemarkdown",
       "confidence_score": 1.0
     },
     {
@@ -1691,8 +2639,32 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\DarkModeToggle.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_darkmodetoggle_tsx",
+      "_tgt": "darkmodetoggle_darkmodetoggle",
+      "source": "f_projects_article_ai_app_components_darkmodetoggle_tsx",
+      "target": "darkmodetoggle_darkmodetoggle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\components\\DiscoverTab.tsx",
-      "source_location": "L64",
+      "source_location": "L39",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_discovertab_tsx",
+      "_tgt": "discovertab_fetchlists",
+      "source": "f_projects_article_ai_app_components_discovertab_tsx",
+      "target": "discovertab_fetchlists",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\DiscoverTab.tsx",
+      "source_location": "L84",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_components_discovertab_tsx",
       "_tgt": "discovertab_triggersearch",
@@ -1704,7 +2676,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\components\\Header.tsx",
-      "source_location": "L10",
+      "source_location": "L11",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_components_header_tsx",
       "_tgt": "header_header",
@@ -1715,8 +2687,32 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\Leaderboard.tsx",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_leaderboard_tsx",
+      "_tgt": "leaderboard_fetchleaderboard",
+      "source": "f_projects_article_ai_app_components_leaderboard_tsx",
+      "target": "leaderboard_fetchleaderboard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\Leaderboard.tsx",
+      "source_location": "L37",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_leaderboard_tsx",
+      "_tgt": "leaderboard_getrankbadge",
+      "source": "f_projects_article_ai_app_components_leaderboard_tsx",
+      "target": "leaderboard_getrankbadge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\components\\NavigationSidebar.tsx",
-      "source_location": "L53",
+      "source_location": "L86",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_components_navigationsidebar_tsx",
       "_tgt": "navigationsidebar_handletabclick",
@@ -1728,12 +2724,24 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\components\\NavigationSidebar.tsx",
-      "source_location": "L58",
+      "source_location": "L91",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_components_navigationsidebar_tsx",
       "_tgt": "navigationsidebar_handlecategoryclick",
       "source": "f_projects_article_ai_app_components_navigationsidebar_tsx",
       "target": "navigationsidebar_handlecategoryclick",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\NavigationSidebar.tsx",
+      "source_location": "L97",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_navigationsidebar_tsx",
+      "_tgt": "navigationsidebar_handlelogout",
+      "source": "f_projects_article_ai_app_components_navigationsidebar_tsx",
+      "target": "navigationsidebar_handlelogout",
       "confidence_score": 1.0
     },
     {
@@ -1746,6 +2754,186 @@
       "_tgt": "newsletter_handlesubscribe",
       "source": "f_projects_article_ai_app_components_newsletter_tsx",
       "target": "newsletter_handlesubscribe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\ProfilePage.tsx",
+      "source_location": "L51",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_profilepage_tsx",
+      "_tgt": "profilepage_fetchprofileandstats",
+      "source": "f_projects_article_ai_app_components_profilepage_tsx",
+      "target": "profilepage_fetchprofileandstats",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\ProfilePage.tsx",
+      "source_location": "L82",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_profilepage_tsx",
+      "_tgt": "profilepage_handlesave",
+      "source": "f_projects_article_ai_app_components_profilepage_tsx",
+      "target": "profilepage_handlesave",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\ProfilePage.tsx",
+      "source_location": "L111",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_profilepage_tsx",
+      "_tgt": "profilepage_handlelogout",
+      "source": "f_projects_article_ai_app_components_profilepage_tsx",
+      "target": "profilepage_handlelogout",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\QuizModal.tsx",
+      "source_location": "L42",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_quizmodal_tsx",
+      "_tgt": "quizmodal_generatequiz",
+      "source": "f_projects_article_ai_app_components_quizmodal_tsx",
+      "target": "quizmodal_generatequiz",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\QuizModal.tsx",
+      "source_location": "L65",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_quizmodal_tsx",
+      "_tgt": "quizmodal_handleselectoption",
+      "source": "f_projects_article_ai_app_components_quizmodal_tsx",
+      "target": "quizmodal_handleselectoption",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\QuizModal.tsx",
+      "source_location": "L71",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_quizmodal_tsx",
+      "_tgt": "quizmodal_handlenext",
+      "source": "f_projects_article_ai_app_components_quizmodal_tsx",
+      "target": "quizmodal_handlenext",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\QuizModal.tsx",
+      "source_location": "L77",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_quizmodal_tsx",
+      "_tgt": "quizmodal_handleprev",
+      "source": "f_projects_article_ai_app_components_quizmodal_tsx",
+      "target": "quizmodal_handleprev",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\QuizModal.tsx",
+      "source_location": "L83",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_quizmodal_tsx",
+      "_tgt": "quizmodal_handlesubmit",
+      "source": "f_projects_article_ai_app_components_quizmodal_tsx",
+      "target": "quizmodal_handlesubmit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\QuizModal.tsx",
+      "source_location": "L116",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_quizmodal_tsx",
+      "_tgt": "quizmodal_triggerconfetti",
+      "source": "f_projects_article_ai_app_components_quizmodal_tsx",
+      "target": "quizmodal_triggerconfetti",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\QuizModal.tsx",
+      "source_location": "L107",
+      "weight": 1.0,
+      "_src": "quizmodal_handlesubmit",
+      "_tgt": "quizmodal_triggerconfetti",
+      "source": "quizmodal_handlesubmit",
+      "target": "quizmodal_triggerconfetti",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\ReadingListTab.tsx",
+      "source_location": "L37",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_readinglisttab_tsx",
+      "_tgt": "readinglisttab_fetchreadinglists",
+      "source": "f_projects_article_ai_app_components_readinglisttab_tsx",
+      "target": "readinglisttab_fetchreadinglists",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\ReadingListTab.tsx",
+      "source_location": "L52",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_readinglisttab_tsx",
+      "_tgt": "readinglisttab_handlearticletoggle",
+      "source": "f_projects_article_ai_app_components_readinglisttab_tsx",
+      "target": "readinglisttab_handlearticletoggle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\ReadingListTab.tsx",
+      "source_location": "L60",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_readinglisttab_tsx",
+      "_tgt": "readinglisttab_handlecreatelist",
+      "source": "f_projects_article_ai_app_components_readinglisttab_tsx",
+      "target": "readinglisttab_handlecreatelist",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\StatsCard.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_statscard_tsx",
+      "_tgt": "statscard_statscard",
+      "source": "f_projects_article_ai_app_components_statscard_tsx",
+      "target": "statscard_statscard",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\components\\StreakCalendar.tsx",
+      "source_location": "L26",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_components_streakcalendar_tsx",
+      "_tgt": "streakcalendar_getcolorclass",
+      "source": "f_projects_article_ai_app_components_streakcalendar_tsx",
+      "target": "streakcalendar_getcolorclass",
       "confidence_score": 1.0
     },
     {
@@ -1776,7 +2964,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\components\\SummaryModal.tsx",
-      "source_location": "L152",
+      "source_location": "L155",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_components_summarymodal_tsx",
       "_tgt": "summarymodal_handlesendquestion",
@@ -1788,12 +2976,60 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "F:\\projects\\article_ai\\app\\components\\SummaryModal.tsx",
-      "source_location": "L207",
+      "source_location": "L210",
       "weight": 1.0,
       "_src": "f_projects_article_ai_app_components_summarymodal_tsx",
       "_tgt": "summarymodal_handleskipanimation",
       "source": "f_projects_article_ai_app_components_summarymodal_tsx",
       "target": "summarymodal_handleskipanimation",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\login\\page.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_login_page_tsx",
+      "_tgt": "page_handlesubmit",
+      "source": "f_projects_article_ai_app_login_page_tsx",
+      "target": "page_handlesubmit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\app\\register\\page.tsx",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_app_register_page_tsx",
+      "_tgt": "page_handlesubmit",
+      "source": "page_handlesubmit",
+      "target": "f_projects_article_ai_app_register_page_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\lib\\auth.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_lib_auth_ts",
+      "_tgt": "auth_signjwt",
+      "source": "f_projects_article_ai_lib_auth_ts",
+      "target": "auth_signjwt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "F:\\projects\\article_ai\\lib\\auth.ts",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_src": "f_projects_article_ai_lib_auth_ts",
+      "_tgt": "auth_verifyjwt",
+      "source": "f_projects_article_ai_lib_auth_ts",
+      "target": "auth_verifyjwt",
       "confidence_score": 1.0
     }
   ],

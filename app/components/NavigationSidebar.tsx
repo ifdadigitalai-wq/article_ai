@@ -16,6 +16,8 @@ import {
   ShieldAlert,
   ExternalLink,
   LogOut,
+  MessageSquare,
+  Users,
 } from "lucide-react";
 import { TabId } from "./BottomNav";
 import DarkModeToggle from "./DarkModeToggle";
@@ -69,18 +71,28 @@ export default function NavigationSidebar({
   user,
 }: NavigationSidebarProps) {
   const isFaculty = user?.role === "faculty" || user?.role === "admin";
+  const isAdmin = user?.role === "admin";
 
-  const navItems = [
-    { id: "home" as TabId, label: "Home Edition", icon: Home },
-    { id: "discover" as TabId, label: "Discover Feed", icon: Compass },
-    { id: "reading-lists" as TabId, label: "Reading Lists", icon: Layers },
-    { id: "saved" as TabId, label: "Saved Articles", icon: Bookmark },
-    { id: "leaderboard" as TabId, label: "Leaderboard", icon: Award },
-    { id: "profile" as TabId, label: "My Profile", icon: User },
-  ];
-
-  if (isFaculty) {
-    navItems.push({ id: "admin" as TabId, label: "Admin Panel", icon: ShieldAlert });
+  let navItems = [];
+  if (isAdmin) {
+    navItems = [
+      { id: "admin" as TabId, label: "Admin Panel", icon: ShieldAlert },
+      { id: "students" as TabId, label: "Manage Students", icon: Users },
+      { id: "discussions" as TabId, label: "Discussions", icon: MessageSquare },
+      { id: "profile" as TabId, label: "My Profile", icon: User },
+    ];
+  } else {
+    navItems = [
+      { id: "home" as TabId, label: "Home Edition", icon: Home },
+      { id: "discover" as TabId, label: "Discover Feed", icon: Compass },
+      { id: "reading-lists" as TabId, label: "Reading Lists", icon: Layers },
+      { id: "saved" as TabId, label: "Saved Articles", icon: Bookmark },
+      { id: "leaderboard" as TabId, label: "Leaderboard", icon: Award },
+      { id: "profile" as TabId, label: "My Profile", icon: User },
+    ];
+    if (isFaculty) {
+      navItems.push({ id: "admin" as TabId, label: "Admin Panel", icon: ShieldAlert });
+    }
   }
 
   const handleTabClick = (tabId: TabId) => {
@@ -206,81 +218,87 @@ export default function NavigationSidebar({
         </div>
 
         {/* Categories Shortcut */}
-        <div>
-          <h3 className="mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-550">
-            Topic Categories
-          </h3>
-          <div className="grid grid-cols-2 gap-2">
-            {categories.map((category) => {
-              const isActive = selectedCategory.toLowerCase() === category.toLowerCase();
-              return (
-                <button
-                  key={category}
-                  onClick={() => handleCategoryClick(category)}
-                  className={`rounded-xl px-2.5 py-2 text-left text-[10px] font-sans font-bold uppercase tracking-wider truncate border transition-all cursor-pointer ${
-                    isActive
-                      ? "bg-indigo-700 border-indigo-700 text-white dark:bg-indigo-600 dark:border-indigo-600 dark:text-white shadow-xs"
-                      : "border-slate-200/50 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/50 text-slate-600 dark:text-slate-400 hover:bg-slate-200/80 dark:hover:bg-slate-800/80 hover:text-slate-800 dark:hover:text-slate-200"
-                  }`}
-                >
-                  {category}
-                </button>
-              );
-            })}
+        {!isAdmin && (
+          <div>
+            <h3 className="mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-550">
+              Topic Categories
+            </h3>
+            <div className="grid grid-cols-2 gap-2">
+              {categories.map((category) => {
+                const isActive = selectedCategory.toLowerCase() === category.toLowerCase();
+                return (
+                  <button
+                    key={category}
+                    onClick={() => handleCategoryClick(category)}
+                    className={`rounded-xl px-2.5 py-2 text-left text-[10px] font-sans font-bold uppercase tracking-wider truncate border transition-all cursor-pointer ${
+                      isActive
+                        ? "bg-indigo-700 border-indigo-700 text-white dark:bg-indigo-600 dark:border-indigo-600 dark:text-white shadow-xs"
+                        : "border-slate-200/50 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/50 text-slate-600 dark:text-slate-400 hover:bg-slate-200/80 dark:hover:bg-slate-800/80 hover:text-slate-800 dark:hover:text-slate-200"
+                    }`}
+                  >
+                    {category}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Library Stats Heatmap overview */}
-        <div>
-          <h3 className="mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-550">
-            Reading Progress
-          </h3>
-          <div className="grid grid-cols-3 gap-2">
-            <div className="rounded-xl border border-slate-200/60 dark:border-slate-800 bg-white/40 dark:bg-slate-900/30 p-2 text-center shadow-xs">
-              <Clock className="h-4 w-4 text-indigo-500 mx-auto mb-1 opacity-80" />
-              <div className="text-xs font-extrabold text-slate-800 dark:text-slate-200">
-                {stats.minutesRead}
+        {!isAdmin && (
+          <div>
+            <h3 className="mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-550">
+              Reading Progress
+            </h3>
+            <div className="grid grid-cols-3 gap-2">
+              <div className="rounded-xl border border-slate-200/60 dark:border-slate-800 bg-white/40 dark:bg-slate-900/30 p-2 text-center shadow-xs">
+                <Clock className="h-4 w-4 text-indigo-500 mx-auto mb-1 opacity-80" />
+                <div className="text-xs font-extrabold text-slate-800 dark:text-slate-200">
+                  {stats.minutesRead}
+                </div>
+                <div className="text-[8px] text-slate-400 dark:text-slate-500 font-bold uppercase mt-0.5 leading-none">
+                  Mins Read
+                </div>
               </div>
-              <div className="text-[8px] text-slate-400 dark:text-slate-500 font-bold uppercase mt-0.5 leading-none">
-                Mins Read
+              <div className="rounded-xl border border-slate-200/60 dark:border-slate-800 bg-white/40 dark:bg-slate-900/30 p-2 text-center shadow-xs">
+                <Award className="h-4 w-4 text-indigo-500 mx-auto mb-1 opacity-80" />
+                <div className="text-xs font-extrabold text-slate-800 dark:text-slate-200">
+                  {stats.articlesCompleted}
+                </div>
+                <div className="text-[8px] text-slate-400 dark:text-slate-500 font-bold uppercase mt-0.5 leading-none">
+                  Finished
+                </div>
               </div>
-            </div>
-            <div className="rounded-xl border border-slate-200/60 dark:border-slate-800 bg-white/40 dark:bg-slate-900/30 p-2 text-center shadow-xs">
-              <Award className="h-4 w-4 text-indigo-500 mx-auto mb-1 opacity-80" />
-              <div className="text-xs font-extrabold text-slate-800 dark:text-slate-200">
-                {stats.articlesCompleted}
-              </div>
-              <div className="text-[8px] text-slate-400 dark:text-slate-500 font-bold uppercase mt-0.5 leading-none">
-                Finished
-              </div>
-            </div>
-            <div className="rounded-xl border border-slate-200/60 dark:border-slate-800 bg-white/40 dark:bg-slate-900/30 p-2 text-center shadow-xs">
-              <Flame className="h-4 w-4 text-indigo-500 mx-auto mb-1 opacity-80" />
-              <div className="text-xs font-extrabold text-slate-800 dark:text-slate-200">
-                {stats.streakDays}
-              </div>
-              <div className="text-[8px] text-slate-400 dark:text-slate-500 font-bold uppercase mt-0.5 leading-none">
-                Streak
+              <div className="rounded-xl border border-slate-200/60 dark:border-slate-800 bg-white/40 dark:bg-slate-900/30 p-2 text-center shadow-xs">
+                <Flame className="h-4 w-4 text-indigo-500 mx-auto mb-1 opacity-80" />
+                <div className="text-xs font-extrabold text-slate-800 dark:text-slate-200">
+                  {stats.streakDays}
+                </div>
+                <div className="text-[8px] text-slate-400 dark:text-slate-500 font-bold uppercase mt-0.5 leading-none">
+                  Streak
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Action Buttons */}
         <div className="pt-2 border-t border-slate-200/60 dark:border-slate-800/80 flex flex-col gap-1">
-          <button
-            onClick={() => {
-              if (confirm("Are you sure you want to clear your reading history?")) {
-                onClearHistory();
-                if (onClose) onClose();
-              }
-            }}
-            className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50/50 dark:hover:bg-rose-950/20 transition-colors cursor-pointer"
-            id="sidebar-clear-history-btn"
-          >
-            <Trash2 className="h-4 w-4 shrink-0" />
-            <span>Clear History</span>
-          </button>
+          {!isAdmin && (
+            <button
+              onClick={() => {
+                if (confirm("Are you sure you want to clear your reading history?")) {
+                  onClearHistory();
+                  if (onClose) onClose();
+                }
+              }}
+              className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50/50 dark:hover:bg-rose-950/20 transition-colors cursor-pointer"
+              id="sidebar-clear-history-btn"
+            >
+              <Trash2 className="h-4 w-4 shrink-0" />
+              <span>Clear History</span>
+            </button>
+          )}
           
           <button
             onClick={handleLogout}

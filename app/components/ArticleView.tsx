@@ -264,45 +264,155 @@ export default function ArticleView({
     commentsSectionRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const renderInlineMarkdown = (text: string): React.ReactNode => {
+    if (!text) return "";
+    const tokenRegex = /(\*\*.*?\*\*|\*.*?\*|`.*?`)/g;
+    const parts = text.split(tokenRegex);
+    return parts.map((part, i) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return (
+          <strong key={i} className="font-bold text-slate-900 dark:text-white">
+            {part.slice(2, -2)}
+          </strong>
+        );
+      }
+      if (part.startsWith("*") && part.endsWith("*")) {
+        return (
+          <em key={i} className="italic text-slate-705 dark:text-slate-350">
+            {part.slice(1, -1)}
+          </em>
+        );
+      }
+      if (part.startsWith("`") && part.endsWith("`")) {
+        return (
+          <code key={i} className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono text-sm text-indigo-600 dark:text-indigo-400">
+            {part.slice(1, -1)}
+          </code>
+        );
+      }
+      return part;
+    });
+  };
+
   const parseMarkdown = (rawText: string) => {
     if (!rawText) return null;
-    return rawText.split("\n\n").map((para, index) => {
-      const trimmed = para.trim();
-      if (!trimmed) return null;
+    const normalizedText = rawText.replace(/\r\n/g, "\n");
+    const blocks = normalizedText.split("\n\n");
 
-      if (trimmed.startsWith("###")) {
+    return blocks.map((block, blockIndex) => {
+      const trimmedBlock = block.trim();
+      if (!trimmedBlock) return null;
+
+      // 1. Headings
+      if (trimmedBlock.startsWith("#### ")) {
         return (
-          <h4 key={index} className="font-serif text-lg font-bold text-slate-800 dark:text-white mt-6 mb-2.5">
-            {trimmed.replace("###", "").trim()}
+          <h5 key={blockIndex} className="font-serif text-base font-bold text-slate-800 dark:text-white mt-4 mb-2">
+            {renderInlineMarkdown(trimmedBlock.substring(5).trim())}
+          </h5>
+        );
+      }
+      if (trimmedBlock.startsWith("### ")) {
+        return (
+          <h4 key={blockIndex} className="font-serif text-lg font-bold text-slate-800 dark:text-white mt-6 mb-2.5">
+            {renderInlineMarkdown(trimmedBlock.substring(4).trim())}
           </h4>
         );
       }
-      if (trimmed.startsWith("##")) {
+      if (trimmedBlock.startsWith("## ")) {
         return (
-          <h3 key={index} className="font-serif text-xl font-extrabold text-slate-850 dark:text-white mt-8 mb-3">
-            {trimmed.replace("##", "").trim()}
+          <h3 key={blockIndex} className="font-serif text-xl font-extrabold text-slate-850 dark:text-white mt-8 mb-3">
+            {renderInlineMarkdown(trimmedBlock.substring(3).trim())}
+          </h3>
+        );
+      }
+      if (trimmedBlock.startsWith("# ")) {
+        return (
+          <h2 key={blockIndex} className="font-serif text-2xl font-black text-slate-900 dark:text-white mt-10 mb-4">
+            {renderInlineMarkdown(trimmedBlock.substring(2).trim())}
+          </h2>
+        );
+      }
+
+      // Fallback for older ###Header syntax without space
+      if (trimmedBlock.startsWith("###")) {
+        return (
+          <h4 key={blockIndex} className="font-serif text-lg font-bold text-slate-800 dark:text-white mt-6 mb-2.5">
+            {renderInlineMarkdown(trimmedBlock.substring(3).trim())}
+          </h4>
+        );
+      }
+      if (trimmedBlock.startsWith("##")) {
+        return (
+          <h3 key={blockIndex} className="font-serif text-xl font-extrabold text-slate-850 dark:text-white mt-8 mb-3">
+            {renderInlineMarkdown(trimmedBlock.substring(2).trim())}
           </h3>
         );
       }
 
-      let content: React.ReactNode = trimmed;
-      const boldRegex = /\*\*(.*?)\*\*/g;
-      if (boldRegex.test(trimmed)) {
-        const parts = trimmed.split(boldRegex);
-        content = parts.map((part, i) =>
-          i % 2 === 1 ? (
-            <strong key={i} className="font-bold text-slate-900 dark:text-white">
-              {part}
-            </strong>
-          ) : (
-            part
-          )
+      // 2. Blockquotes
+      if (trimmedBlock.startsWith(">")) {
+        const quoteLines = trimmedBlock.split("\n").map(line => {
+          const trimmedLine = line.trim();
+          if (trimmedLine.startsWith(">")) {
+            return trimmedLine.substring(1).trim();
+          }
+          return trimmedLine;
+        });
+        return (
+          <blockquote key={blockIndex} className="border-l-4 border-indigo-500 pl-4 py-1 my-6 font-serif italic font-normal text-slate-700 dark:text-slate-350 bg-slate-50/50 dark:bg-slate-900/30 rounded-r-xl pr-4">
+            {renderInlineMarkdown(quoteLines.join("\n"))}
+          </blockquote>
         );
       }
 
+      // 3. Bullet Lists
+      const lines = trimmedBlock.split("\n");
+      const isBulletList = lines.every(line => {
+        const t = line.trim();
+        return t.startsWith("* ") || t.startsWith("- ") || t === "*" || t === "-";
+      });
+      if (isBulletList && lines.length > 0) {
+        return (
+          <ul key={blockIndex} className="list-disc pl-6 mb-6 space-y-2 text-slate-650 dark:text-slate-300 font-sans font-normal text-base sm:text-lg">
+            {lines.map((line, lineIndex) => {
+              const t = line.trim();
+              const contentText = (t.startsWith("* ") || t.startsWith("- ")) ? t.substring(2).trim() : "";
+              return (
+                <li key={lineIndex} className="leading-relaxed">
+                  {renderInlineMarkdown(contentText)}
+                </li>
+              );
+            })}
+          </ul>
+        );
+      }
+
+      // 4. Numbered Lists
+      const isNumberedList = lines.every(line => {
+        const t = line.trim();
+        return /^\d+\.\s+/.test(t);
+      });
+      if (isNumberedList && lines.length > 0) {
+        return (
+          <ol key={blockIndex} className="list-decimal pl-6 mb-6 space-y-2 text-slate-655 dark:text-slate-300 font-sans font-normal text-base sm:text-lg">
+            {lines.map((line, lineIndex) => {
+              const t = line.trim();
+              const match = t.match(/^\d+\.\s+(.*)/);
+              const contentText = match ? match[1].trim() : t;
+              return (
+                <li key={lineIndex} className="leading-relaxed">
+                  {renderInlineMarkdown(contentText)}
+                </li>
+              );
+            })}
+          </ol>
+        );
+      }
+
+      // 5. Standard Paragraph
       return (
-        <p key={index} className="font-sans text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
-          {content}
+        <p key={blockIndex} className="font-sans font-normal text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
+          {renderInlineMarkdown(trimmedBlock)}
         </p>
       );
     });

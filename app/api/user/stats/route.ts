@@ -54,10 +54,24 @@ export async function GET() {
     }
 
     const genreCounts: Record<string, number> = {};
+    
+    let customArticles: any[] = [];
+    try {
+      customArticles = await prisma.customArticle.findMany({
+        select: { id: true, category: true }
+      });
+    } catch (err) {
+      console.error("Error fetching custom article categories for stats:", err);
+    }
+
+    const allArticleCategories = new Map<string, string>();
+    ARTICLES.forEach(a => allArticleCategories.set(a.id, a.category));
+    customArticles.forEach(a => allArticleCategories.set(a.id, a.category));
+
     history.forEach((h: { articleId: string; }) => {
-      const art = ARTICLES.find((a) => a.id === h.articleId);
-      if (art) {
-        genreCounts[art.category] = (genreCounts[art.category] || 0) + 1;
+      const category = allArticleCategories.get(h.articleId);
+      if (category) {
+        genreCounts[category] = (genreCounts[category] || 0) + 1;
       }
     });
 

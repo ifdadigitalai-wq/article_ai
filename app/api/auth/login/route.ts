@@ -26,6 +26,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
+    if (user.role === "student") {
+      if (!user.isPaid) {
+        return NextResponse.json({ error: "Access denied: Account subscription is unpaid. Please contact your administrator." }, { status: 403 });
+      }
+      if (!user.isActive) {
+        return NextResponse.json({ error: "Access denied: Your account access has been revoked by the administrator." }, { status: 403 });
+      }
+    }
+
     const token = await signJWT({
       userId: user.id,
       email: user.email,

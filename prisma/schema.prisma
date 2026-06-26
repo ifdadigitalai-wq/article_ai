@@ -19,6 +19,13 @@ model User {
   avatar          String           @default("scholar")
   createdAt       DateTime         @default(now())
   
+  // Administrative relations & access flags
+  adminId         String?
+  admin           User?            @relation("AdminStudents", fields: [adminId], references: [id])
+  students        User[]           @relation("AdminStudents")
+  isPaid          Boolean          @default(false)
+  isActive        Boolean          @default(true)
+
   savedArticles   SavedArticle[]
   readingHistories ReadingHistory[]
   comments        Comment[]
@@ -107,4 +114,20 @@ model Newsletter {
   id           String   @id @default(uuid())
   email        String   @unique
   subscribedAt DateTime @default(now())
+}
+
+model CustomArticle {
+  id           String   @id @default(uuid())
+  title        String
+  subtitle     String
+  category     String
+  snippet      String
+  content      String   // Markdown article content
+  imageUrl     String   @default("https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&q=80")
+  imageAlt     String   @default("Article image")
+  readTime     String   @default("5 min read")
+  authorName   String
+  authorRole   String
+  authorAvatar String   @default("https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80")
+  createdAt    DateTime @default(now())
 }

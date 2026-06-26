@@ -23,8 +23,22 @@ export async function POST(req: Request) {
     }
 
     // Determine article content
+    let content = articleContent;
     const article = ARTICLES.find((a) => a.id === articleId);
-    const content = article ? article.content : articleContent;
+    if (article) {
+      content = article.content;
+    } else {
+      try {
+        const customArt = await prisma.customArticle.findUnique({
+          where: { id: articleId }
+        });
+        if (customArt) {
+          content = customArt.content;
+        }
+      } catch (err) {
+        console.error("Error looking up custom article for quiz:", err);
+      }
+    }
 
     if (!content) {
       return NextResponse.json({ error: "Article content is required to generate quiz" }, { status: 400 });

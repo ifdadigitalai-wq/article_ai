@@ -12,6 +12,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
+    if (role === "student") {
+      return NextResponse.json({ error: "Student registration is disabled. Please contact your administrator." }, { status: 400 });
+    }
+
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });

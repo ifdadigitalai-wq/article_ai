@@ -18,6 +18,8 @@ import ProfilePage from "./components/ProfilePage";
 import Leaderboard from "./components/Leaderboard";
 import ReadingListTab from "./components/ReadingListTab";
 import AdminDashboard from "./components/AdminDashboard";
+import AdminDiscussions from "./components/AdminDiscussions";
+import AdminStudents from "./components/AdminStudents";
 import { RefreshCw } from "lucide-react";
 
 interface UserProfile {
@@ -62,6 +64,9 @@ export default function Home() {
         if (resUser.ok) {
           const userData = await resUser.json();
           setUser(userData);
+          if (userData.role === "admin") {
+            setActiveTab("admin");
+          }
           
           // Load bookmarks, history, stats, lists from DB
           fetchBookmarks();
@@ -188,14 +193,27 @@ export default function Home() {
 
   // Deep-link check on articles mount
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const articleId = params.get("article");
-    if (articleId) {
-      const match = articles.find((a) => a.id === articleId) || ARTICLES.find((a) => a.id === articleId);
-      if (match) {
-        setActiveArticle(match);
+    const fetchDeepLink = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const articleId = params.get("article");
+      if (articleId) {
+        const match = articles.find((a) => a.id === articleId) || ARTICLES.find((a) => a.id === articleId);
+        if (match) {
+          setActiveArticle(match);
+        } else {
+          try {
+            const res = await fetch(`/api/articles/${articleId}`);
+            if (res.ok) {
+              const data = await res.json();
+              setActiveArticle(data);
+            }
+          } catch (err) {
+            console.error("Error fetching deep link article:", err);
+          }
+        }
       }
-    }
+    };
+    fetchDeepLink();
   }, [articles]);
 
   const handleToggleSave = async (articleId: string) => {
@@ -393,6 +411,7 @@ export default function Home() {
               selectedCategory={selectedCategory}
               onSelectCategory={setSelectedCategory}
               onOpenSidebar={() => setIsSidebarOpen(true)}
+              userRole={user?.role}
             />
             <main className="flex-1 overflow-y-auto pb-20 md:pb-6 bg-slate-50/30 dark:bg-slate-950/20">
               {activeTab === "home" && (
@@ -450,7 +469,24 @@ export default function Home() {
                   userDepartment={user?.department || "CSE"}
                 />
               )}
-              {activeTab === "admin" && <AdminDashboard />}
+              {activeTab === "admin" && <AdminDashboard user={user} />}
+              {activeTab === "students" && <AdminStudents />}
+              {activeTab === "discussions" && (
+                <AdminDiscussions
+                  onSelectArticle={(articleId) => {
+                    const match = articles.find((a) => a.id === articleId) || ARTICLES.find((a) => a.id === articleId);
+                    if (match) {
+                      setActiveArticle(match);
+                    } else {
+                      fetch(`/api/articles/${articleId}`).then((res) => {
+                        if (res.ok) {
+                          res.json().then((art) => setActiveArticle(art));
+                        }
+                      });
+                    }
+                  }}
+                />
+              )}
 
               {activeTab === "home" && <Newsletter />}
             </main>

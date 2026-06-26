@@ -6,6 +6,7 @@ interface HeaderProps {
   selectedCategory: string;
   onSelectCategory: (category: string) => void;
   onOpenSidebar: () => void;
+  userRole?: string;
 }
 
 export default function Header({
@@ -13,7 +14,10 @@ export default function Header({
   selectedCategory,
   onSelectCategory,
   onOpenSidebar,
+  userRole,
 }: HeaderProps) {
+  const isAdmin = userRole === "admin";
+
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border-outline bg-paper/95 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl flex-col px-4 sm:px-6 lg:px-8">
@@ -28,39 +32,49 @@ export default function Header({
           </button>
 
           <div className="flex flex-col items-center text-center">
-            <span className="text-[9px] uppercase tracking-[0.25em] font-sans font-bold opacity-45">
-              Volume 04 // Issue 12
-            </span>
-            <h1 className="font-serif text-3xl font-black tracking-tighter leading-none text-charcoal sm:text-4xl mt-0.5">
-              THE EDITORIAL
-            </h1>
+            {isAdmin ? (
+              <h1 className="font-serif text-2xl font-black tracking-tighter leading-none text-charcoal dark:text-white sm:text-3xl mt-0.5 uppercase">
+                Admin Console
+              </h1>
+            ) : (
+              <>
+                <span className="text-[9px] uppercase tracking-[0.25em] font-sans font-bold opacity-45">
+                  Volume 04 // Issue 12
+                </span>
+                <h1 className="font-serif text-3xl font-black tracking-tighter leading-none text-charcoal sm:text-4xl mt-0.5">
+                  THE EDITORIAL
+                </h1>
+              </>
+            )}
           </div>
 
           <DarkModeToggle />
         </div>
 
         {/* Category chips */}
-        <nav className="flex space-x-6 overflow-x-auto pb-3 pt-1 scrollbar-none scroll-smooth justify-start md:justify-center">
-          {categories.map((category) => {
-            const isActive = selectedCategory.toLowerCase() === category.toLowerCase();
-            return (
-              <button
-                key={category}
-                onClick={() => onSelectCategory(category)}
-                className={`relative whitespace-nowrap pb-1.5 text-xs font-sans font-bold uppercase tracking-widest transition-colors ${
-                  isActive
-                    ? "text-indigo-700 dark:text-indigo-400 font-bold"
-                    : "text-secondary-gray/70 hover:text-indigo-700 dark:hover:text-indigo-400"
-                }`}
-              >
-                {category}
-                {isActive && (
-                  <div className="absolute bottom-0 left-0 h-[2px] w-full bg-indigo-700 dark:bg-indigo-400" />
-                )}
-              </button>
-            );
-          })}
-        </nav>
+        {!isAdmin && (
+          <nav className="flex space-x-6 overflow-x-auto pb-3 pt-1 scrollbar-none scroll-smooth justify-start md:justify-center">
+            {categories.map((category) => {
+              const isActive = selectedCategory.toLowerCase() === category.toLowerCase();
+              return (
+                <button
+                  key={category}
+                  onClick={() => onSelectCategory(category)}
+                  className={`relative whitespace-nowrap pb-1.5 text-xs font-sans font-bold uppercase tracking-widest transition-colors ${
+                    isActive
+                      ? "text-indigo-700 dark:text-indigo-400 font-bold"
+                      : "text-secondary-gray/70 hover:text-indigo-700 dark:hover:text-indigo-400"
+                  }`}
+                >
+                  {category}
+                  {isActive && (
+                    <div className="absolute bottom-0 left-0 h-[2px] w-full bg-indigo-700 dark:bg-indigo-400" />
+                  )}
+                </button>
+              );
+            })}
+          </nav>
+        )}
       </div>
     </header>
   );

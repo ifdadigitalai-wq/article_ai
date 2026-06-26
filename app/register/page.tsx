@@ -13,7 +13,7 @@ export default function RegisterPage() {
   const [rollNumber, setRollNumber] = useState("");
   const [department, setDepartment] = useState("CSE");
   const [batch, setBatch] = useState("2026");
-  const [role, setRole] = useState("student");
+  const [role, setRole] = useState("faculty");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -142,7 +142,6 @@ export default function RegisterPage() {
                   onChange={(e) => setRole(e.target.value)}
                   className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 dark:focus:border-indigo-400 transition-all text-sm appearance-none cursor-pointer"
                 >
-                  <option value="student">Student</option>
                   <option value="faculty">Faculty Member</option>
                   <option value="admin">Administrator</option>
                 </select>
