@@ -1,7 +1,66 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { ARTICLES } from "@/app/data/articles";
 import { Article } from "@/app/types";
+import { verifyJWT } from "@/lib/auth";
+
+// Helper to resolve and clean up Unsplash and Pinterest image links
+async function resolveImageUrl(url: string): Promise<string> {
+  if (!url) return url;
+  
+  let cleanUrl = url.trim();
+  
+  // 1. Unsplash page URL resolution
+  if (cleanUrl.includes("unsplash.com/photos/")) {
+    try {
+      const urlWithoutQuery = cleanUrl.split("?")[0].split("#")[0];
+      const parts = urlWithoutQuery.split("/");
+      const lastPart = parts[parts.length - 1];
+      const idParts = lastPart.split("-");
+      const photoId = idParts[idParts.length - 1];
+      if (photoId) {
+        return `https://images.unsplash.com/photo-${photoId}?w=1200&auto=format&fit=crop&q=80`;
+      }
+    } catch (e) {
+      console.error("Failed to parse Unsplash URL:", e);
+    }
+  }
+
+  // 2. Pinterest pin/board page URL resolution
+  if (
+    cleanUrl.includes("pinterest.com/pin/") ||
+    cleanUrl.includes("pin.it/") ||
+    (cleanUrl.includes("pinterest.co") && cleanUrl.includes("/pin/"))
+  ) {
+    try {
+      const response = await fetch(cleanUrl, {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          Accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+          "Accept-Language": "en-US,en;q=0.9",
+        },
+      });
+      if (response.ok) {
+        const html = await response.text();
+        const metaRegex = /<meta\s+([^>]*property=["'](?:og:image|twitter:image(?::src)?)["'][^>]*>|<meta\s+[^>]*name=["'](?:og:image|twitter:image(?::src)?)["'][^>]*>)/i;
+        const metaMatch = html.match(metaRegex);
+        if (metaMatch && metaMatch[0]) {
+          const contentMatch = metaMatch[0].match(/content=["']([^"']+)["']/i);
+          if (contentMatch && contentMatch[1]) {
+            return contentMatch[1];
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Failed to fetch Pinterest page:", e);
+    }
+  }
+
+  return cleanUrl;
+}
 
 // Helper to consistently map author names to a set of diverse portrait avatars
 function getDynamicAvatar(authorName: string): string {
@@ -132,6 +191,8 @@ This report was sourced in real-time. Full details, follow-ups, and subsequent b
             imageUrl: customArt.imageUrl,
             imageAlt: customArt.imageAlt,
             readTime: customArt.readTime,
+            isCustom: true,
+            createdBy: customArt.createdBy,
             date: new Date(customArt.createdAt).toLocaleDateString("en-US", {
               month: "long",
               day: "numeric",
@@ -152,6 +213,172 @@ This report was sourced in real-time. Full details, follow-ups, and subsequent b
     return NextResponse.json({ error: "Article not found" }, { status: 404 });
   } catch (error) {
     console.error("GET Single Article Error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
+
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const payload = await verifyJWT(token);
+    if (!payload || !payload.userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const userRole = payload.role as string;
+    const userId = payload.userId as string;
+
+    if (userRole !== "faculty" && userRole !== "admin") {
+      return NextResponse.json({ error: "Forbidden: Admins/Faculty only" }, { status: 403 });
+    }
+
+    const customArticle = await prisma.customArticle.findUnique({
+      where: { id },
+    });
+
+    if (!customArticle) {
+      return NextResponse.json({ error: "Article not found" }, { status: 404 });
+    }
+
+    const dbUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { name: true }
+    });
+
+    if (!dbUser) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // Only allow deletion if the user is the creator (or matched by authorName if createdBy is empty) or an admin
+    const isOwner = customArticle.createdBy === userId ||
+      ((!customArticle.createdBy || customArticle.createdBy === "") && customArticle.authorName === dbUser.name);
+
+    if (!isOwner && userRole !== "admin") {
+      return NextResponse.json(
+        { error: "Forbidden: You can only delete articles you published" },
+        { status: 403 }
+      );
+    }
+
+    await prisma.customArticle.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ message: "Article deleted successfully" });
+  } catch (error) {
+    console.error("DELETE Article Error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
+
+export async function PUT(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
+
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const payload = await verifyJWT(token);
+    if (!payload || !payload.userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const userRole = payload.role as string;
+    const userId = payload.userId as string;
+
+    if (userRole !== "faculty" && userRole !== "admin") {
+      return NextResponse.json({ error: "Forbidden: Admins/Faculty only" }, { status: 403 });
+    }
+
+    const customArticle = await prisma.customArticle.findUnique({
+      where: { id },
+    });
+
+    if (!customArticle) {
+      return NextResponse.json({ error: "Article not found" }, { status: 404 });
+    }
+
+    const dbUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { name: true }
+    });
+
+    if (!dbUser) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // Only allow modification if the user is the creator (or matched by authorName if createdBy is empty) or an admin
+    const isOwner = customArticle.createdBy === userId ||
+      ((!customArticle.createdBy || customArticle.createdBy === "") && customArticle.authorName === dbUser.name);
+
+    if (!isOwner && userRole !== "admin") {
+      return NextResponse.json(
+        { error: "Forbidden: You can only edit articles you published" },
+        { status: 403 }
+      );
+    }
+
+    const body = await req.json();
+    const {
+      title,
+      subtitle,
+      category,
+      snippet,
+      content,
+      imageUrl,
+      imageAlt,
+      readTime,
+      authorName,
+      authorRole,
+      authorAvatar,
+    } = body;
+
+    if (!title || !subtitle || !category || !snippet || !content || !authorName || !authorRole) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    // Resolve image URL (in case Unsplash or Pinterest page link was pasted)
+    let resolvedImgUrl = imageUrl;
+    if (imageUrl && imageUrl !== customArticle.imageUrl) {
+      resolvedImgUrl = await resolveImageUrl(imageUrl);
+    }
+
+    const updatedArticle = await prisma.customArticle.update({
+      where: { id },
+      data: {
+        title,
+        subtitle,
+        category,
+        snippet,
+        content,
+        imageUrl: resolvedImgUrl || undefined,
+        imageAlt: imageAlt || undefined,
+        readTime: readTime || undefined,
+        authorName,
+        authorRole,
+        authorAvatar: authorAvatar || undefined,
+      },
+    });
+
+    return NextResponse.json(updatedArticle);
+  } catch (error) {
+    console.error("PUT Article Error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

@@ -20,6 +20,8 @@ import ReadingListTab from "./components/ReadingListTab";
 import AdminDashboard from "./components/AdminDashboard";
 import AdminDiscussions from "./components/AdminDiscussions";
 import AdminStudents from "./components/AdminStudents";
+import CreateArticleTab from "./components/CreateArticleTab";
+import UploadedTab from "./components/UploadedTab";
 import { RefreshCw } from "lucide-react";
 
 interface UserProfile {
@@ -64,8 +66,8 @@ export default function Home() {
         if (resUser.ok) {
           const userData = await resUser.json();
           setUser(userData);
-          if (userData.role === "admin") {
-            setActiveTab("admin");
+          if (userData.role === "admin" || userData.role === "faculty") {
+            setActiveTab("dashboard");
           }
           
           // Load bookmarks, history, stats, lists from DB
@@ -360,10 +362,18 @@ export default function Home() {
       : articles.filter((a) => a.category.toLowerCase() === selectedCategory.toLowerCase());
 
   // Extract assigned articles for the student's department
+  const isFaculty = user?.role === "faculty" || user?.role === "admin";
   const assignedArticleIds = user
     ? readingLists
         .filter((l) => l.department.toLowerCase() === user.department.toLowerCase())
         .flatMap((l) => l.articleIds)
+        .filter((id) => {
+          if (!isFaculty) {
+            const art = articles.find((a) => a.id === id);
+            return art?.isCustom === true;
+          }
+          return true;
+        })
     : [];
 
   if (isLoadingSession) {
@@ -390,6 +400,11 @@ export default function Home() {
           onToggleSave={() => handleToggleSave(activeArticle.id)}
           onRecordCompleted={handleRecordCompleted}
           user={user}
+          onDeleteSuccess={(articleId) => {
+            setArticles((prev) => prev.filter((a) => a.id !== articleId));
+            setActiveArticle(null);
+            window.history.replaceState({}, "", window.location.pathname);
+          }}
         />
       ) : (
         <>
@@ -469,7 +484,9 @@ export default function Home() {
                   userDepartment={user?.department || "CSE"}
                 />
               )}
-              {activeTab === "admin" && <AdminDashboard user={user} />}
+              {activeTab === "dashboard" && <AdminDashboard user={user} />}
+              {activeTab === "uploaded" && <UploadedTab user={user} onRead={handleReadArticle} />}
+              {activeTab === "create-article" && <CreateArticleTab user={user} />}
               {activeTab === "students" && <AdminStudents />}
               {activeTab === "discussions" && (
                 <AdminDiscussions

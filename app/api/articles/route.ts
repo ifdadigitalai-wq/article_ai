@@ -5,6 +5,63 @@ import { Article } from "../../types";
 import { prisma } from "@/lib/prisma";
 import { verifyJWT } from "@/lib/auth";
 
+// Helper to resolve and clean up Unsplash and Pinterest image links
+async function resolveImageUrl(url: string): Promise<string> {
+  if (!url) return url;
+  
+  let cleanUrl = url.trim();
+  
+  // 1. Unsplash page URL resolution
+  if (cleanUrl.includes("unsplash.com/photos/")) {
+    try {
+      const urlWithoutQuery = cleanUrl.split("?")[0].split("#")[0];
+      const parts = urlWithoutQuery.split("/");
+      const lastPart = parts[parts.length - 1];
+      const idParts = lastPart.split("-");
+      const photoId = idParts[idParts.length - 1];
+      if (photoId) {
+        return `https://images.unsplash.com/photo-${photoId}?w=1200&auto=format&fit=crop&q=80`;
+      }
+    } catch (e) {
+      console.error("Failed to parse Unsplash URL:", e);
+    }
+  }
+
+  // 2. Pinterest pin/board page URL resolution
+  if (
+    cleanUrl.includes("pinterest.com/pin/") ||
+    cleanUrl.includes("pin.it/") ||
+    (cleanUrl.includes("pinterest.co") && cleanUrl.includes("/pin/"))
+  ) {
+    try {
+      const response = await fetch(cleanUrl, {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+          Accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+          "Accept-Language": "en-US,en;q=0.9",
+        },
+      });
+      if (response.ok) {
+        const html = await response.text();
+        const metaRegex = /<meta\s+([^>]*property=["'](?:og:image|twitter:image(?::src)?)["'][^>]*>|<meta\s+[^>]*name=["'](?:og:image|twitter:image(?::src)?)["'][^>]*>)/i;
+        const metaMatch = html.match(metaRegex);
+        if (metaMatch && metaMatch[0]) {
+          const contentMatch = metaMatch[0].match(/content=["']([^"']+)["']/i);
+          if (contentMatch && contentMatch[1]) {
+            return contentMatch[1];
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Failed to fetch Pinterest page:", e);
+    }
+  }
+
+  return cleanUrl;
+}
+
 // Helper to consistently map author names to a set of diverse, professional Unsplash portraits
 function getDynamicAvatar(authorName: string): string {
   const avatars = [
@@ -126,6 +183,8 @@ export async function GET(request: Request) {
     imageUrl: art.imageUrl || "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&q=80",
     imageAlt: art.imageAlt || art.title,
     readTime: art.readTime || "5 min read",
+    isCustom: true,
+    createdBy: art.createdBy,
     date: new Date(art.createdAt).toLocaleDateString("en-US", {
       month: "long",
       day: "numeric",
@@ -275,11 +334,14 @@ export async function POST(request: Request) {
       authorName,
       authorRole,
       authorAvatar,
+      readingListIds,
     } = body;
 
     if (!title || !subtitle || !category || !snippet || !content || !authorName || !authorRole) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
+
+    const resolvedImgUrl = imageUrl ? await resolveImageUrl(imageUrl) : undefined;
 
     const customArticle = await prisma.customArticle.create({
       data: {
@@ -288,14 +350,35 @@ export async function POST(request: Request) {
         category,
         snippet,
         content,
-        imageUrl: imageUrl || undefined,
+        imageUrl: resolvedImgUrl,
         imageAlt: imageAlt || undefined,
         readTime: readTime || undefined,
         authorName,
         authorRole,
         authorAvatar: authorAvatar || undefined,
+        createdBy: payload.userId as string,
       },
     });
+
+    // Append to selected reading lists if specified
+    if (Array.isArray(readingListIds) && readingListIds.length > 0) {
+      for (const listId of readingListIds) {
+        try {
+          const list = await prisma.readingList.findUnique({
+            where: { id: listId }
+          });
+          if (list) {
+            const updatedIds = Array.from(new Set([...list.articleIds, customArticle.id]));
+            await prisma.readingList.update({
+              where: { id: listId },
+              data: { articleIds: updatedIds }
+            });
+          }
+        } catch (listErr) {
+          console.error(`Failed to append article to reading list ${listId}:`, listErr);
+        }
+      }
+    }
 
     return NextResponse.json(customArticle, { status: 201 });
   } catch (error: any) {

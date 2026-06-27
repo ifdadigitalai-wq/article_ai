@@ -14,6 +14,7 @@ import {
   Loader2,
   Brain,
   ThumbsUp,
+  Trash2,
 } from "lucide-react";
 import { Article, Comment } from "../types";
 import AISidebar from "./AISidebar";
@@ -25,7 +26,8 @@ interface ArticleViewProps {
   isSaved: boolean;
   onToggleSave: () => void;
   onRecordCompleted: (articleId: string) => void;
-  user: { name: string; email: string; role: string; department: string } | null;
+  user: { id: string; name: string; email: string; role: string; department: string } | null;
+  onDeleteSuccess?: (articleId: string) => void;
 }
 
 export default function ArticleView({
@@ -35,6 +37,7 @@ export default function ArticleView({
   onToggleSave,
   onRecordCompleted,
   user,
+  onDeleteSuccess,
 }: ArticleViewProps) {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showAiCompanion, setShowAiCompanion] = useState(false);
@@ -56,6 +59,117 @@ export default function ArticleView({
   const [replyingToId, setReplyingToId] = useState<string | null>(null);
   const [replyContent, setReplyContent] = useState("");
   const [showShareTooltip, setShowShareTooltip] = useState(false);
+
+  // Reader Customization States
+  const [readerFont, setReaderFont] = useState<"serif" | "sans">("serif");
+  const [readerSize, setReaderSize] = useState<"sm" | "base" | "lg" | "xl">("lg");
+  const [readerTheme, setReaderTheme] = useState<"light" | "sepia" | "charcoal" | "dark">("light");
+  const [showReaderSettings, setShowReaderSettings] = useState(false);
+
+  const settingsPanelRef = useRef<HTMLDivElement>(null);
+  const [imgError, setImgError] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    setImgError(false);
+  }, [article.id]);
+
+  // Persistent settings loading
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedFont = localStorage.getItem("reader-font") as any;
+      const savedSize = localStorage.getItem("reader-size") as any;
+      const savedTheme = localStorage.getItem("reader-theme") as any;
+      if (savedFont) setReaderFont(savedFont);
+      if (savedSize) setReaderSize(savedSize);
+      if (savedTheme) setReaderTheme(savedTheme);
+    }
+  }, []);
+
+  const changeReaderFont = (font: "serif" | "sans") => {
+    setReaderFont(font);
+    localStorage.setItem("reader-font", font);
+  };
+
+  const changeReaderSize = (size: "sm" | "base" | "lg" | "xl") => {
+    setReaderSize(size);
+    localStorage.setItem("reader-size", size);
+  };
+
+  const changeReaderTheme = (theme: "light" | "sepia" | "charcoal" | "dark") => {
+    setReaderTheme(theme);
+    localStorage.setItem("reader-theme", theme);
+  };
+
+  // Close reader settings on outside click
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (settingsPanelRef.current && !settingsPanelRef.current.contains(e.target as Node)) {
+        setShowReaderSettings(false);
+      }
+    };
+    if (showReaderSettings) {
+      document.addEventListener("mousedown", handleOutsideClick);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [showReaderSettings]);
+
+  // Dynamic Theme Definitions
+  const themeClasses = {
+    light: {
+      bg: "bg-white",
+      pageBg: "bg-slate-50/50",
+      text: "text-slate-800",
+      title: "text-slate-950",
+      subtitle: "text-slate-550",
+      border: "border-slate-200/60",
+      meta: "text-slate-500",
+      commentBg: "bg-slate-50",
+      commentCard: "bg-slate-50 border-slate-200/60",
+    },
+    sepia: {
+      bg: "bg-[#faf6ee]",
+      pageBg: "bg-[#f5ebd3]",
+      text: "text-[#3c3022]",
+      title: "text-[#2a2014]",
+      subtitle: "text-[#5c4a36]",
+      border: "border-[#e6d8ba]",
+      meta: "text-[#705c47]",
+      commentBg: "bg-[#f5efe2]",
+      commentCard: "bg-[#f5efe2] border-[#ebdcb9]",
+    },
+    charcoal: {
+      bg: "bg-slate-900",
+      pageBg: "bg-slate-950",
+      text: "text-slate-350",
+      title: "text-slate-100",
+      subtitle: "text-slate-400",
+      border: "border-slate-800",
+      meta: "text-slate-500",
+      commentBg: "bg-slate-900/50",
+      commentCard: "bg-slate-900/50 border-slate-800/80",
+    },
+    dark: {
+      bg: "bg-black",
+      pageBg: "bg-black",
+      text: "text-slate-300",
+      title: "text-white",
+      subtitle: "text-slate-400",
+      border: "border-zinc-900",
+      meta: "text-slate-500",
+      commentBg: "bg-zinc-950",
+      commentCard: "bg-zinc-950 border-zinc-900",
+    },
+  }[readerTheme];
+
+  const sizeClasses = {
+    sm: "text-sm sm:text-base leading-[1.65]",
+    base: "text-base sm:text-lg leading-[1.7]",
+    lg: "text-lg sm:text-xl leading-[1.75]",
+    xl: "text-xl sm:text-2xl leading-[1.8]",
+  }[readerSize];
 
   // Time tracking effect
   useEffect(() => {
@@ -260,8 +374,65 @@ export default function ArticleView({
       });
   };
 
+  const handleDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete this custom article? This action cannot be undone.")) {
+      return;
+    }
+    
+    setIsDeleting(true);
+    try {
+      const res = await fetch(`/api/articles/${article.id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        if (onDeleteSuccess) {
+          onDeleteSuccess(article.id);
+        } else {
+          onBack();
+        }
+      } else {
+        const errorData = await res.json();
+        alert(errorData.error || "Failed to delete article");
+      }
+    } catch (err) {
+      console.error("Error deleting article:", err);
+      alert("An error occurred while deleting the article");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const scrollToComments = () => {
     commentsSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const getAvatarUrl = (avatar: string): string => {
+    if (!avatar) return "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80";
+    if (avatar.startsWith("http://") || avatar.startsWith("https://")) {
+      return avatar;
+    }
+    
+    const avatarMap: Record<string, string> = {
+      scholar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&h=120&fit=crop&q=80",
+      mentor: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&h=120&fit=crop&q=80",
+      tech: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&h=120&fit=crop&q=80",
+      creative: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&h=120&fit=crop&q=80"
+    };
+    
+    return avatarMap[avatar] || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80";
+  };
+
+  const preProcessMarkdown = (text: string): string => {
+    if (!text) return "";
+    return text
+      // Fix inline blockquotes (e.g., "text. > quote")
+      .replace(/([^\n])\s*>\s+/g, "$1\n> ")
+      // Fix inline list items (e.g., "text. * item" or "text. - item")
+      .replace(/([^\n])\s+[\*\-]\s+/g, "$1\n* ")
+      // Fix inline headings (e.g., "text. ## Heading")
+      .replace(/([^\n])\s*(#{1,6})\s+/g, "$1\n$2 ")
+      // Normalize multiple newlines
+      .replace(/\n{3,}/g, "\n\n");
   };
 
   const renderInlineMarkdown = (text: string): React.ReactNode => {
@@ -271,21 +442,21 @@ export default function ArticleView({
     return parts.map((part, i) => {
       if (part.startsWith("**") && part.endsWith("**")) {
         return (
-          <strong key={i} className="font-bold text-slate-900 dark:text-white">
+          <strong key={i} className="font-extrabold text-slate-950 dark:text-white transition-colors duration-300">
             {part.slice(2, -2)}
           </strong>
         );
       }
       if (part.startsWith("*") && part.endsWith("*")) {
         return (
-          <em key={i} className="italic text-slate-705 dark:text-slate-350">
+          <em key={i} className="italic text-slate-800 dark:text-slate-200 transition-colors duration-300">
             {part.slice(1, -1)}
           </em>
         );
       }
       if (part.startsWith("`") && part.endsWith("`")) {
         return (
-          <code key={i} className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono text-sm text-indigo-600 dark:text-indigo-400">
+          <code key={i} className="px-1.5 py-0.5 rounded bg-slate-100/80 dark:bg-slate-800/80 font-mono text-sm text-indigo-600 dark:text-indigo-400">
             {part.slice(1, -1)}
           </code>
         );
@@ -294,127 +465,193 @@ export default function ArticleView({
     });
   };
 
+  // Line-by-line streaming block parser to prevent single-newline heading errors
   const parseMarkdown = (rawText: string) => {
     if (!rawText) return null;
-    const normalizedText = rawText.replace(/\r\n/g, "\n");
-    const blocks = normalizedText.split("\n\n");
+    const cleanMarkdown = preProcessMarkdown(rawText);
+    const lines = cleanMarkdown.split("\n");
+
+    interface Block {
+      type: "h1" | "h2" | "h3" | "h4" | "h5" | "blockquote" | "ul" | "ol" | "p" | "hr";
+      lines: string[];
+    }
+
+    const blocks: Block[] = [];
+    let currentBlock: Block | null = null;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const trimmed = line.trim();
+
+      if (trimmed === "") {
+        currentBlock = null;
+        continue;
+      }
+
+      // Check for horizontal rule
+      if (trimmed === "***" || trimmed === "---" || trimmed === "___") {
+        blocks.push({ type: "hr", lines: [] });
+        currentBlock = null;
+        continue;
+      }
+
+      // Check for headings
+      const headingMatch = trimmed.match(/^(#{1,6})\s+(.*)$/) || trimmed.match(/^(#{1,6})([^#\s].*)$/);
+
+      if (headingMatch) {
+        const level = headingMatch[1].length;
+        const text = headingMatch[2].trim();
+        const type = `h${Math.min(level, 5)}` as any;
+        blocks.push({ type, lines: [text] });
+        currentBlock = null;
+        continue;
+      }
+
+      // Check for blockquote
+      if (trimmed.startsWith(">")) {
+        const text = trimmed.substring(1).trim();
+        if (currentBlock && currentBlock.type === "blockquote") {
+          currentBlock.lines.push(text);
+        } else {
+          currentBlock = { type: "blockquote", lines: [text] };
+          blocks.push(currentBlock);
+        }
+        continue;
+      }
+
+      // Check for list item (unordered)
+      if (trimmed.startsWith("* ") || trimmed.startsWith("- ") || trimmed === "*" || trimmed === "-") {
+        const text = (trimmed === "*" || trimmed === "-") ? "" : trimmed.substring(2).trim();
+        if (currentBlock && currentBlock.type === "ul") {
+          currentBlock.lines.push(text);
+        } else {
+          currentBlock = { type: "ul", lines: [text] };
+          blocks.push(currentBlock);
+        }
+        continue;
+      }
+
+      // Check for list item (ordered)
+      const olMatch = trimmed.match(/^(\d+)\.\s+(.*)$/);
+      if (olMatch) {
+        const text = olMatch[2].trim();
+        if (currentBlock && currentBlock.type === "ol") {
+          currentBlock.lines.push(text);
+        } else {
+          currentBlock = { type: "ol", lines: [text] };
+          blocks.push(currentBlock);
+        }
+        continue;
+      }
+
+      // Standard paragraph line
+      if (currentBlock && currentBlock.type === "p") {
+        currentBlock.lines.push(line);
+      } else {
+        currentBlock = { type: "p", lines: [line] };
+        blocks.push(currentBlock);
+      }
+    }
 
     return blocks.map((block, blockIndex) => {
-      const trimmedBlock = block.trim();
-      if (!trimmedBlock) return null;
+      const textContent = block.lines.join("\n");
+      const headingFont = readerFont === "serif" ? "font-display" : "font-sans";
+      const bodyFont = readerFont === "serif" ? "font-serif" : "font-sans";
 
-      // 1. Headings
-      if (trimmedBlock.startsWith("#### ")) {
-        return (
-          <h5 key={blockIndex} className="font-serif text-base font-bold text-slate-800 dark:text-white mt-4 mb-2">
-            {renderInlineMarkdown(trimmedBlock.substring(5).trim())}
-          </h5>
-        );
-      }
-      if (trimmedBlock.startsWith("### ")) {
-        return (
-          <h4 key={blockIndex} className="font-serif text-lg font-bold text-slate-800 dark:text-white mt-6 mb-2.5">
-            {renderInlineMarkdown(trimmedBlock.substring(4).trim())}
-          </h4>
-        );
-      }
-      if (trimmedBlock.startsWith("## ")) {
-        return (
-          <h3 key={blockIndex} className="font-serif text-xl font-extrabold text-slate-850 dark:text-white mt-8 mb-3">
-            {renderInlineMarkdown(trimmedBlock.substring(3).trim())}
-          </h3>
-        );
-      }
-      if (trimmedBlock.startsWith("# ")) {
-        return (
-          <h2 key={blockIndex} className="font-serif text-2xl font-black text-slate-900 dark:text-white mt-10 mb-4">
-            {renderInlineMarkdown(trimmedBlock.substring(2).trim())}
-          </h2>
-        );
-      }
-
-      // Fallback for older ###Header syntax without space
-      if (trimmedBlock.startsWith("###")) {
-        return (
-          <h4 key={blockIndex} className="font-serif text-lg font-bold text-slate-800 dark:text-white mt-6 mb-2.5">
-            {renderInlineMarkdown(trimmedBlock.substring(3).trim())}
-          </h4>
-        );
-      }
-      if (trimmedBlock.startsWith("##")) {
-        return (
-          <h3 key={blockIndex} className="font-serif text-xl font-extrabold text-slate-850 dark:text-white mt-8 mb-3">
-            {renderInlineMarkdown(trimmedBlock.substring(2).trim())}
-          </h3>
-        );
-      }
-
-      // 2. Blockquotes
-      if (trimmedBlock.startsWith(">")) {
-        const quoteLines = trimmedBlock.split("\n").map(line => {
-          const trimmedLine = line.trim();
-          if (trimmedLine.startsWith(">")) {
-            return trimmedLine.substring(1).trim();
-          }
-          return trimmedLine;
-        });
-        return (
-          <blockquote key={blockIndex} className="border-l-4 border-indigo-500 pl-4 py-1 my-6 font-serif italic font-normal text-slate-700 dark:text-slate-350 bg-slate-50/50 dark:bg-slate-900/30 rounded-r-xl pr-4">
-            {renderInlineMarkdown(quoteLines.join("\n"))}
-          </blockquote>
-        );
-      }
-
-      // 3. Bullet Lists
-      const lines = trimmedBlock.split("\n");
-      const isBulletList = lines.every(line => {
-        const t = line.trim();
-        return t.startsWith("* ") || t.startsWith("- ") || t === "*" || t === "-";
-      });
-      if (isBulletList && lines.length > 0) {
-        return (
-          <ul key={blockIndex} className="list-disc pl-6 mb-6 space-y-2 text-slate-650 dark:text-slate-300 font-sans font-normal text-base sm:text-lg">
-            {lines.map((line, lineIndex) => {
-              const t = line.trim();
-              const contentText = (t.startsWith("* ") || t.startsWith("- ")) ? t.substring(2).trim() : "";
-              return (
-                <li key={lineIndex} className="leading-relaxed">
-                  {renderInlineMarkdown(contentText)}
+      switch (block.type) {
+        case "h1":
+          return (
+            <h2
+              key={blockIndex}
+              className={`${headingFont} text-2xl sm:text-3xl font-black ${themeClasses.title} mt-10 mb-4.5 leading-tight tracking-tight text-balance transition-colors duration-300`}
+            >
+              {renderInlineMarkdown(textContent)}
+            </h2>
+          );
+        case "h2":
+          return (
+            <h3
+              key={blockIndex}
+              className={`${headingFont} text-xl sm:text-2xl font-extrabold ${themeClasses.title} mt-8 mb-4 leading-tight tracking-tight text-balance transition-colors duration-300`}
+            >
+              {renderInlineMarkdown(textContent)}
+            </h3>
+          );
+        case "h3":
+          return (
+            <h4
+              key={blockIndex}
+              className={`${headingFont} text-lg sm:text-xl font-bold ${themeClasses.title} mt-7 mb-3.5 leading-snug tracking-tight text-balance transition-colors duration-300`}
+            >
+              {renderInlineMarkdown(textContent)}
+            </h4>
+          );
+        case "h4":
+          return (
+            <h5
+              key={blockIndex}
+              className={`${headingFont} text-base sm:text-lg font-bold ${themeClasses.title} mt-6 mb-3 leading-snug tracking-tight text-balance transition-colors duration-300`}
+            >
+              {renderInlineMarkdown(textContent)}
+            </h5>
+          );
+        case "h5":
+          return (
+            <h6
+              key={blockIndex}
+              className={`${headingFont} text-sm sm:text-base font-bold ${themeClasses.title} mt-5 mb-2.5 leading-snug tracking-tight text-balance transition-colors duration-300`}
+            >
+              {renderInlineMarkdown(textContent)}
+            </h6>
+          );
+        case "blockquote":
+          return (
+            <blockquote
+              key={blockIndex}
+              className={`border-l-4 border-indigo-500 pl-5 py-2 my-8 ${bodyFont} italic ${themeClasses.text} bg-indigo-500/5 dark:bg-indigo-950/20 rounded-r-xl pr-5 leading-relaxed transition-colors duration-300`}
+            >
+              {renderInlineMarkdown(textContent)}
+            </blockquote>
+          );
+        case "ul":
+          return (
+            <ul
+              key={blockIndex}
+              className={`list-disc pl-6 mb-6 space-y-2.5 ${bodyFont} ${sizeClasses} ${themeClasses.text} transition-colors duration-300`}
+            >
+              {block.lines.map((li, liIndex) => (
+                <li key={liIndex} className="leading-relaxed">
+                  {renderInlineMarkdown(li)}
                 </li>
-              );
-            })}
-          </ul>
-        );
-      }
-
-      // 4. Numbered Lists
-      const isNumberedList = lines.every(line => {
-        const t = line.trim();
-        return /^\d+\.\s+/.test(t);
-      });
-      if (isNumberedList && lines.length > 0) {
-        return (
-          <ol key={blockIndex} className="list-decimal pl-6 mb-6 space-y-2 text-slate-655 dark:text-slate-300 font-sans font-normal text-base sm:text-lg">
-            {lines.map((line, lineIndex) => {
-              const t = line.trim();
-              const match = t.match(/^\d+\.\s+(.*)/);
-              const contentText = match ? match[1].trim() : t;
-              return (
-                <li key={lineIndex} className="leading-relaxed">
-                  {renderInlineMarkdown(contentText)}
+              ))}
+            </ul>
+          );
+        case "ol":
+          return (
+            <ol
+              key={blockIndex}
+              className={`list-decimal pl-6 mb-6 space-y-2.5 ${bodyFont} ${sizeClasses} ${themeClasses.text} transition-colors duration-300`}
+            >
+              {block.lines.map((li, liIndex) => (
+                <li key={liIndex} className="leading-relaxed">
+                  {renderInlineMarkdown(li)}
                 </li>
-              );
-            })}
-          </ol>
-        );
+              ))}
+            </ol>
+          );
+        case "hr":
+          return <hr key={blockIndex} className={`my-10 border-t ${themeClasses.border} transition-colors duration-300`} />;
+        case "p":
+        default:
+          return (
+            <p
+              key={blockIndex}
+              className={`${bodyFont} ${sizeClasses} ${themeClasses.text} font-normal mb-6 tracking-normal transition-colors duration-300`}
+            >
+              {renderInlineMarkdown(textContent)}
+            </p>
+          );
       }
-
-      // 5. Standard Paragraph
-      return (
-        <p key={blockIndex} className="font-sans font-normal text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
-          {renderInlineMarkdown(trimmedBlock)}
-        </p>
-      );
     });
   };
 
@@ -432,7 +669,7 @@ export default function ArticleView({
           return (
             <div
               key={comment.id}
-              className="group/comment rounded-2xl bg-slate-50 dark:bg-slate-900/50 p-4 border border-slate-200/50 dark:border-slate-800/80 transition-all"
+              className={`group/comment rounded-2xl p-4 border transition-all duration-300 ${themeClasses.commentCard}`}
               id={`comment-card-${comment.id}`}
             >
               <div className="flex items-center justify-between gap-2 mb-2">
@@ -441,17 +678,17 @@ export default function ArticleView({
                     {comment.author.charAt(0)}
                   </div>
                   <div className="flex flex-col">
-                    <span className="font-sans text-xs font-black text-slate-800 dark:text-slate-200">
+                    <span className={`font-sans text-xs font-black ${themeClasses.title}`}>
                       {comment.author}
                     </span>
                     {comment.authorRole && (
-                      <span className="text-[8px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
+                      <span className={`text-[8px] ${themeClasses.meta} font-bold uppercase tracking-wider`}>
                         {comment.authorRole} • {comment.authorDept}
                       </span>
                     )}
                   </div>
                 </div>
-                <span className="font-sans text-[10px] text-slate-400">
+                <span className={`font-sans text-[10px] ${themeClasses.meta}`}>
                   {new Date(comment.createdAt).toLocaleDateString(undefined, {
                     month: "short",
                     day: "numeric",
@@ -461,7 +698,7 @@ export default function ArticleView({
                 </span>
               </div>
 
-              <p className="font-sans text-sm text-slate-700 dark:text-slate-350 leading-relaxed mb-3 whitespace-pre-wrap">
+              <p className={`font-sans text-sm ${themeClasses.text} leading-relaxed mb-3 whitespace-pre-wrap`}>
                 {comment.content}
               </p>
 
@@ -478,7 +715,7 @@ export default function ArticleView({
                 </button>
                 <button
                   onClick={() => handleLikeComment(comment.id)}
-                  className="flex items-center gap-1 font-sans text-[10px] font-bold text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 uppercase tracking-widest cursor-pointer"
+                  className={`flex items-center gap-1 font-sans text-[10px] font-bold uppercase tracking-widest cursor-pointer ${themeClasses.meta} hover:text-indigo-600 dark:hover:text-indigo-400`}
                 >
                   <ThumbsUp className="h-3 w-3" />
                   <span>{comment.likes || 0} Likes</span>
@@ -488,16 +725,16 @@ export default function ArticleView({
               {isReplying && (
                 <form
                   onSubmit={(e) => handleAddComment(e, comment.id)}
-                  className="mt-4 p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl space-y-3"
+                  className={`mt-4 p-4 border rounded-xl space-y-3 transition-colors duration-300 ${themeClasses.bg} ${themeClasses.border}`}
                 >
-                  <div className="text-[10px] uppercase tracking-wider font-bold text-slate-400">
-                    Replying as: <span className="text-slate-700 dark:text-slate-300 font-extrabold">{user?.name}</span>
+                  <div className={`text-[10px] uppercase tracking-wider font-bold ${themeClasses.meta}`}>
+                    Replying as: <span className={`${themeClasses.title} font-extrabold`}>{user?.name}</span>
                   </div>
                   <textarea
                     value={replyContent}
                     onChange={(e) => setReplyContent(e.target.value)}
                     placeholder={`Reply to ${comment.author}...`}
-                    className="w-full font-sans text-xs border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 bg-slate-50 dark:bg-slate-950 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-slate-800 dark:text-slate-100 h-20 resize-none"
+                    className={`w-full font-sans text-xs border rounded-xl p-2.5 focus:outline-none focus:ring-1 focus:ring-indigo-500 h-20 resize-none transition-colors duration-300 ${themeClasses.commentBg} ${themeClasses.border} ${themeClasses.text}`}
                     required
                     maxLength={550}
                   />
@@ -522,7 +759,7 @@ export default function ArticleView({
   };
 
   return (
-    <div className="relative flex h-screen w-full flex-col bg-white dark:bg-slate-950" id={`article-view-${article.id}`}>
+    <div className={`relative flex h-screen w-full flex-col transition-colors duration-300 ${themeClasses.bg}`} id={`article-view-${article.id}`}>
       <div className="absolute top-0 left-0 z-50 h-[4px] w-full bg-slate-100 dark:bg-slate-800/80">
         <div
           className="h-full bg-gradient-to-r from-indigo-500 to-indigo-600 shadow-[0_1px_6px_rgba(99,102,241,0.5)] transition-all duration-75 ease-out"
@@ -531,10 +768,10 @@ export default function ArticleView({
       </div>
 
       {/* Reading Action Bar */}
-      <div className="flex h-14 items-center justify-between border-b border-slate-200/50 dark:border-slate-800/80 bg-white/95 dark:bg-slate-950/95 px-4 backdrop-blur-md">
+      <div className={`flex h-14 items-center justify-between border-b transition-colors duration-300 px-4 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md ${themeClasses.border}`}>
         <button
           onClick={onBack}
-          className="flex items-center gap-1 text-sm font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors cursor-pointer"
+          className={`flex items-center gap-1 text-sm font-semibold hover:text-indigo-600 transition-colors cursor-pointer ${themeClasses.meta}`}
           id="back-to-feed-btn"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -545,7 +782,7 @@ export default function ArticleView({
           <div className="relative">
             <button
               onClick={handleShare}
-              className="rounded-full p-2 text-slate-550 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-900 transition-colors cursor-pointer"
+              className={`rounded-full p-2 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors cursor-pointer ${themeClasses.meta}`}
               id="share-article-btn"
               title="Share Link"
             >
@@ -567,7 +804,7 @@ export default function ArticleView({
 
           <button
             onClick={scrollToComments}
-            className="rounded-full p-2 text-slate-550 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-900 transition-colors flex items-center gap-1 cursor-pointer"
+            className={`rounded-full p-2 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors flex items-center gap-1 cursor-pointer ${themeClasses.meta}`}
             id="comments-shortcut-btn"
             title="Jump to Discourse"
           >
@@ -592,12 +829,159 @@ export default function ArticleView({
             <span>Ai Summary</span>
           </button>
 
+          {/* Reader Settings Toggle */}
+          <div className="relative" ref={settingsPanelRef}>
+            <button
+              onClick={() => setShowReaderSettings(!showReaderSettings)}
+              className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold font-sans transition-colors cursor-pointer border ${
+                showReaderSettings
+                  ? "bg-indigo-600 border-indigo-600 text-white shadow-sm"
+                  : `border-transparent hover:bg-slate-100 dark:hover:bg-slate-900 ${themeClasses.meta}`
+              }`}
+              id="reader-settings-toggle"
+              title="Typography & Theme Settings"
+            >
+              Aa
+            </button>
+            
+            {showReaderSettings && (
+              <div className={`absolute right-0 top-full mt-2.5 z-50 w-72 rounded-2xl border p-4 shadow-xl flex flex-col gap-4 animate-fadeIn transition-colors duration-300 ${themeClasses.bg} ${themeClasses.border} ${themeClasses.text}`}>
+                <div className="space-y-2">
+                  <span className="text-[10px] font-black uppercase tracking-wider opacity-60">Font Style</span>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => changeReaderFont("serif")}
+                      className={`flex items-center justify-center gap-1.5 rounded-xl py-2 px-3 text-xs font-bold border transition-all cursor-pointer ${
+                        readerFont === "serif"
+                          ? "border-indigo-600 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-serif"
+                          : `${themeClasses.border} hover:bg-slate-500/5`
+                      }`}
+                    >
+                      <span className="font-serif font-black text-sm">A</span>
+                      <span className="font-serif">Serif</span>
+                    </button>
+                    <button
+                      onClick={() => changeReaderFont("sans")}
+                      className={`flex items-center justify-center gap-1.5 rounded-xl py-2 px-3 text-xs font-bold border transition-all cursor-pointer ${
+                        readerFont === "sans"
+                          ? "border-indigo-600 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-sans"
+                          : `${themeClasses.border} hover:bg-slate-500/5`
+                      }`}
+                    >
+                      <span className="font-sans font-black text-sm">A</span>
+                      <span className="font-sans">Sans</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <span className="text-[10px] font-black uppercase tracking-wider opacity-60">Text Size</span>
+                  <div className="flex items-center justify-between gap-2">
+                    <button
+                      onClick={() => {
+                        if (readerSize === "xl") changeReaderSize("lg");
+                        else if (readerSize === "lg") changeReaderSize("base");
+                        else if (readerSize === "base") changeReaderSize("sm");
+                      }}
+                      disabled={readerSize === "sm"}
+                      className={`flex h-9 w-9 items-center justify-center rounded-xl border text-xs font-bold transition-all cursor-pointer disabled:opacity-30 ${themeClasses.border} hover:bg-slate-500/5`}
+                      title="Decrease font size"
+                    >
+                      A-
+                    </button>
+                    <span className="text-xs font-bold uppercase tracking-wider bg-slate-500/5 px-3 py-1 rounded-lg">
+                      {readerSize === "sm" && "Small"}
+                      {readerSize === "base" && "Medium"}
+                      {readerSize === "lg" && "Large"}
+                      {readerSize === "xl" && "Extra Large"}
+                    </span>
+                    <button
+                      onClick={() => {
+                        if (readerSize === "sm") changeReaderSize("base");
+                        else if (readerSize === "base") changeReaderSize("lg");
+                        else if (readerSize === "lg") changeReaderSize("xl");
+                      }}
+                      disabled={readerSize === "xl"}
+                      className={`flex h-9 w-9 items-center justify-center rounded-xl border text-base font-bold transition-all cursor-pointer disabled:opacity-30 ${themeClasses.border} hover:bg-slate-500/5`}
+                      title="Increase font size"
+                    >
+                      A+
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <span className="text-[10px] font-black uppercase tracking-wider opacity-60">Reading Mode</span>
+                  <div className="grid grid-cols-4 gap-2">
+                    {/* Light */}
+                    <button
+                      onClick={() => changeReaderTheme("light")}
+                      className={`flex h-10 w-full items-center justify-center rounded-xl border transition-all cursor-pointer bg-white text-slate-800 ${
+                        readerTheme === "light" ? "ring-2 ring-indigo-500 border-transparent scale-103" : "border-slate-200"
+                      }`}
+                      title="Light Theme"
+                    >
+                      <span className="text-[10px] font-extrabold font-sans">Aa</span>
+                    </button>
+                    {/* Sepia */}
+                    <button
+                      onClick={() => changeReaderTheme("sepia")}
+                      className={`flex h-10 w-full items-center justify-center rounded-xl border transition-all cursor-pointer bg-[#faf6ee] text-[#3c3022] ${
+                        readerTheme === "sepia" ? "ring-2 ring-indigo-500 border-transparent scale-103" : "border-[#ebdcb9]"
+                      }`}
+                      title="Sepia Theme"
+                    >
+                      <span className="text-[10px] font-extrabold font-serif">Aa</span>
+                    </button>
+                    {/* Charcoal */}
+                    <button
+                      onClick={() => changeReaderTheme("charcoal")}
+                      className={`flex h-10 w-full items-center justify-center rounded-xl border transition-all cursor-pointer bg-slate-800 text-slate-200 ${
+                        readerTheme === "charcoal" ? "ring-2 ring-indigo-500 border-transparent scale-103" : "border-slate-700"
+                      }`}
+                      title="Charcoal Theme"
+                    >
+                      <span className="text-[10px] font-extrabold font-sans">Aa</span>
+                    </button>
+                    {/* Dark */}
+                    <button
+                      onClick={() => changeReaderTheme("dark")}
+                      className={`flex h-10 w-full items-center justify-center rounded-xl border transition-all cursor-pointer bg-black text-slate-200 ${
+                        readerTheme === "dark" ? "ring-2 ring-indigo-500 border-transparent scale-103" : "border-zinc-800"
+                      }`}
+                      title="Midnight Theme"
+                    >
+                      <span className="text-[10px] font-extrabold font-sans">Aa</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Delete Button (only for creator or admin) */}
+          {article.isCustom && user && (user.id === article.createdBy || user.role === "admin") && (
+            <button
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className={`rounded-full p-2 transition-colors cursor-pointer text-rose-600 dark:text-rose-450 hover:bg-rose-50 dark:hover:bg-rose-950/20 disabled:opacity-50`}
+              id="delete-article-btn"
+              title="Delete Article"
+            >
+              {isDeleting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Trash2 className="h-4 w-4" />
+              )}
+            </button>
+          )}
+
           <button
             onClick={onToggleSave}
             className={`rounded-full p-2 transition-colors cursor-pointer ${
               isSaved
                 ? "text-indigo-600 bg-indigo-500/10 hover:bg-indigo-500/20"
-                : "text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-900"
+                : `hover:bg-slate-100 dark:hover:bg-slate-900 ${themeClasses.meta}`
             }`}
             id="bookmark-btn"
           >
@@ -607,45 +991,57 @@ export default function ArticleView({
       </div>
 
       {/* Main Split Reading Container */}
-      <div className="flex h-[calc(100vh-3.5rem)] w-full overflow-hidden">
-        <div ref={articleRef} className="h-full flex-1 overflow-y-auto px-4 py-8 sm:px-8 md:px-12 lg:px-16">
+      <div className={`flex h-[calc(100vh-3.5rem)] w-full overflow-hidden transition-colors duration-300 ${themeClasses.pageBg}`}>
+        <div 
+          ref={articleRef} 
+          className={`h-full flex-1 overflow-y-auto px-4 py-8 sm:px-8 md:px-12 lg:px-16 transition-colors duration-300 ${themeClasses.bg} ${themeClasses.text}`}
+        >
           <div className="mx-auto max-w-2xl">
-            <div className="mb-4">
+            <div className="mb-6">
               <span className="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
                 {article.category}
               </span>
-              <h1 className="mt-2 font-serif text-3xl font-bold leading-tight text-slate-850 dark:text-white sm:text-4xl md:text-5xl">
+              <h1 className={`mt-2 ${readerFont === "serif" ? "font-display" : "font-sans"} text-3xl font-extrabold leading-tight ${themeClasses.title} sm:text-4xl md:text-5xl tracking-tight text-balance transition-colors duration-300`}>
                 {article.title}
               </h1>
-              <p className="mt-3 text-base text-slate-500 dark:text-slate-400 sm:text-lg italic">
+              <p className={`mt-3 ${readerFont === "serif" ? "font-serif" : "font-sans"} text-base sm:text-lg italic ${themeClasses.subtitle} transition-colors duration-300`}>
                 {article.subtitle}
               </p>
             </div>
 
-            <div className="my-6 flex items-center gap-3 border-y border-slate-200/50 dark:border-slate-800/80 py-4">
+            <div className={`my-6 flex items-center gap-3 border-y py-4 transition-colors duration-300 ${themeClasses.border}`}>
               <img
-                src={article.author.avatar}
+                src={getAvatarUrl(article.author.avatar)}
                 alt={article.author.name}
                 referrerPolicy="no-referrer"
                 className="h-10 w-10 rounded-full object-cover grayscale"
               />
               <div>
-                <p className="text-sm font-bold text-slate-800 dark:text-slate-250">
+                <p className={`text-sm font-bold ${themeClasses.title} transition-colors duration-300`}>
                   {article.author.name}
                 </p>
-                <p className="text-xs text-slate-450 dark:text-slate-500">
+                <p className={`text-xs ${themeClasses.meta} transition-colors duration-300`}>
                   {article.author.role} • {article.date} • {article.readTime}
                 </p>
               </div>
             </div>
 
-            <div className="mb-8 overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-900 shadow-sm">
-              <img
-                src={article.imageUrl}
-                alt={article.imageAlt}
-                referrerPolicy="no-referrer"
-                className="w-full object-cover max-h-[350px]"
-              />
+            <div className={`mb-8 overflow-hidden rounded-2xl shadow-sm transition-all duration-300 border flex items-center justify-center relative aspect-video ${themeClasses.border} ${themeClasses.commentBg}`}>
+              {imgError || !article.imageUrl ? (
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 via-purple-500/10 to-slate-500/5 flex flex-col items-center justify-center p-6 text-center select-none">
+                  <BookOpen className="w-12 h-12 text-indigo-500/60 mb-2" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-indigo-650 dark:text-indigo-400">{article.category}</span>
+                  <span className="text-sm font-serif italic mt-1 opacity-70">{article.title}</span>
+                </div>
+              ) : (
+                <img
+                  src={article.imageUrl}
+                  alt={article.imageAlt}
+                  referrerPolicy="no-referrer"
+                  onError={() => setImgError(true)}
+                  className="w-full h-full object-cover max-h-[400px] hover:scale-[1.01] transition-transform duration-500"
+                />
+              )}
             </div>
 
             <div className="prose prose-slate dark:prose-invert max-w-none">
@@ -659,15 +1055,15 @@ export default function ArticleView({
               )}
             </div>
 
-            <div className="my-12 flex flex-col items-center justify-center border-t border-slate-200/60 dark:border-slate-850 pt-8 text-center">
-              <BookOpen className="h-6 w-6 text-slate-300 dark:text-slate-700 mb-2" />
-              <p className="text-xs font-semibold tracking-wider text-slate-450 uppercase">
+            <div className={`my-12 flex flex-col items-center justify-center border-t pt-8 text-center transition-colors duration-300 ${themeClasses.border}`}>
+              <BookOpen className={`h-6 w-6 mb-2 ${themeClasses.meta} transition-colors duration-300`} />
+              <p className={`text-xs font-semibold tracking-wider uppercase ${themeClasses.meta} transition-colors duration-300`}>
                 End of Reading
               </p>
               <div className="mt-4 flex flex-wrap justify-center gap-3">
                 <button
                   onClick={handleShare}
-                  className="flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-5 py-2.5 text-xs font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-50 transition-all cursor-pointer"
+                  className={`flex items-center gap-1.5 rounded-xl border px-5 py-2.5 text-xs font-bold transition-all cursor-pointer ${themeClasses.bg} ${themeClasses.border} ${themeClasses.title} hover:bg-slate-500/5`}
                 >
                   <Share2 className="h-4 w-4" />
                   <span>Share Article</span>
@@ -690,13 +1086,13 @@ export default function ArticleView({
             </div>
 
             {/* Comments Section */}
-            <div ref={commentsSectionRef} className="mt-16 border-t border-slate-200/60 dark:border-slate-850 pt-12 pb-24" id="comments-section">
+            <div ref={commentsSectionRef} className={`mt-16 border-t pt-12 pb-24 transition-colors duration-300 ${themeClasses.border}`} id="comments-section">
               <div className="flex items-center justify-between gap-4 mb-8">
                 <div className="flex flex-col">
                   <span className="text-[10px] uppercase tracking-[0.2em] font-sans font-black text-indigo-600 dark:text-indigo-400">
                     Community Discourse
                   </span>
-                  <h2 className="font-serif text-2xl font-bold tracking-tight text-slate-850 dark:text-white sm:text-3xl mt-1">
+                  <h2 className={`font-serif text-2xl font-bold tracking-tight ${themeClasses.title} sm:text-3xl mt-1`}>
                     Discussion & Letters
                   </h2>
                 </div>
@@ -705,16 +1101,16 @@ export default function ArticleView({
                 </div>
               </div>
 
-              <form onSubmit={(e) => handleAddComment(e, null)} className="mb-10 bg-slate-50 dark:bg-slate-900/50 p-5 rounded-2xl border border-slate-200/50 dark:border-slate-800/80 backdrop-blur-md space-y-4">
-                <div className="text-xs font-bold uppercase tracking-wider text-slate-450">
-                  Signing Letter as: <span className="text-slate-800 dark:text-slate-200 font-extrabold">{user?.name}</span>
+              <form onSubmit={(e) => handleAddComment(e, null)} className={`mb-10 p-5 rounded-2xl border backdrop-blur-md space-y-4 transition-colors duration-300 ${themeClasses.commentCard}`}>
+                <div className={`text-xs font-bold uppercase tracking-wider ${themeClasses.meta}`}>
+                  Signing Letter as: <span className={`${themeClasses.title} font-extrabold`}>{user?.name}</span>
                 </div>
                 <div>
                   <textarea
                     value={newContent}
                     onChange={(e) => setNewContent(e.target.value)}
                     placeholder="Share your thoughts, analysis, or critique on this thesis..."
-                    className="w-full font-sans text-sm border border-slate-200 dark:border-slate-800 rounded-xl p-3 bg-white dark:bg-slate-950 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-slate-800 dark:text-slate-100 h-28 resize-none transition-all placeholder:text-slate-400"
+                    className={`w-full font-sans text-sm border rounded-xl p-3 focus:outline-none focus:ring-1 focus:ring-indigo-500 h-28 resize-none transition-colors placeholder:text-slate-400 ${themeClasses.bg} ${themeClasses.border} ${themeClasses.text}`}
                     required
                     maxLength={1000}
                   />
@@ -723,7 +1119,7 @@ export default function ArticleView({
                   <button
                     type="submit"
                     disabled={!newContent.trim()}
-                    className="flex items-center gap-1.5 rounded-xl bg-indigo-600 text-white px-5 py-2.5 text-xs font-sans font-bold uppercase tracking-widest hover:bg-indigo-750 transition-all shadow-xs disabled:opacity-50 cursor-pointer"
+                    className="flex items-center gap-1.5 rounded-xl bg-indigo-600 text-white px-5 py-2.5 text-xs font-sans font-bold uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-xs disabled:opacity-50 cursor-pointer"
                   >
                     <Send className="h-3 w-3" />
                     <span>Post Letter</span>
@@ -736,10 +1132,10 @@ export default function ArticleView({
                   <span className="animate-pulse font-sans font-bold tracking-widest uppercase text-[10px] text-indigo-500">Loading Discourse...</span>
                 </div>
               ) : comments.length === 0 ? (
-                <div className="text-center py-12 rounded-2xl bg-slate-50 dark:bg-slate-900/30 border border-dashed border-slate-200 dark:border-slate-800">
-                  <MessageSquare className="h-8 w-8 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
-                  <p className="font-serif text-base italic text-slate-550 dark:text-slate-450 font-medium">No discourse has started yet.</p>
-                  <p className="font-sans text-xs text-slate-400 mt-1">Be the first to submit a letter to the editor.</p>
+                <div className={`text-center py-12 rounded-2xl border border-dashed transition-colors duration-300 ${themeClasses.border}`}>
+                  <MessageSquare className={`h-8 w-8 mx-auto mb-3 ${themeClasses.meta}`} />
+                  <p className="font-serif text-base italic font-medium">No discourse has started yet.</p>
+                  <p className={`font-sans text-xs mt-1 ${themeClasses.meta}`}>Be the first to submit a letter to the editor.</p>
                 </div>
               ) : (
                 <div className="space-y-6">

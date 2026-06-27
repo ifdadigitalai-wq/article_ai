@@ -18,6 +18,8 @@ import {
   LogOut,
   MessageSquare,
   Users,
+  BarChart3,
+  PlusCircle,
 } from "lucide-react";
 import { TabId } from "./BottomNav";
 import DarkModeToggle from "./DarkModeToggle";
@@ -70,16 +72,24 @@ export default function NavigationSidebar({
   isPersistent = false,
   user,
 }: NavigationSidebarProps) {
-  const isFaculty = user?.role === "faculty" || user?.role === "admin";
+  const isFaculty = user?.role === "faculty";
   const isAdmin = user?.role === "admin";
 
   let navItems = [];
   if (isAdmin) {
     navItems = [
-      { id: "admin" as TabId, label: "Admin Panel", icon: ShieldAlert },
-      { id: "students" as TabId, label: "Manage Students", icon: Users },
+      { id: "dashboard" as TabId, label: "Dashboard", icon: BarChart3 },
+      { id: "uploaded" as TabId, label: "Uploaded", icon: Layers },
       { id: "discussions" as TabId, label: "Discussions", icon: MessageSquare },
-      { id: "profile" as TabId, label: "My Profile", icon: User },
+      { id: "create-article" as TabId, label: "Create Article", icon: PlusCircle },
+      { id: "students" as TabId, label: "Manage Students", icon: Users },
+    ];
+  } else if (isFaculty) {
+    navItems = [
+      { id: "dashboard" as TabId, label: "Dashboard", icon: BarChart3 },
+      { id: "uploaded" as TabId, label: "Uploaded", icon: Layers },
+      { id: "discussions" as TabId, label: "Discussions", icon: MessageSquare },
+      { id: "create-article" as TabId, label: "Create Article", icon: PlusCircle },
     ];
   } else {
     navItems = [
@@ -90,9 +100,6 @@ export default function NavigationSidebar({
       { id: "leaderboard" as TabId, label: "Leaderboard", icon: Award },
       { id: "profile" as TabId, label: "My Profile", icon: User },
     ];
-    if (isFaculty) {
-      navItems.push({ id: "admin" as TabId, label: "Admin Panel", icon: ShieldAlert });
-    }
   }
 
   const handleTabClick = (tabId: TabId) => {
@@ -168,9 +175,15 @@ export default function NavigationSidebar({
         
         {/* Dynamic User Profile Card */}
         {user && (
-          <button
-            onClick={() => handleTabClick("profile")}
-            className="w-full text-left rounded-2xl border border-slate-200/60 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 p-4 shadow-xs backdrop-blur-md hover:border-slate-350 dark:hover:border-slate-700 transition-all cursor-pointer group"
+          <div
+            onClick={
+              user.role === "faculty" || user.role === "admin"
+                ? undefined
+                : () => handleTabClick("profile")
+            }
+            className={`w-full text-left rounded-2xl border border-slate-200/60 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 p-4 shadow-xs backdrop-blur-md hover:border-slate-350 dark:hover:border-slate-700 transition-all group ${
+              user.role === "faculty" || user.role === "admin" ? "" : "cursor-pointer"
+            }`}
           >
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 text-2xl shadow-inner border border-indigo-100/30 dark:border-indigo-900/20">
@@ -180,12 +193,12 @@ export default function NavigationSidebar({
                 <span className="text-xs font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                   {user.name}
                 </span>
-                <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">
+                <span className="text-[10px] text-slate-400 dark:text-slate-550 font-medium">
                   {user.role.toUpperCase()} • {user.department}
                 </span>
               </div>
             </div>
-          </button>
+          </div>
         )}
 
         {/* Navigation Links */}
@@ -218,7 +231,7 @@ export default function NavigationSidebar({
         </div>
 
         {/* Categories Shortcut */}
-        {!isAdmin && (
+        {!isAdmin && !isFaculty && (
           <div>
             <h3 className="mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-550">
               Topic Categories
@@ -245,7 +258,7 @@ export default function NavigationSidebar({
         )}
 
         {/* Library Stats Heatmap overview */}
-        {!isAdmin && (
+        {!isAdmin && !isFaculty && (
           <div>
             <h3 className="mb-2 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-550">
               Reading Progress
@@ -284,7 +297,7 @@ export default function NavigationSidebar({
 
         {/* Action Buttons */}
         <div className="pt-2 border-t border-slate-200/60 dark:border-slate-800/80 flex flex-col gap-1">
-          {!isAdmin && (
+          {!isAdmin &&   !isFaculty && (
             <button
               onClick={() => {
                 if (confirm("Are you sure you want to clear your reading history?")) {

@@ -17,6 +17,8 @@ export interface Article {
   date: string;
   author: Author;
   featured?: boolean;
+  isCustom?: boolean;
+  createdBy?: string | null;
 }
 
 export interface Summary {

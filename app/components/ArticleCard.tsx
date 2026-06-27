@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { Sparkles, ArrowRight, BookOpen } from "lucide-react";
 import { Article } from "../types";
 
 interface ArticleCardProps {
@@ -12,6 +12,28 @@ interface ArticleCardProps {
 }
 
 export default function ArticleCard({ article, onRead, onQuickSummary, isAssigned = false }: ArticleCardProps) {
+  const [imgError, setImgError] = useState(false);
+
+  useEffect(() => {
+    setImgError(false);
+  }, [article.id]);
+
+  const getAvatarUrl = (avatar: string): string => {
+    if (!avatar) return "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80";
+    if (avatar.startsWith("http://") || avatar.startsWith("https://")) {
+      return avatar;
+    }
+    
+    const avatarMap: Record<string, string> = {
+      scholar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&h=120&fit=crop&q=80",
+      mentor: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&h=120&fit=crop&q=80",
+      tech: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&h=120&fit=crop&q=80",
+      creative: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&h=120&fit=crop&q=80"
+    };
+    
+    return avatarMap[avatar] || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80";
+  };
+
   if (article.featured) {
     return (
       <motion.div
@@ -21,13 +43,21 @@ export default function ArticleCard({ article, onRead, onQuickSummary, isAssigne
         transition={{ duration: 0.3 }}
         id={`featured-card-${article.id}`}
       >
-        <div className="aspect-[3/4] w-full sm:aspect-video relative overflow-hidden bg-[#e2e8f0] dark:bg-slate-900">
-          <img
-            src={article.imageUrl}
-            alt={article.imageAlt}
-            referrerPolicy="no-referrer"
-            className="h-full w-full object-cover opacity-90 transition-transform duration-700 ease-out group-hover:scale-105"
-          />
+        <div className="aspect-[3/4] w-full sm:aspect-video relative overflow-hidden bg-[#e2e8f0] dark:bg-slate-900 flex items-center justify-center">
+          {imgError || !article.imageUrl ? (
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 via-purple-500/10 to-slate-500/5 flex flex-col items-center justify-center p-6 text-center">
+              <BookOpen className="h-10 w-10 text-indigo-500/60 mb-2" />
+              <span className="text-xs font-bold uppercase tracking-widest text-indigo-650 dark:text-indigo-400">{article.category}</span>
+            </div>
+          ) : (
+            <img
+              src={article.imageUrl}
+              alt={article.imageAlt}
+              referrerPolicy="no-referrer"
+              onError={() => setImgError(true)}
+              className="h-full w-full object-cover opacity-90 transition-transform duration-700 ease-out group-hover:scale-105"
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-transparent to-transparent pointer-events-none" />
         </div>
 
@@ -72,13 +102,21 @@ export default function ArticleCard({ article, onRead, onQuickSummary, isAssigne
       whileHover={{ y: -2 }}
       id={`article-card-${article.id}`}
     >
-      <div className="aspect-video w-full overflow-hidden rounded-xl bg-[#e2e8f0] dark:bg-slate-900 border border-charcoal/5 dark:border-slate-800/40 relative">
-        <img
-          src={article.imageUrl}
-          alt={article.imageAlt}
-          referrerPolicy="no-referrer"
-          className="h-full w-full object-cover transition-transform duration-750 ease-out group-hover:scale-103"
-        />
+      <div className="aspect-video w-full overflow-hidden rounded-xl bg-[#e2e8f0] dark:bg-slate-900 border border-charcoal/5 dark:border-slate-800/40 relative flex items-center justify-center">
+        {imgError || !article.imageUrl ? (
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 via-purple-500/10 to-slate-500/5 flex flex-col items-center justify-center p-4 text-center">
+            <BookOpen className="h-8 w-8 text-indigo-500/60 mb-1" />
+            <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-650 dark:text-indigo-400">{article.category}</span>
+          </div>
+        ) : (
+          <img
+            src={article.imageUrl}
+            alt={article.imageAlt}
+            referrerPolicy="no-referrer"
+            onError={() => setImgError(true)}
+            className="h-full w-full object-cover transition-transform duration-750 ease-out group-hover:scale-103"
+          />
+        )}
       </div>
 
       <div className="mt-4 flex items-center justify-between">
@@ -95,7 +133,7 @@ export default function ArticleCard({ article, onRead, onQuickSummary, isAssigne
 
         <button
           onClick={(e) => onQuickSummary(article, e)}
-          className="flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-[11px] font-sans font-bold uppercase tracking-wider text-primary dark:text-indigo-400 transition-all hover:bg-primary hover:text-white dark:hover:bg-indigo-550"
+          className="flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/5 px-3.5 py-1 text-[11px] font-sans font-bold uppercase tracking-wider text-primary dark:text-indigo-400 transition-all hover:bg-primary hover:text-white dark:hover:bg-indigo-550"
           id={`quick-summary-btn-${article.id}`}
         >
           <Sparkles className="h-3 w-3" />
@@ -113,7 +151,7 @@ export default function ArticleCard({ article, onRead, onQuickSummary, isAssigne
 
       <div className="mt-4 flex items-center gap-3">
         <img
-          src={article.author.avatar}
+          src={getAvatarUrl(article.author.avatar)}
           alt={article.author.name}
           referrerPolicy="no-referrer"
           className="h-9 w-9 rounded-full object-cover grayscale border border-charcoal/10 dark:border-slate-800"

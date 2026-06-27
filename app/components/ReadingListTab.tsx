@@ -227,15 +227,31 @@ export default function ReadingListTab({ articles, onRead, userRole, userDepartm
         </form>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {lists.length === 0 ? (
-            <div className="col-span-full p-8 text-center text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-2xl">
-              No reading lists created yet. Faculty members will release syllabus guides soon!
-            </div>
-          ) : (
-            lists.map((list) => {
+          {(() => {
+            const studentFilteredLists = lists.filter((list) => {
+              if (isFaculty) return true;
               const matchedArticles = list.articleIds
                 .map((id) => articles.find((a) => a.id === id))
                 .filter(Boolean) as Article[];
+              return matchedArticles.some((art) => art.isCustom);
+            });
+
+            if (studentFilteredLists.length === 0) {
+              return (
+                <div className="col-span-full p-8 text-center text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-2xl">
+                  No reading lists created yet. Faculty members will release syllabus guides soon!
+                </div>
+              );
+            }
+
+            return studentFilteredLists.map((list) => {
+              const matchedArticles = list.articleIds
+                .map((id) => articles.find((a) => a.id === id))
+                .filter(Boolean) as Article[];
+
+              const displayArticles = isFaculty
+                ? matchedArticles
+                : matchedArticles.filter((art) => art.isCustom);
 
               const assignedToStudent = list.department === userDepartment;
 
@@ -261,10 +277,10 @@ export default function ReadingListTab({ articles, onRead, userRole, userDepartm
 
                   <div className="border-t border-slate-100 dark:border-slate-800/80 pt-4 space-y-2.5">
                     <p className="text-xs font-semibold text-slate-450 uppercase tracking-wide">
-                      Articles List ({matchedArticles.length})
+                      Articles List ({displayArticles.length})
                     </p>
                     <div className="space-y-1.5">
-                      {matchedArticles.map((art) => (
+                      {displayArticles.map((art) => (
                         <button
                           key={art.id}
                           onClick={() => onRead(art)}
@@ -282,8 +298,8 @@ export default function ReadingListTab({ articles, onRead, userRole, userDepartm
                   </div>
                 </div>
               );
-            })
-          )}
+            });
+          })()}
         </div>
       )}
     </div>

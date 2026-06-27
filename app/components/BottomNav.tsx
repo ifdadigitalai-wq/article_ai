@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Home, Compass, Bookmark, Layers, User, Award, ShieldAlert, MessageSquare, Users } from "lucide-react";
+import { Home, Compass, Bookmark, Layers, User, Award, ShieldAlert, MessageSquare, Users, BarChart3, PlusCircle } from "lucide-react";
 
 export type TabId =
   | "home"
@@ -14,7 +14,10 @@ export type TabId =
   | "reading-lists"
   | "discussions"
   | "students"
-  | "admin";
+  | "admin"
+  | "dashboard"
+  | "uploaded"
+  | "create-article";
 
 interface BottomNavProps {
   activeTab: TabId;
@@ -23,15 +26,21 @@ interface BottomNavProps {
 }
 
 export default function BottomNav({ activeTab, onTabChange, userRole }: BottomNavProps) {
-  const isFaculty = userRole === "faculty" || userRole === "admin";
-
   let navItems = [];
   if (userRole === "admin") {
     navItems = [
-      { id: "admin" as TabId, label: "Admin", icon: ShieldAlert },
+      { id: "dashboard" as TabId, label: "Dashboard", icon: BarChart3 },
+      { id: "uploaded" as TabId, label: "Uploaded", icon: Layers },
+      { id: "discussions" as TabId, label: "Discussion", icon: MessageSquare },
+      { id: "create-article" as TabId, label: "Create Article", icon: PlusCircle },
       { id: "students" as TabId, label: "Students", icon: Users },
-      { id: "discussions" as TabId, label: "Discussions", icon: MessageSquare },
-      { id: "profile" as TabId, label: "Profile", icon: User },
+    ];
+  } else if (userRole === "faculty") {
+    navItems = [
+      { id: "dashboard" as TabId, label: "Dashboard", icon: BarChart3 },
+      { id: "uploaded" as TabId, label: "Uploaded", icon: Layers },
+      { id: "discussions" as TabId, label: "Discussion", icon: MessageSquare },
+      { id: "create-article" as TabId, label: "Create Article", icon: PlusCircle },
     ];
   } else {
     navItems = [
@@ -41,9 +50,6 @@ export default function BottomNav({ activeTab, onTabChange, userRole }: BottomNa
       { id: "leaderboard" as TabId, label: "Leaderboard", icon: Award },
       { id: "profile" as TabId, label: "Profile", icon: User },
     ];
-    if (isFaculty) {
-      navItems[3] = { id: "admin" as TabId, label: "Admin Panel", icon: ShieldAlert };
-    }
   }
 
   return (
