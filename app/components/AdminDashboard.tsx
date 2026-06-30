@@ -94,125 +94,212 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
   // Find max reads count to scale helper bar charts
   const maxReadCount = Math.max(...data.articlesReadPerDay.map((d) => d.count), 1);
 
-  return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-8 animate-fadeIn">
-      {/* Header */}
-      <div className="text-center md:text-left space-y-1 border-b border-slate-100 dark:border-slate-800/80 pb-5">
-        <h2 className="text-2xl font-bold text-slate-855 dark:text-slate-150 tracking-tight flex items-center gap-2 justify-center md:justify-start">
-          <BarChart3 className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-          <span>Faculty & Admin Dashboard</span>
-        </h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-          Monitor platform metrics, user engagement levels, and popular syllabus resources.
-        </p>
+ return (
+  <div className="
+    max-w-6xl mx-auto 
+    px-4 sm:px-6 lg:px-8 
+    py-6 sm:py-8 
+    space-y-6 sm:space-y-8
+    animate-fadeIn
+  ">
+
+    {/* Header */}
+    <div className="
+      text-center md:text-left space-y-2 
+      border-b border-slate-200/50 dark:border-slate-800/60 
+      pb-4 sm:pb-6
+    ">
+      <h2 className="
+        text-xl sm:text-2xl md:text-3xl 
+        font-bold tracking-tight 
+        flex items-center gap-2 justify-center md:justify-start
+        text-slate-900 dark:text-white
+      ">
+        <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600 dark:text-indigo-400" />
+        <span>Faculty & Admin Dashboard</span>
+      </h2>
+
+      <p className="
+        text-xs sm:text-sm 
+        text-slate-500 dark:text-slate-400 
+        max-w-xl mx-auto md:mx-0
+      ">
+        Monitor platform metrics, engagement levels, and popular resources.
+      </p>
+    </div>
+
+    {/* Metrics */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+
+      {/* Total Users */}
+      <div className="
+        p-4 sm:p-5 
+        bg-white dark:bg-slate-900
+        border border-slate-200/60 dark:border-slate-800/80
+        rounded-xl sm:rounded-2xl
+        shadow-sm
+        flex items-center justify-between
+      ">
+        <div className="space-y-1">
+          <p className="text-[10px] sm:text-xs font-semibold uppercase text-slate-500">
+            Total Users
+          </p>
+
+          <h4 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+            {data.totalUsers}
+          </h4>
+
+          <p className="text-[10px] sm:text-xs text-slate-400">
+            Registered users
+          </p>
+        </div>
+
+        <div className="
+          p-2.5 sm:p-3.5 
+          bg-indigo-100 dark:bg-indigo-950/40
+          text-indigo-600 dark:text-indigo-400
+          rounded-lg sm:rounded-xl
+        ">
+          <Users className="w-5 h-5 sm:w-6 sm:h-6" />
+        </div>
       </div>
 
-      {/* Basic Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        {/* Total Users Card */}
-        <div className="p-5 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-2xl shadow-xs flex items-center justify-between">
-          <div className="space-y-1">
-            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide uppercase">
-              Total Registered Users
-            </p>
-            <h4 className="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight">
-              {data.totalUsers}
-            </h4>
-            <p className="text-xs text-slate-450">Active on the DB</p>
-          </div>
-          <div className="p-3.5 bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 rounded-xl shrink-0">
-            <Users className="w-6 h-6" />
-          </div>
+      {/* Active Users */}
+      <div className="
+        p-4 sm:p-5 
+        bg-white dark:bg-slate-900
+        border border-slate-200/60 dark:border-slate-800/80
+        rounded-xl sm:rounded-2xl
+        shadow-sm
+        flex items-center justify-between
+      ">
+        <div className="space-y-1">
+          <p className="text-[10px] sm:text-xs font-semibold uppercase text-slate-500">
+            Active Readers
+          </p>
+
+          <h4 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+            {data.activeUsers}
+          </h4>
+
+          <p className="text-[10px] sm:text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+            {data.totalUsers > 0
+              ? `${Math.round((data.activeUsers / data.totalUsers) * 100)}% engagement`
+              : "0% engagement"}
+          </p>
         </div>
 
-        {/* Active Readers Card */}
-        <div className="p-5 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-2xl shadow-xs flex items-center justify-between">
-          <div className="space-y-1">
-            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide uppercase">
-              Weekly Active Readers
-            </p>
-            <h4 className="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight">
-              {data.activeUsers}
-            </h4>
-            <p className="text-xs text-slate-455 font-medium">
-              {data.totalUsers > 0
-                ? `${Math.round((data.activeUsers / data.totalUsers) * 100)}% engagement rate`
-                : "0% engagement rate"}
-            </p>
-          </div>
-          <div className="p-3.5 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 rounded-xl shrink-0">
-            <TrendingUp className="w-6 h-6" />
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Daily Readings Overview (Visual Table bar) */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-2xl p-5 shadow-xs space-y-4">
-          <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
-            Daily Completed Readings (Past 7 Days)
-          </h3>
-          <div className="space-y-3.5">
-            {data.articlesReadPerDay.map((d) => {
-              const widthPct = (d.count / maxReadCount) * 100;
-              const dateObj = new Date(d.date);
-              const dayLabel = dateObj.toLocaleDateString("en-US", {
-                weekday: "short",
-                month: "numeric",
-                day: "numeric",
-              });
-
-              return (
-                <div key={d.date} className="space-y-1">
-                  <div className="flex justify-between text-xs font-semibold">
-                    <span className="text-slate-600 dark:text-slate-350">{dayLabel}</span>
-                    <span className="text-indigo-600 dark:text-indigo-400">{d.count} reads</span>
-                  </div>
-                  <div className="w-full h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-indigo-600 dark:bg-indigo-50 rounded-full transition-all duration-300"
-                      style={{ width: `${widthPct}%` }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Top Syllabus Articles */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/80 rounded-2xl p-5 shadow-xs flex flex-col justify-between space-y-4">
-          <div>
-            <h3 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-4">
-              Most Popular Articles (Top 5)
-            </h3>
-            {data.topArticles.length === 0 ? (
-              <div className="text-center py-10 text-xs text-slate-400 dark:text-slate-550">
-                No completions recorded to determine popularity.
-              </div>
-            ) : (
-              <div className="divide-y divide-slate-100 dark:divide-slate-800 space-y-3">
-                {data.topArticles.map((art, idx) => (
-                  <div
-                    key={art.articleId}
-                    className="flex items-start justify-between py-2 text-sm first:pt-0 last:pb-0"
-                  >
-                    <div className="space-y-0.5 max-w-[80%]">
-                      <p className="font-bold text-slate-800 dark:text-slate-200 truncate">
-                        {idx + 1}. {art.articleTitle}
-                      </p>
-                      <p className="text-xs text-slate-400 dark:text-slate-500">ID: {art.articleId}</p>
-                    </div>
-                    <span className="px-2.5 py-1 text-xs font-bold bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 rounded-lg">
-                      {art.reads} reads
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+        <div className="
+          p-2.5 sm:p-3.5 
+          bg-emerald-100 dark:bg-emerald-950/40
+          text-emerald-600 dark:text-emerald-400
+          rounded-lg sm:rounded-xl
+        ">
+          <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6" />
         </div>
       </div>
     </div>
-  );
+
+    {/* Charts + Articles */}
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+
+      {/* Reading Activity */}
+      <div className="
+        bg-white dark:bg-slate-900
+        border border-slate-200/60 dark:border-slate-800/80
+        rounded-xl sm:rounded-2xl
+        p-4 sm:p-5
+        shadow-sm
+      ">
+        <h3 className="text-[10px] sm:text-xs font-bold uppercase text-slate-500 mb-4">
+          Reading Activity (7 Days)
+        </h3>
+
+        <div className="space-y-3">
+          {data.articlesReadPerDay.map((d) => {
+            const widthPct = (d.count / maxReadCount) * 100;
+            const dateObj = new Date(d.date);
+
+            const dayLabel = dateObj.toLocaleDateString("en-US", {
+              weekday: "short",
+              day: "numeric",
+            });
+
+            return (
+              <div key={d.date} className="space-y-1">
+                <div className="flex justify-between text-[10px] sm:text-xs">
+                  <span className="text-slate-600 dark:text-slate-400">
+                    {dayLabel}
+                  </span>
+                  <span className="text-indigo-600 dark:text-indigo-400">
+                    {d.count}
+                  </span>
+                </div>
+
+                <div className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-full">
+                  <div
+                    className="h-full bg-indigo-500 rounded-full transition-all"
+                    style={{ width: `${widthPct}%` }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Top Articles */}
+      <div className="
+        bg-white dark:bg-slate-900
+        border border-slate-200/60 dark:border-slate-800/80
+        rounded-xl sm:rounded-2xl
+        p-4 sm:p-5
+        shadow-sm
+      ">
+        <h3 className="text-[10px] sm:text-xs font-bold uppercase text-slate-500 mb-4">
+          Top Articles
+        </h3>
+
+        {data.topArticles.length === 0 ? (
+          <div className="text-center py-8 text-xs text-slate-400">
+            No data available
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {data.topArticles.map((art, idx) => (
+              <div
+                key={art.articleId}
+                className="
+                  flex justify-between items-start gap-3
+                  p-2 sm:p-3
+                  rounded-lg
+                  hover:bg-slate-100/50 dark:hover:bg-slate-800/50
+                "
+              >
+                <div className="max-w-[70%]">
+                  <p className="text-xs sm:text-sm font-semibold truncate">
+                    {idx + 1}. {art.articleTitle}
+                  </p>
+                  <p className="text-[10px] text-slate-400">
+                    ID: {art.articleId}
+                  </p>
+                </div>
+
+                <span className="
+                  text-[10px] sm:text-xs font-bold
+                  px-2 py-1 rounded-md
+                  bg-indigo-100 dark:bg-indigo-950/40
+                  text-indigo-600 dark:text-indigo-400
+                  whitespace-nowrap
+                ">
+                  {art.reads}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+);
 }

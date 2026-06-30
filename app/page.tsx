@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { ARTICLES } from "./data/articles";
 import { BookmarkRecord, Article } from "./types";
 import Header from "./components/Header";
@@ -69,7 +69,7 @@ export default function Home() {
           if (userData.role === "admin" || userData.role === "faculty") {
             setActiveTab("dashboard");
           }
-          
+
           // Load bookmarks, history, stats, lists from DB
           fetchBookmarks();
           fetchReadHistory();
@@ -263,7 +263,7 @@ export default function Home() {
 
   const handleReadArticle = (article: Article) => {
     setActiveArticle(article);
-    
+
     // Cache the read article for offline capabilities (max 10 articles)
     if (typeof window !== "undefined" && "caches" in window) {
       caches.open("offline-articles").then((cache) => {
@@ -365,15 +365,15 @@ export default function Home() {
   const isFaculty = user?.role === "faculty" || user?.role === "admin";
   const assignedArticleIds = user
     ? readingLists
-        .filter((l) => l.department.toLowerCase() === user.department.toLowerCase())
-        .flatMap((l) => l.articleIds)
-        .filter((id) => {
-          if (!isFaculty) {
-            const art = articles.find((a) => a.id === id);
-            return art?.isCustom === true;
-          }
-          return true;
-        })
+      .filter((l) => l.department.toLowerCase() === user.department.toLowerCase())
+      .flatMap((l) => l.articleIds)
+      .filter((id) => {
+        if (!isFaculty) {
+          const art = articles.find((a) => a.id === id);
+          return art?.isCustom === true;
+        }
+        return true;
+      })
     : [];
 
   if (isLoadingSession) {
@@ -386,154 +386,226 @@ export default function Home() {
   }
 
   return (
-    <div className="relative flex h-screen w-full md:flex-row flex-col bg-paper dark:bg-slate-950 overflow-hidden text-charcoal dark:text-slate-100">
-      {activeArticle ? (
-        <ArticleView
-          article={activeArticle}
-          onBack={() => {
-            setActiveArticle(null);
-            window.history.replaceState({}, "", window.location.pathname);
-            fetchReadHistory();
-            fetchLibraryStats();
-          }}
-          isSaved={bookmarks.some((b) => b.articleId === activeArticle.id)}
-          onToggleSave={() => handleToggleSave(activeArticle.id)}
-          onRecordCompleted={handleRecordCompleted}
-          user={user}
-          onDeleteSuccess={(articleId) => {
-            setArticles((prev) => prev.filter((a) => a.id !== articleId));
-            setActiveArticle(null);
-            window.history.replaceState({}, "", window.location.pathname);
-          }}
-        />
-      ) : (
-        <>
-          <NavigationSidebar
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            stats={stats}
-            categories={categories}
-            selectedCategory={selectedCategory}
-            onSelectCategory={setSelectedCategory}
-            onClearHistory={handleClearHistory}
-            isPersistent={true}
-            user={user}
-          />
 
-          <div className="flex-1 flex flex-col h-full overflow-hidden">
-            <Header
-              categories={categories}
-              selectedCategory={selectedCategory}
-              onSelectCategory={setSelectedCategory}
-              onOpenSidebar={() => setIsSidebarOpen(true)}
-              userRole={user?.role}
-            />
-            <main className="flex-1 overflow-y-auto pb-20 md:pb-6 bg-slate-50/30 dark:bg-slate-950/20">
-              {activeTab === "home" && (
-                <DiscoverTab
-                  articles={filteredArticles}
-                  onRead={handleReadArticle}
-                  onQuickSummary={handleQuickSummary}
-                  preferredGenre={preferredGenre}
-                  recommendedArticles={recommendedArticles}
-                  assignedArticleIds={assignedArticleIds}
-                />
-              )}
-              {activeTab === "discover" && (
-                <DiscoverTab
-                  articles={articles}
-                  onRead={handleReadArticle}
-                  onQuickSummary={handleQuickSummary}
-                  preferredGenre={preferredGenre}
-                  recommendedArticles={recommendedArticles}
-                  assignedArticleIds={assignedArticleIds}
-                />
-              )}
-              {activeTab === "library" && (
-                <LibraryTab
-                  articles={articles}
-                  historyIds={readHistory}
-                  completedIds={completedIds}
-                  stats={stats}
-                  onRead={handleReadArticle}
-                  onClearHistory={handleClearHistory}
-                />
-              )}
-              {activeTab === "saved" && (
-                <SavedTab
-                  articles={articles}
-                  savedIds={savedIds}
-                  onRead={handleReadArticle}
-                  onQuickSummary={handleQuickSummary}
-                  onToggleSave={handleSavedToggle}
-                />
-              )}
-              {activeTab === "digests" && (
-                <AudioDigest 
-                  userInterests={["World", "Tech", "Science"]} 
-                  preferredGenre={preferredGenre}
-                />
-              )}
-              {activeTab === "profile" && <ProfilePage />}
-              {activeTab === "leaderboard" && <Leaderboard />}
-              {activeTab === "reading-lists" && (
-                <ReadingListTab
-                  articles={articles}
-                  onRead={handleReadArticle}
-                  userRole={user?.role || "student"}
-                  userDepartment={user?.department || "CSE"}
-                />
-              )}
-              {activeTab === "dashboard" && <AdminDashboard user={user} />}
-              {activeTab === "uploaded" && <UploadedTab user={user} onRead={handleReadArticle} />}
-              {activeTab === "create-article" && <CreateArticleTab user={user} />}
-              {activeTab === "students" && <AdminStudents />}
-              {activeTab === "discussions" && (
-                <AdminDiscussions
-                  onSelectArticle={(articleId) => {
-                    const match = articles.find((a) => a.id === articleId) || ARTICLES.find((a) => a.id === articleId);
-                    if (match) {
-                      setActiveArticle(match);
-                    } else {
-                      fetch(`/api/articles/${articleId}`).then((res) => {
-                        if (res.ok) {
-                          res.json().then((art) => setActiveArticle(art));
-                        }
-                      });
-                    }
-                  }}
-                />
-              )}
+  <div className="relative flex min-h-screen w-full flex-col md:flex-row bg-paper dark:bg-slate-950 overflow-hidden text-charcoal dark:text-slate-100">
 
-              {activeTab === "home" && <Newsletter />}
-            </main>
-            <BottomNav activeTab={activeTab} onTabChange={setActiveTab} userRole={user?.role} />
-          </div>
-        </>
-      )}
+{activeArticle ? (
+  <div className="w-full min-h-screen bg-gradient-to-br from-white to-slate-50 dark:from-slate-950 dark:to-slate-900">
+    <ArticleView
+      article={activeArticle}
+      onBack={() => {
+        setActiveArticle(null);
+        window.history.replaceState({}, "", window.location.pathname);
+        fetchReadHistory();
+        fetchLibraryStats();
+      }}
+      isSaved={bookmarks.some((b) => b.articleId === activeArticle.id)}
+      onToggleSave={() => handleToggleSave(activeArticle.id)}
+      onRecordCompleted={handleRecordCompleted}
+      user={user}
+      onDeleteSuccess={(articleId) => {
+        setArticles((prev) => prev.filter((a) => a.id !== articleId));
+        setActiveArticle(null);
+        window.history.replaceState({}, "", window.location.pathname);
+      }}
+    />
+  </div>
+) : (
+  <div className="flex w-full min-h-screen flex-col md:flex-row overflow-hidden bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
 
-      <AnimatePresence>
-        {isSidebarOpen && (
-          <NavigationSidebar
-            onClose={() => setIsSidebarOpen(false)}
-            activeTab={activeTab}
-            onTabChange={setActiveTab}
-            stats={stats}
-            categories={categories}
-            selectedCategory={selectedCategory}
-            onSelectCategory={setSelectedCategory}
-            onClearHistory={handleClearHistory}
-            isPersistent={false}
-            user={user}
-          />
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {summarizingArticle && (
-          <SummaryModal article={summarizingArticle} onClose={() => setSummarizingArticle(null)} />
-        )}
-      </AnimatePresence>
+    {/* Sidebar (Desktop only) */}
+    <div className="hidden md:block">
+      <NavigationSidebar
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        stats={stats}
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+        onClearHistory={handleClearHistory}
+        isPersistent={true}
+        user={user}
+      />
     </div>
-  );
+
+    {/* Main Content */}
+    <div className="flex-1 flex flex-col min-h-screen relative">
+
+      {/* Header */}
+      <div className="sticky top-0 z-30 backdrop-blur-xl bg-white/70 dark:bg-slate-950/70 border-b border-slate-200/40 dark:border-slate-800/60 shadow-sm">
+        <Header
+          categories={categories}
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+          onOpenSidebar={() => setIsSidebarOpen(true)}
+          userRole={user?.role}
+        />
+      </div>
+
+      {/* Scroll Area */}
+      <main className="flex-1 overflow-y-auto pb-24 md:pb-6 px-3 sm:px-4 md:px-6 lg:px-8">
+
+        <div className="max-w-7xl mx-auto w-full space-y-6 pt-4 sm:pt-6">
+
+          {activeTab === "home" && (
+            <DiscoverTab
+              articles={filteredArticles}
+              onRead={handleReadArticle}
+              onQuickSummary={handleQuickSummary}
+              preferredGenre={preferredGenre}
+              recommendedArticles={recommendedArticles}
+              assignedArticleIds={assignedArticleIds}
+            />
+          )}
+
+          {activeTab === "discover" && (
+            <DiscoverTab
+              articles={articles}
+              onRead={handleReadArticle}
+              onQuickSummary={handleQuickSummary}
+              preferredGenre={preferredGenre}
+              recommendedArticles={recommendedArticles}
+              assignedArticleIds={assignedArticleIds}
+            />
+          )}
+
+          {activeTab === "library" && (
+            <LibraryTab
+              articles={articles}
+              historyIds={readHistory}
+              completedIds={completedIds}
+              stats={stats}
+              onRead={handleReadArticle}
+              onClearHistory={handleClearHistory}
+            />
+          )}
+
+          {activeTab === "saved" && (
+            <SavedTab
+              articles={articles}
+              savedIds={savedIds}
+              onRead={handleReadArticle}
+              onQuickSummary={handleQuickSummary}
+              onToggleSave={handleSavedToggle}
+            />
+          )}
+
+          {activeTab === "digests" && (
+            <div className="rounded-2xl p-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl shadow-md">
+              <AudioDigest
+                userInterests={["World", "Tech", "Science"]}
+                preferredGenre={preferredGenre}
+              />
+            </div>
+          )}
+
+          {activeTab === "profile" && <ProfilePage />}
+          {activeTab === "leaderboard" && <Leaderboard />}
+
+          {activeTab === "reading-lists" && (
+            <ReadingListTab
+              articles={articles}
+              onRead={handleReadArticle}
+              userRole={user?.role || "student"}
+              userDepartment={user?.department || "CSE"}
+            />
+          )}
+
+          {activeTab === "dashboard" && <AdminDashboard user={user} />}
+          {activeTab === "uploaded" && <UploadedTab user={user} onRead={handleReadArticle} />}
+          {activeTab === "create-article" && <CreateArticleTab user={user} />}
+          {activeTab === "students" && <AdminStudents />}
+
+          {activeTab === "discussions" && (
+            <AdminDiscussions
+              onSelectArticle={(articleId) => {
+                const match =
+                  articles.find((a) => a.id === articleId) ||
+                  ARTICLES.find((a) => a.id === articleId);
+
+                if (match) {
+                  setActiveArticle(match);
+                } else {
+                  fetch(`/api/articles/${articleId}`).then((res) => {
+                    if (res.ok) {
+                      res.json().then((art) => setActiveArticle(art));
+                    }
+                  });
+                }
+              }}
+            />
+          )}
+
+          {activeTab === "home" && (
+            <div className="mt-6 sm:mt-8">
+              <Newsletter />
+            </div>
+          )}
+
+        </div>
+      </main>
+
+      {/* Bottom Nav (Mobile Only) */}
+      <div className="md:hidden fixed bottom-0 left-0 w-full z-40 backdrop-blur-xl bg-white/80 dark:bg-slate-950/80 border-t border-slate-200/40 dark:border-slate-800/60">
+        <BottomNav
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          userRole={user?.role}
+        />
+      </div>
+    </div>
+  </div>
+)}
+
+{/* Mobile Sidebar */}
+<AnimatePresence mode="wait">
+  {isSidebarOpen && (
+    <>
+      <motion.div
+        key="sidebar-backdrop"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={() => setIsSidebarOpen(false)}
+        className="fixed inset-0 z-40 bg-slate-950/50 backdrop-blur-sm"
+      />
+
+      <motion.div
+        key="sidebar-panel"
+        initial={{ x: "-100%" }}
+        animate={{ x: 0 }}
+        exit={{ x: "-100%" }}
+        transition={{ type: "spring", stiffness: 260, damping: 28 }}
+        className="fixed z-50 inset-y-0 left-0 w-[85%] sm:w-[320px] max-w-xs"
+      >
+        <NavigationSidebar
+          onClose={() => setIsSidebarOpen(false)}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          stats={stats}
+          categories={categories}
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+          onClearHistory={handleClearHistory}
+          isPersistent={false}
+          user={user}
+        />
+      </motion.div>
+    </>
+  )}
+</AnimatePresence>
+
+{/* Summary Modal */}
+<AnimatePresence>
+  {summarizingArticle && (
+    <SummaryModal
+      article={summarizingArticle}
+      onClose={() => setSummarizingArticle(null)}
+    />
+  )}
+</AnimatePresence>
+
+  </div>
+);
+
 }

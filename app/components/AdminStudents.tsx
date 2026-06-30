@@ -406,10 +406,11 @@ export default function AdminStudents() {
               >
                 Cancel
               </button>
+
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-5 py-2.5 bg-indigo-655 text-white hover:bg-indigo-700 border border-indigo-600 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-colors disabled:opacity-50"
+              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-semibold rounded-xl text-sm transition-all duration-200 shadow-md cursor-pointer flex items-center gap-2 hover:-translate-y-0.5 active:translate-y-0"
               >
                 {isSubmitting ? (
                   <>
