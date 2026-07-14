@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Lora", Georgia, "Times New Roman", serif;
+  --font-display: "Playfair Display", Georgia, serif;
+  
+  /* Premium Cool Blue & White Palette */
+  --color-primary: #1d4ed8;
+  --color-paper: #f4f7fb;
+  --color-charcoal: #0f172a;
+  --color-secondary-gray: #475569;
+  --color-border-outline: rgba(15, 23, 42, 0.12);
+}
+
+/* Enable class-based dark mode selector in Tailwind v4 */
+@variant dark (&:where(.dark, .dark *));
+
+body {
+  background: linear-gradient(135deg, #f4f7fb 0%, #ffffff 50%, #e8eff7 100%);
+  background-attachment: fixed;
+  color: var(--color-charcoal);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+}
+
+.dark body {
+  background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #090d16 100%);
+  color: #f8fafc;
+}
+
+/* Labels */
+.form-label {
+  @apply block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 uppercase tracking-wide;
+}
+
+/* Input */
+.input-premium {
+  @apply w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 
+  border border-slate-200 dark:border-slate-800 
+  rounded-xl text-slate-800 dark:text-slate-100 text-xs 
+  focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 
+  transition-all duration-200;
+}
+
+/* Icons */
+.input-icon {
+  @apply absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400;
+}
+
+@utility scrollbar-none {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  &::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+}
