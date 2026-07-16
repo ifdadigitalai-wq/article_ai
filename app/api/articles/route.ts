@@ -6,6 +6,7 @@ import { ARTICLES } from "../../data/articles";
 import { Article } from "../../types";
 import { prisma } from "@/lib/prisma";
 import { verifyJWT } from "@/lib/auth";
+import { createNotification } from "@/lib/notifications";
 
 // Helper to resolve and clean up Unsplash and Pinterest image links
 async function resolveImageUrl(url: string): Promise<string> {
@@ -401,6 +402,28 @@ export async function POST(request: Request) {
         createdBy: payload.userId as string,
       },
     });
+
+    // Notify all students about the new article
+    try {
+      const students = await prisma.user.findMany({
+        where: { role: "student" },
+        select: { id: true },
+      });
+
+      const notifyPromises = students.map((student) =>
+        createNotification({
+          userId: student.id,
+          senderId: payload.userId as string,
+          senderName: authorName,
+          type: "post",
+          message: `New article published: "${title}"`,
+          articleId: customArticle.id,
+        })
+      );
+      await Promise.all(notifyPromises);
+    } catch (notifyErr) {
+      console.error("Failed to send article notifications:", notifyErr);
+    }
 
     // Append to selected reading lists if specified
     if (Array.isArray(readingListIds) && readingListIds.length > 0) {

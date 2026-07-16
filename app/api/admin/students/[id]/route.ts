@@ -39,7 +39,7 @@ export async function PATCH(
       where: { id: studentId },
     });
 
-    if (!student || student.adminId !== admin.id || student.role !== "student") {
+    if (!student || student.role !== "student") {
       return NextResponse.json({ error: "Student not found or access denied" }, { status: 404 });
     }
 
@@ -86,7 +86,7 @@ export async function DELETE(
       where: { id: studentId },
     });
 
-    if (!student || student.adminId !== admin.id || student.role !== "student") {
+    if (!student || student.role !== "student") {
       return NextResponse.json({ error: "Student not found or access denied" }, { status: 404 });
     }
 

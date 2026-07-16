@@ -1,6 +1,15 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Menu, ChevronLeft, ChevronRight } from "lucide-react";
 import DarkModeToggle from "./DarkModeToggle";
+import NotificationBell from "./NotificationBell";
+
+interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  avatar: string;
+}
 
 interface HeaderProps {
   categories: string[];
@@ -8,6 +17,8 @@ interface HeaderProps {
   onSelectCategory: (category: string) => void;
   onOpenSidebar: () => void;
   userRole?: string;
+  user?: UserProfile | null;
+  onSelectArticleId?: (articleId: string, scrollToComments: boolean) => void;
 }
 
 export default function Header({
@@ -16,6 +27,8 @@ export default function Header({
   onSelectCategory,
   onOpenSidebar,
   userRole,
+  user,
+  onSelectArticleId,
 }: HeaderProps) {
   const isAdmin = userRole === "admin";
   const isFaculty = userRole === "faculty";
@@ -62,10 +75,10 @@ export default function Header({
     <header className="sticky top-0 z-40 w-full border-b border-border-outline bg-paper/95 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl flex-col px-4 sm:px-6 lg:px-8">
         {/* Top bar */}
-        <div className="md:hidden flex h-20 items-center justify-between">
+        <div className="flex h-20 items-center justify-between">
           <button
             onClick={onOpenSidebar}
-            className="rounded-full p-2 text-secondary-gray hover:bg-black/5 hover:text-primary transition-colors"
+            className="md:hidden rounded-full p-2 text-secondary-gray hover:bg-black/5 hover:text-primary transition-colors"
             id="menu-btn"
           >
             <Menu className="h-5 w-5" />
@@ -88,7 +101,10 @@ export default function Header({
             )}
           </div>
 
-          <DarkModeToggle />
+          <div className="flex items-center gap-4">
+            <NotificationBell userId={user?.id} onSelectArticleId={onSelectArticleId} />
+            <DarkModeToggle />
+          </div>
         </div>
 
         {/* Category chips */}

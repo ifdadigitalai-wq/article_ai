@@ -2,6 +2,33 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { verifyJWT } from "@/lib/auth";
+import { ARTICLES } from "@/app/data/articles";
+
+async function getArticleTitle(articleId: string): Promise<string> {
+  // 1. Check static local articles
+  const staticArt = ARTICLES.find((a) => a.id === articleId);
+  if (staticArt) return staticArt.title;
+
+  // 2. Check DB custom articles
+  try {
+    const customArt = await prisma.customArticle.findUnique({
+      where: { id: articleId },
+      select: { title: true }
+    });
+    if (customArt) return customArt.title;
+  } catch (err) {
+    console.error("Failed to query custom article for title:", err);
+  }
+
+  // 3. Fallback for NewsAPI slug title
+  if (articleId.startsWith("news-")) {
+    const slug = articleId.substring(5);
+    const words = slug.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1));
+    return words.join(" ");
+  }
+
+  return "Article";
+}
 
 export async function POST(req: Request) {
   try {
@@ -50,6 +77,22 @@ export async function POST(req: Request) {
         answers: answers,
       },
     });
+
+    // Add article to reading history when the student submits the quiz
+    try {
+      const articleTitle = await getArticleTitle(quiz.articleId);
+      await prisma.readingHistory.create({
+        data: {
+          userId,
+          articleId: quiz.articleId,
+          articleTitle,
+          timeSpentSeconds: 60, // standard duration for completing a quiz
+        },
+      });
+      console.log(`Successfully added article ${quiz.articleId} to reading history for user ${userId}`);
+    } catch (historyErr) {
+      console.error("Failed to append reading history on quiz submit:", historyErr);
+    }
 
     return NextResponse.json({
       attemptId: attempt.id,

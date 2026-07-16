@@ -38,13 +38,59 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setSubmitError("Please upload an image file.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setSubmitError("Image size must be less than 5MB.");
+      return;
+    }
+
+    setIsUploading(true);
+    setSubmitError(null);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to upload image.");
+      }
+
+      const data = await res.json();
+      setFormImageUrl(data.url);
+      if (!formImageAlt.trim()) {
+        const nameWithoutExt = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+        setFormImageAlt(nameWithoutExt);
+      }
+    } catch (err: any) {
+      setSubmitError(err.message || "An unexpected error occurred during image upload.");
+    } finally {
+      setIsUploading(false);
+      e.target.value = "";
+    }
+  };
+
   // Curated Reading List States
   const [readingLists, setReadingLists] = useState<any[]>([]);
   const [selectedReadingLists, setSelectedReadingLists] = useState<string[]>([]);
 
   // AI Generator Form State
   const [aiTopicContext, setAiTopicContext] = useState("");
-  const [aiLineCount, setAiLineCount] = useState(30);
+  const [aiLineCount, setAiLineCount] = useState<number | "">(30);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationError, setGenerationError] = useState<string | null>(null);
   const [generationSuccess, setGenerationSuccess] = useState(false);
@@ -81,7 +127,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
       setGenerationError("Please enter a topic context for the AI.");
       return;
     }
-    if (aiLineCount <= 0) {
+    if (aiLineCount === "" || aiLineCount <= 0) {
       setGenerationError("Please enter a valid line count greater than 0.");
       return;
     }
@@ -132,7 +178,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
 
   const handleSubmitArticle = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formTitle.trim() || !formSubtitle.trim() || !formSnippet.trim() || !formContent.trim()) {
+    if (!formTitle.trim() || !formSubtitle.trim() || !formContent.trim()) {
       setSubmitError("Please fill out all required fields.");
       return;
     }
@@ -155,6 +201,19 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
       readTimeToSend = `${estimatedMinutes} min read`;
     }
 
+    let snippetToSend = formSnippet.trim();
+    if (!snippetToSend) {
+      const cleanContent = formContent
+        .replace(/#+\s+/g, "") // remove headers
+        .replace(/[*_`]/g, "") // remove formatting
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // replace markdown links with text
+        .trim();
+      snippetToSend = cleanContent.slice(0, 160);
+      if (cleanContent.length > 160) {
+        snippetToSend += "...";
+      }
+    }
+
     try {
       const res = await fetch("/api/articles", {
         method: "POST",
@@ -165,7 +224,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
           title: formTitle.trim(),
           subtitle: formSubtitle.trim(),
           category: categoryToSend,
-          snippet: formSnippet.trim(),
+          snippet: snippetToSend,
           content: formContent.trim(),
           imageUrl: formImageUrl.trim() || undefined,
           imageAlt: formImageAlt.trim() || undefined,
@@ -299,10 +358,11 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
                   </label>
                   <input
                     type="number"
-                    min={5}
-                    max={150}
                     value={aiLineCount}
-                    onChange={(e) => setAiLineCount(parseInt(e.target.value) || 30)}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setAiLineCount(val === "" ? "" : parseInt(val, 10));
+                    }}
                     placeholder="30"
                     className="w-full px-3.5 py-2 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-xs"
                   />
@@ -314,7 +374,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
                   type="button"
                   onClick={handleAiGenerate}
                   disabled={isGenerating}
-                  className="px-4 py-2 bg-indigo-650 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-semibold rounded-xl text-xs transition-all duration-200 shadow-sm flex items-center gap-1.5 cursor-pointer"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-1.5 transition-colors"
                 >
                   {isGenerating ? (
                     <>
@@ -434,13 +494,30 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
               <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
                 Cover Image URL (Optional)
               </label>
-              <input
-                type="text"
-                value={formImageUrl}
-                onChange={(e) => setFormImageUrl(e.target.value)}
-                placeholder="https://images.unsplash.com/..."
-                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
-              />
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={formImageUrl}
+                  onChange={(e) => setFormImageUrl(e.target.value)}
+                  placeholder="https://images.unsplash.com/..."
+                  className="flex-1 min-w-0 px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
+                />
+                <label className="flex items-center gap-1.5 px-4 py-2.5 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:hover:bg-indigo-950/60 border border-indigo-200/50 dark:border-indigo-800/80 rounded-xl text-xs font-semibold text-indigo-650 dark:text-indigo-400 cursor-pointer shadow-sm active:scale-95 transition-all select-none whitespace-nowrap">
+                  {isUploading ? (
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Upload className="w-3.5 h-3.5" />
+                  )}
+                  <span>{isUploading ? "Uploading..." : "Upload"}</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    disabled={isUploading}
+                  />
+                </label>
+              </div>
             </div>
 
             <div>
@@ -476,19 +553,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
             </div>
           )}
 
-          <div>
-            <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
-              Snippet / Summary <span className="text-rose-500">*</span>
-            </label>
-            <textarea
-              required
-              rows={2}
-              value={formSnippet}
-              onChange={(e) => setFormSnippet(e.target.value)}
-              placeholder="Provide a very brief summary of the article to show in cards..."
-              className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm resize-none"
-            />
-          </div>
+          {/* Summary / snippet input field removed for simplified creation experience, generated dynamically instead */}
 
           <div>
             <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 flex items-center justify-between">

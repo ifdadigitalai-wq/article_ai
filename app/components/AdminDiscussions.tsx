@@ -130,6 +130,48 @@ export default function AdminDiscussions({ onSelectArticle }: AdminDiscussionsPr
     return match ? match.emoji : "🎓";
   };
 
+  const renderAvatar = (
+    avatar: string,
+    authorName: string,
+    authorRole: string,
+    sizeClass = "h-10 w-10 text-lg",
+    imgSizeClass = "rounded-xl"
+  ) => {
+    const isStaff =
+      authorRole === "admin" ||
+      authorRole === "faculty" ||
+      authorRole === "Official" ||
+      authorRole?.toLowerCase().includes("professor") ||
+      authorRole?.toLowerCase().includes("staff") ||
+      authorRole?.toLowerCase().includes("admin") ||
+      authorRole?.toLowerCase().includes("faculty") ||
+      authorRole?.toLowerCase().includes("administrator");
+
+    if (avatar && (avatar.startsWith("http") || avatar.startsWith("data:"))) {
+      return (
+        <img
+          src={avatar}
+          alt="Avatar"
+          className={`${sizeClass} object-cover ${imgSizeClass} shadow`}
+        />
+      );
+    }
+
+    if (isStaff) {
+      return (
+        <div className={`${sizeClass} flex items-center justify-center bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 font-bold uppercase shadow overflow-hidden ` + (imgSizeClass === "rounded-xl" ? " rounded-xl text-sm" : " rounded-lg text-xs")}>
+          {authorName ? authorName.slice(0, 2).toUpperCase() : "ST"}
+        </div>
+      );
+    }
+
+    return (
+      <div className={`${sizeClass} flex items-center justify-center bg-gradient-to-r from-indigo-500 to-cyan-500 text-white shadow ` + (imgSizeClass === "rounded-xl" ? " rounded-xl" : " rounded-lg")}>
+        {getAvatarEmoji(avatar)}
+      </div>
+    );
+  };
+
   // Get list of unique topic titles for filter dropdown
   const uniqueTopics = ["All Topics", ...Array.from(new Set(threads.map((t) => t.articleTitle)))];
 
@@ -254,9 +296,7 @@ return (
               {/* Student */}
               <div className="flex gap-3">
 
-                <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-gradient-to-r from-indigo-500 to-cyan-500 text-white text-lg shadow">
-                  {getAvatarEmoji(thread.authorAvatar)}
-                </div>
+                {renderAvatar(thread.authorAvatar, thread.author, thread.authorRole)}
 
                 <div className="flex-1">
                   <div className="flex justify-between">
@@ -290,9 +330,7 @@ return (
                   {thread.replies.map((reply) => (
                     <div key={reply.id} className="flex gap-3">
 
-                      <div className="h-8 w-8 rounded-lg bg-white dark:bg-slate-800 flex items-center justify-center shadow">
-                        {getAvatarEmoji(reply.authorAvatar)}
-                      </div>
+                      {renderAvatar(reply.authorAvatar, reply.author, reply.authorRole, "h-8 w-8 text-sm", "rounded-lg")}
 
                       <div className="flex-1">
                         <div className="flex justify-between">

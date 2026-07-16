@@ -11,6 +11,7 @@ model User {
   id              String           @id @default(uuid())
   name            String
   email           String           @unique
+  phoneNumber     String?
   passwordHash    String
   rollNumber      String?
   branch          String
@@ -31,6 +32,7 @@ model User {
   comments        Comment[]
   readingStreaks  ReadingStreak[]
   quizAttempts    QuizAttempt[]
+  notifications   Notification[]   @relation("UserNotifications")
 }
 
 model SavedArticle {
@@ -131,4 +133,18 @@ model CustomArticle {
   authorAvatar String   @default("https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80")
   createdAt    DateTime @default(now())
   createdBy    String?
+}
+
+model Notification {
+  id          String   @id @default(uuid())
+  userId      String
+  senderId    String
+  senderName  String
+  type        String   // "comment" | "post"
+  message     String
+  articleId   String?
+  read        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  user        User     @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
 }

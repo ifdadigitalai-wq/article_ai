@@ -20,7 +20,7 @@ export default function ArticleCard({ article, onRead, onQuickSummary, isAssigne
 
   const getAvatarUrl = (avatar: string): string => {
     if (!avatar) return "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80";
-    if (avatar.startsWith("http://") || avatar.startsWith("https://")) {
+    if (avatar.startsWith("http://") || avatar.startsWith("https://") || avatar.startsWith("data:")) {
       return avatar;
     }
     
@@ -67,11 +67,7 @@ export default function ArticleCard({ article, onRead, onQuickSummary, isAssigne
               <span className="inline-block bg-primary px-3 py-1 text-[10px] font-sans font-bold uppercase tracking-wider text-white">
                 The Long Read
               </span>
-              {isAssigned && (
-                <span className="inline-block bg-indigo-600 dark:bg-indigo-500 px-3 py-1 text-[10px] font-sans font-bold uppercase tracking-wider text-white">
-                  Assigned by Faculty
-                </span>
-              )}
+
             </div>
             <h2 className="font-serif text-3xl font-bold leading-tight tracking-tight sm:text-4xl text-charcoal dark:text-white group-hover:text-primary dark:group-hover:text-indigo-400 transition-colors">
               {article.title}
@@ -124,11 +120,7 @@ export default function ArticleCard({ article, onRead, onQuickSummary, isAssigne
           <span className="text-xs font-sans font-black uppercase tracking-widest text-primary dark:text-indigo-400">
             {article.category}
           </span>
-          {isAssigned && (
-            <span className="px-2 py-0.5 text-[9px] font-sans font-bold uppercase tracking-wide bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 border border-indigo-105/30 dark:border-indigo-900/30 rounded">
-              Assigned by Faculty
-            </span>
-          )}
+
         </div>
 
         <button

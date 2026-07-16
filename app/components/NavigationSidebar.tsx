@@ -28,6 +28,7 @@ import DarkModeToggle from "./DarkModeToggle";
 interface UserProfile {
   name: string;
   email: string;
+  phoneNumber?: string;
   role: string;
   branch: string;
   batch: string;
@@ -85,6 +86,7 @@ export default function NavigationSidebar({
       { id: "discussions" as TabId, label: "Discussions", icon: MessageSquare },
       { id: "create-article" as TabId, label: "Create Article", icon: PlusCircle },
       { id: "students" as TabId, label: "Manage Students", icon: Users },
+      { id: "profile" as TabId, label: "My Profile", icon: User },
     ];
   } else if (isFaculty) {
     navItems = [
@@ -93,6 +95,7 @@ export default function NavigationSidebar({
       { id: "uploaded" as TabId, label: "Uploaded", icon: Layers },
       { id: "discussions" as TabId, label: "Discussions", icon: MessageSquare },
       { id: "create-article" as TabId, label: "Create Article", icon: PlusCircle },
+      { id: "profile" as TabId, label: "My Profile", icon: User },
     ];
   } else {
     navItems = [
@@ -180,17 +183,22 @@ export default function NavigationSidebar({
   {/* Profile Card */}
   {user && (
     <div
-      onClick={
-        user.role === "faculty" || user.role === "admin"
-          ? undefined
-          : () => handleTabClick("profile")
-      }
-      className="group relative overflow-hidden rounded-2xl p-[1px] bg-gradient-to-r from-indigo-500/40 to-cyan-500/40 hover:from-indigo-500 hover:to-cyan-500 transition-all"
+      onClick={() => handleTabClick("profile")}
+      className="group relative overflow-hidden rounded-2xl p-[1px] bg-gradient-to-r from-indigo-500/40 to-cyan-500/40 hover:from-indigo-500 hover:to-cyan-500 transition-all cursor-pointer"
     >
       <div className="rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-4 flex items-center gap-3">
-        
-        <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-indigo-100 dark:bg-indigo-900 text-xl shadow-inner">
-          {activeAvatar.emoji}
+        <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-indigo-100 dark:bg-indigo-900 text-xl shadow-inner overflow-hidden select-none">
+          {user.role === "admin" || user.role === "faculty" ? (
+            user.avatar && (user.avatar.startsWith("http") || user.avatar.startsWith("data:")) ? (
+              <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                {user.name.slice(0, 2).toUpperCase()}
+              </span>
+            )
+          ) : (
+            activeAvatar.emoji
+          )}
         </div>
 
         <div className="flex flex-col min-w-0">

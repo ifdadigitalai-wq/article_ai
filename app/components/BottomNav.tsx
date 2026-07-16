@@ -34,6 +34,7 @@ export default function BottomNav({ activeTab, onTabChange, userRole }: BottomNa
       { id: "discussions" as TabId, label: "Discussion", icon: MessageSquare },
       { id: "create-article" as TabId, label: "Create Article", icon: PlusCircle },
       { id: "students" as TabId, label: "Students", icon: Users },
+      { id: "profile" as TabId, label: "Profile", icon: User },
     ];
   } else if (userRole === "faculty") {
     navItems = [
@@ -42,6 +43,7 @@ export default function BottomNav({ activeTab, onTabChange, userRole }: BottomNa
       { id: "uploaded" as TabId, label: "Uploaded", icon: Layers },
       { id: "discussions" as TabId, label: "Discussion", icon: MessageSquare },
       { id: "create-article" as TabId, label: "Create Article", icon: PlusCircle },
+      { id: "profile" as TabId, label: "Profile", icon: User },
     ];
   } else {
     navItems = [

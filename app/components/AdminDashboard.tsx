@@ -34,12 +34,72 @@ interface UserProfile {
 
 interface AdminDashboardProps {
   user?: UserProfile | null;
+  onProfileUpdate?: () => void;
 }
 
-export default function AdminDashboard({ user }: AdminDashboardProps) {
+export default function AdminDashboard({ user, onProfileUpdate }: AdminDashboardProps) {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [imgUrlInput, setImgUrlInput] = useState("");
+  const [uploadMessage, setUploadMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  const updateAvatar = async (newAvatar: string) => {
+    setUploadMessage(null);
+    try {
+      const res = await fetch("/api/user/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: user?.name,
+          branch: user?.branch,
+          batch: user?.batch,
+          avatar: newAvatar,
+        }),
+      });
+
+      if (res.ok) {
+        setUploadMessage({ type: "success", text: "Profile image updated successfully!" });
+        if (onProfileUpdate) onProfileUpdate();
+      } else {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to update profile image.");
+      }
+    } catch (err: any) {
+      setUploadMessage({ type: "error", text: err.message });
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      setUploadMessage({ type: "error", text: "Image size must be less than 2MB." });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64 = reader.result as string;
+      await updateAvatar(base64);
+    };
+    reader.onerror = () => {
+      setUploadMessage({ type: "error", text: "Failed to read file." });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveImage = async () => {
+    await updateAvatar("scholar");
+  };
+
+  const handleSaveUrl = async () => {
+    if (!imgUrlInput.trim()) return;
+    await updateAvatar(imgUrlInput.trim());
+    setImgUrlInput("");
+  };
 
   const fetchAnalytics = async () => {
     setIsLoading(true);
@@ -111,6 +171,36 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
 
     <div className="text-xs text-slate-400">
       Last updated: {new Date().toLocaleString()}
+    </div>
+  </div>
+
+  {/* Profile Settings Card */}
+  <div className="p-6 rounded-2xl bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/60 dark:border-slate-800 shadow-sm space-y-6">
+    <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-6">
+      <div className="flex flex-col sm:flex-row items-center gap-6">
+        {/* Profile Image display */}
+        <div className="relative group/avatar">
+          <div className="w-24 h-24 rounded-2xl bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/30 flex items-center justify-center text-3xl font-bold text-indigo-650 dark:text-indigo-400 shadow-inner overflow-hidden select-none">
+            {user?.avatar && (user.avatar.startsWith("http") || user.avatar.startsWith("data:")) ? (
+              <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              user?.name ? user.name.slice(0, 2).toUpperCase() : "U"
+            )}
+          </div>
+        </div>
+
+        <div className="text-center sm:text-left space-y-1.5">
+          <h3 className="text-lg font-bold text-slate-800 dark:text-white">
+            {user?.name}
+          </h3>
+          <p className="text-xs text-slate-400 font-medium">
+            {user?.role.toUpperCase()} &bull; {user?.email}
+          </p>
+          <p className="text-xs text-slate-400">
+            {user?.branch} Branch &bull; Batch {user?.batch}
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 

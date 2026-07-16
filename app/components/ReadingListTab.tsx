@@ -324,7 +324,7 @@ export default function ReadingListTab({ articles, onRead, userRole, userBranch 
       {lists.map((list) => {
         const matchedArticles = list.articleIds
           .map((id) => articles.find((a) => a.id === id))
-          .filter(Boolean);
+          .filter((a): a is Article => !!a);
 
         return (
           <div

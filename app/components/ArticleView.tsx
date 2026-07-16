@@ -28,6 +28,7 @@ interface ArticleViewProps {
   onRecordCompleted: (articleId: string) => void;
   user: { id: string; name: string; email: string; role: string; branch: string } | null;
   onDeleteSuccess?: (articleId: string) => void;
+  triggerScrollToComments?: boolean;
 }
 
 export default function ArticleView({
@@ -38,6 +39,7 @@ export default function ArticleView({
   onRecordCompleted,
   user,
   onDeleteSuccess,
+  triggerScrollToComments = false,
 }: ArticleViewProps) {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showAiCompanion, setShowAiCompanion] = useState(false);
@@ -311,6 +313,15 @@ export default function ArticleView({
     setReplyContent("");
   }, [article.id]);
 
+  useEffect(() => {
+    if (triggerScrollToComments && !isLoadingComments && commentsSectionRef.current) {
+      const timer = setTimeout(() => {
+        commentsSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 600);
+      return () => clearTimeout(timer);
+    }
+  }, [triggerScrollToComments, isLoadingComments]);
+
   const handleAddComment = async (e: React.FormEvent, parentId: string | null = null) => {
     e.preventDefault();
     const bodyContent = parentId ? replyContent : newContent;
@@ -408,7 +419,7 @@ export default function ArticleView({
 
   const getAvatarUrl = (avatar: string): string => {
     if (!avatar) return "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80";
-    if (avatar.startsWith("http://") || avatar.startsWith("https://")) {
+    if (avatar.startsWith("http://") || avatar.startsWith("https://") || avatar.startsWith("data:")) {
       return avatar;
     }
     

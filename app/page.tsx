@@ -30,6 +30,7 @@ interface UserProfile {
   id: string;
   name: string;
   email: string;
+  phoneNumber?: string;
   rollNumber?: string;
   branch: string;
   batch: string;
@@ -52,6 +53,7 @@ export default function Home() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [articles, setArticles] = useState<Article[]>(ARTICLES);
   const [summarizingArticle, setSummarizingArticle] = useState<Article | null>(null);
+  const [shouldScrollToComments, setShouldScrollToComments] = useState(false);
 
   const [user, setUser] = useState<UserProfile | null>(null);
   const [stats, setStats] = useState<LibraryStats>({ minutesRead: 0, articlesCompleted: 0, streakDays: 0 });
@@ -195,6 +197,18 @@ export default function Home() {
     }
   };
 
+  const refreshUser = async () => {
+    try {
+      const resUser = await fetch("/api/auth/me");
+      if (resUser.ok) {
+        const userData = await resUser.json();
+        setUser(userData);
+      }
+    } catch (err) {
+      console.error("Failed to refresh user profile:", err);
+    }
+  };
+
   // Deep-link check on articles mount
   useEffect(() => {
     const fetchDeepLink = async () => {
@@ -298,6 +312,29 @@ export default function Home() {
     });
   };
 
+  const handleSelectArticleId = async (articleId: string, scrollToComments: boolean = false) => {
+    let targetArt = articles.find((a) => a.id === articleId) || ARTICLES.find((a) => a.id === articleId);
+
+    if (!targetArt) {
+      try {
+        const res = await fetch("/api/articles");
+        if (res.ok) {
+          const list: Article[] = await res.json();
+          targetArt = list.find((a) => a.id === articleId);
+        }
+      } catch (err) {
+        console.error("Error loading articles to select:", err);
+      }
+    }
+
+    if (targetArt) {
+      setShouldScrollToComments(scrollToComments);
+      handleReadArticle(targetArt);
+    } else {
+      console.warn(`Could not resolve article ID: ${articleId}`);
+    }
+  };
+
   const handleQuickSummary = (article: Article, e: React.MouseEvent<any>) => {
     e.stopPropagation();
     setSummarizingArticle(article);
@@ -386,6 +423,7 @@ export default function Home() {
           article={activeArticle}
           onBack={() => {
             setActiveArticle(null);
+            setShouldScrollToComments(false);
             window.history.replaceState({}, "", window.location.pathname);
             fetchReadHistory();
             fetchLibraryStats();
@@ -397,8 +435,10 @@ export default function Home() {
           onDeleteSuccess={(articleId) => {
             setArticles((prev) => prev.filter((a) => a.id !== articleId));
             setActiveArticle(null);
+            setShouldScrollToComments(false);
             window.history.replaceState({}, "", window.location.pathname);
           }}
+          triggerScrollToComments={shouldScrollToComments}
         />
       ) : (
         <>
@@ -421,6 +461,8 @@ export default function Home() {
               onSelectCategory={setSelectedCategory}
               onOpenSidebar={() => setIsSidebarOpen(true)}
               userRole={user?.role}
+              user={user}
+              onSelectArticleId={handleSelectArticleId}
             />
             <main className="flex-1 overflow-y-auto pb-20 md:pb-6 bg-slate-50/30 dark:bg-slate-950/20">
               {activeTab === "home" && (
@@ -460,7 +502,7 @@ export default function Home() {
                   preferredGenre={preferredGenre}
                 />
               )}
-              {activeTab === "profile" && <ProfilePage />}
+              {activeTab === "profile" && <ProfilePage onProfileUpdate={refreshUser} />}
               {activeTab === "leaderboard" && <Leaderboard />}
               {activeTab === "reading-lists" && (
                 <ReadingListTab
@@ -470,7 +512,9 @@ export default function Home() {
                   userBranch={user?.branch || "Kalkalji"}
                 />
               )}
-              {activeTab === "dashboard" && <AdminDashboard user={user} />}
+              {activeTab === "dashboard" && (
+                <AdminDashboard user={user} onProfileUpdate={refreshUser} />
+              )}
               {activeTab === "uploaded" && <UploadedTab user={user} onRead={handleReadArticle} />}
               {activeTab === "create-article" && <CreateArticleTab user={user} />}
               {activeTab === "students" && <AdminStudents />}
