@@ -419,7 +419,7 @@ export default function ArticleView({
 
   const getAvatarUrl = (avatar: string): string => {
     if (!avatar) return "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80";
-    if (avatar.startsWith("http://") || avatar.startsWith("https://") || avatar.startsWith("data:")) {
+    if (avatar.startsWith("/") || avatar.startsWith("http://") || avatar.startsWith("https://") || avatar.startsWith("data:")) {
       return avatar;
     }
     
@@ -566,8 +566,20 @@ export default function ArticleView({
 
     return blocks.map((block, blockIndex) => {
       const textContent = block.lines.join("\n");
-      const headingFont = readerFont === "serif" ? "font-display" : "font-sans";
-      const bodyFont = readerFont === "serif" ? "font-serif" : "font-sans";
+      let headingFont = "font-display";
+      let bodyFont = "font-serif";
+
+      if (readerFont === "sans") {
+        headingFont = "font-sans";
+        bodyFont = "font-sans";
+      } else {
+        if (article.headingFont) {
+          headingFont = `font-heading-${article.headingFont}`;
+        }
+        if (article.paragraphFont) {
+          bodyFont = `font-body-${article.paragraphFont}`;
+        }
+      }
 
       switch (block.type) {
         case "h1":
@@ -769,6 +781,21 @@ export default function ArticleView({
     );
   };
 
+  let headingFontClass = "font-display";
+  let bodyFontClass = "font-serif";
+
+  if (readerFont === "sans") {
+    headingFontClass = "font-sans";
+    bodyFontClass = "font-sans";
+  } else {
+    if (article.headingFont) {
+      headingFontClass = `font-heading-${article.headingFont}`;
+    }
+    if (article.paragraphFont) {
+      bodyFontClass = `font-body-${article.paragraphFont}`;
+    }
+  }
+
   return (
     <div className={`relative flex h-screen w-full flex-col transition-colors duration-300 ${themeClasses.bg}`} id={`article-view-${article.id}`}>
       <div className="absolute top-0 left-0 z-50 h-[4px] w-full bg-slate-100 dark:bg-slate-800/80">
@@ -786,7 +813,7 @@ export default function ArticleView({
           id="back-to-feed-btn"
         >
           <ArrowLeft className="h-4 w-4" />
-          <span>Feed</span>
+          <span>Back</span>
         </button>
 
         <div className="flex items-center gap-2">
@@ -1012,10 +1039,10 @@ export default function ArticleView({
               <span className="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
                 {article.category}
               </span>
-              <h1 className={`mt-2 ${readerFont === "serif" ? "font-display" : "font-sans"} text-3xl font-extrabold leading-tight ${themeClasses.title} sm:text-4xl md:text-5xl tracking-tight text-balance transition-colors duration-300`}>
+              <h1 className={`mt-2 ${headingFontClass} text-3xl font-extrabold leading-tight ${themeClasses.title} sm:text-4xl md:text-5xl tracking-tight text-balance transition-colors duration-300`}>
                 {article.title}
               </h1>
-              <p className={`mt-3 ${readerFont === "serif" ? "font-serif" : "font-sans"} text-base sm:text-lg italic ${themeClasses.subtitle} transition-colors duration-300`}>
+              <p className={`mt-3 ${bodyFontClass} text-base sm:text-lg italic ${themeClasses.subtitle} transition-colors duration-300`}>
                 {article.subtitle}
               </p>
             </div>

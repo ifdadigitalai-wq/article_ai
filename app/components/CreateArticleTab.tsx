@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Upload, CheckCircle2, AlertCircle, Sparkles, Check, RefreshCw } from "lucide-react";
+import { Upload, CheckCircle2, AlertCircle, Sparkles, Check, RefreshCw, FileText } from "lucide-react";
 import { isStandardCategory } from "../lib/categories";
 
 interface UserProfile {
@@ -33,6 +33,8 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
   const [formAuthorName, setFormAuthorName] = useState("");
   const [formAuthorRole, setFormAuthorRole] = useState("");
   const [formAuthorAvatar, setFormAuthorAvatar] = useState("scholar");
+  const [headingFont, setHeadingFont] = useState("playfair");
+  const [paragraphFont, setParagraphFont] = useState("lora");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -80,6 +82,65 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
       setSubmitError(err.message || "An unexpected error occurred during image upload.");
     } finally {
       setIsUploading(false);
+      e.target.value = "";
+    }
+  };
+
+  const [isParsingDoc, setIsParsingDoc] = useState(false);
+  const [docParseError, setDocParseError] = useState<string | null>(null);
+  const [docParseSuccess, setDocParseSuccess] = useState(false);
+
+  const handleDocUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const filename = file.name.toLowerCase();
+    const isPdf = filename.endsWith(".pdf") || file.type === "application/pdf";
+    const isDocx = filename.endsWith(".docx") || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    const isDoc = filename.endsWith(".doc") || file.type === "application/msword";
+
+    if (!isPdf && !isDocx && !isDoc) {
+      setDocParseError("Please upload a PDF or DOCX file.");
+      setDocParseSuccess(false);
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setDocParseError("Document size must be less than 10MB.");
+      setDocParseSuccess(false);
+      return;
+    }
+
+    setIsParsingDoc(true);
+    setDocParseError(null);
+    setDocParseSuccess(false);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/parse-document", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to parse document.");
+      }
+
+      const data = await res.json();
+      
+      if (formContent.trim()) {
+        setFormContent((prev) => `${prev}\n\n${data.text}`);
+      } else {
+        setFormContent(data.text);
+      }
+      setDocParseSuccess(true);
+    } catch (err: any) {
+      setDocParseError(err.message || "An unexpected error occurred during document parsing.");
+    } finally {
+      setIsParsingDoc(false);
       e.target.value = "";
     }
   };
@@ -233,6 +294,8 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
           authorRole: formAuthorRole.trim() || "Staff Correspondent",
           authorAvatar: formAuthorAvatar || undefined,
           readingListIds: selectedReadingLists,
+          headingFont,
+          paragraphFont,
         })
       });
 
@@ -250,6 +313,8 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
       setFormImageAlt("");
       setFormReadTime("");
       setSelectedReadingLists([]);
+      setHeadingFont("playfair");
+      setParagraphFont("lora");
       if (formCategory === "Other") {
         setFormCategory("Technology");
         setCustomCategory("");
@@ -288,14 +353,6 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
           Create structured educational content, organize reading lists, and accelerate publishing with AI-powered assistance.
         </p>
       </div>
-
-      {/* Right CTA (Optional but premium feel) */}
-      <div className="flex justify-center md:justify-end">
-        <button className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-600 text-white text-sm font-semibold shadow-md hover:scale-105 transition-all duration-200">
-          + New Content
-        </button>
-      </div>
-
     </div>
 
   </div>
@@ -450,12 +507,18 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
                 onChange={(e) => setFormCategory(e.target.value)}
                 className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm cursor-pointer"
               >
-                <option value="Technology">Technology</option>
-                <option value="Science">Science</option>
-                <option value="Environment">Environment</option>
-                <option value="Architecture">Architecture</option>
-                <option value="Management">Management</option>
-                <option value="Other">Other (Specify below)</option>
+                <option value="Technology">AI</option>
+                <option value="Science">Accounting</option>
+                <option value="Environment">SAP</option>
+                <option value="Architecture">HR Executive</option>
+                <option value="Management">Data Analytics & Business Intelligene</option>
+                <option value="Other">Stock Market & Forex</option>
+                <option value="Cyber Security & Ethical Hacking">Cyber Security & Ethical Hacking</option>
+                <option value="Digital Marketing">Digital Marketing</option>
+                <option value="Web Design & Development">Web Design & Development</option>
+                <option value="Mobile App Development">Mobile App Development</option>
+                <option value="Multimedia">Multimedia</option>
+                <option value="Design & Animation">Design & Animation</option>
               </select>
             </div>
 
@@ -556,10 +619,39 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
           {/* Summary / snippet input field removed for simplified creation experience, generated dynamically instead */}
 
           <div>
-            <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5 flex items-center justify-between">
-              <span>Article Content (Markdown Supported) <span className="text-rose-500">*</span></span>
-              <span className="text-[10px] text-slate-400 lowercase italic">Supports standard markdown headers (##), bold (**), blockquotes (&gt;)</span>
-            </label>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+              <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                <span>Article Content (Markdown Supported) <span className="text-rose-500">*</span></span>
+              </label>
+              
+              <div className="flex items-center gap-2">
+                {docParseSuccess && (
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 px-2 py-0.5 rounded-md font-semibold flex items-center gap-1 animate-fadeIn border border-emerald-200/30">
+                    <Check className="w-3 h-3" /> Imported!
+                  </span>
+                )}
+                {docParseError && (
+                  <span className="text-[10px] text-rose-600 dark:text-rose-455 bg-rose-50 dark:bg-rose-950/20 px-2 py-0.5 rounded-md font-semibold flex items-center gap-1 animate-fadeIn border border-rose-200/30">
+                    <AlertCircle className="w-3 h-3" /> {docParseError}
+                  </span>
+                )}
+                <label className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:hover:bg-indigo-950/60 border border-indigo-200/50 dark:border-indigo-800/80 rounded-xl text-[11px] font-semibold text-indigo-650 dark:text-indigo-400 cursor-pointer shadow-xs active:scale-95 transition-all select-none whitespace-nowrap">
+                  {isParsingDoc ? (
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <FileText className="w-3.5 h-3.5" />
+                  )}
+                  <span>{isParsingDoc ? "Importing..." : "Import PDF / DOCX"}</span>
+                  <input
+                    type="file"
+                    accept=".pdf,.docx"
+                    onChange={handleDocUpload}
+                    className="hidden"
+                    disabled={isParsingDoc}
+                  />
+                </label>
+              </div>
+            </div>
             <textarea
               required
               rows={8}
@@ -568,6 +660,10 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
               placeholder="## Core Concept...&#10;&#10;Here you can write the full article content in markdown format..."
               className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm font-mono"
             />
+            <div className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 flex justify-between">
+              <span>Supports standard markdown headers (##), bold (**), blockquotes (&gt;)</span>
+              <span>Upload PDF/DOCX to auto-extract text</span>
+            </div>
           </div>
 
           <div className="border-t border-slate-100 dark:border-slate-800/80 pt-4">
@@ -610,12 +706,60 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
                 <select
                   value={formAuthorAvatar}
                   onChange={(e) => setFormAuthorAvatar(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm cursor-pointer"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200/80 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-550 text-sm cursor-pointer"
                 >
+                  {user?.avatar && (user.avatar.startsWith("/") || user.avatar.startsWith("http")) && (
+                    <option value={user.avatar}>My Custom Profile Picture</option>
+                  )}
                   <option value="scholar">Scholar</option>
                   <option value="mentor">Mentor</option>
                   <option value="tech">Tech</option>
                   <option value="creative">Creative</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Typography Customization */}
+          <div className="border-t border-slate-100 dark:border-slate-800/80 pt-4">
+            <h4 className="text-xs font-bold text-slate-500 dark:text-slate-450 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+              <span>Typography Styling</span>
+              <span className="text-[10px] text-indigo-500 font-bold normal-case bg-indigo-50 dark:bg-indigo-950/20 px-2 py-0.5 rounded-md border border-indigo-100/30">Custom Fonts</span>
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase mb-1.5">
+                  Heading Font
+                </label>
+                <select
+                  value={headingFont}
+                  onChange={(e) => setHeadingFont(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm cursor-pointer"
+                >
+                  <option value="playfair">Serif (Playfair Display)</option>
+                  <option value="inter">Sans-Serif (Inter)</option>
+                  <option value="arvo">Slab-Serif (Arvo)</option>
+                  <option value="montserrat">Display (Montserrat)</option>
+                  <option value="outfit">Modern Display (Outfit)</option>
+                  <option value="cinzel">Classic Serif (Cinzel)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase mb-1.5">
+                  Paragraph (Body) Font
+                </label>
+                <select
+                  value={paragraphFont}
+                  onChange={(e) => setParagraphFont(e.target.value)}
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm cursor-pointer"
+                >
+                  <option value="lora">Serif (Lora)</option>
+                  <option value="inter">Sans-Serif (Inter)</option>
+                  <option value="fira">Monospace (Fira Code)</option>
+                  <option value="nunito">Readable Sans (Nunito)</option>
+                  <option value="opensans">Clean Sans-Serif (Open Sans)</option>
+                  <option value="merriweather">Editorial Serif (Merriweather)</option>
                 </select>
               </div>
             </div>

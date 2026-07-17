@@ -195,6 +195,8 @@ This report was sourced in real-time. Full details, follow-ups, and subsequent b
             readTime: customArt.readTime,
             isCustom: true,
             createdBy: customArt.createdBy,
+            headingFont: customArt.headingFont,
+            paragraphFont: customArt.paragraphFont,
             date: new Date(customArt.createdAt).toLocaleDateString("en-US", {
               month: "long",
               day: "numeric",
@@ -349,6 +351,8 @@ export async function PUT(
       authorName,
       authorRole,
       authorAvatar,
+      headingFont,
+      paragraphFont,
     } = body;
 
     if (!title || !subtitle || !category || !snippet || !content || !authorName || !authorRole) {
@@ -375,6 +379,8 @@ export async function PUT(
         authorName,
         authorRole,
         authorAvatar: authorAvatar || undefined,
+        headingFont: headingFont || undefined,
+        paragraphFont: paragraphFont || undefined,
       },
     });
 

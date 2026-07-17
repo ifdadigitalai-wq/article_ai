@@ -11,9 +11,6 @@ import {
   CheckCircle,
   XCircle,
   Trash2,
-  Lock,
-  Unlock,
-  CreditCard,
   Mail,
   Hash,
   GraduationCap,
@@ -488,36 +485,7 @@ export default function AdminStudents() {
             className="w-full pl-9 pr-3.5 py-2 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800/80 rounded-xl text-slate-800 dark:text-slate-200 placeholder-slate-450 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-xs"
           />
         </div>
-
-        {/* Paid Filter */}
-        <div className="relative">
-          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
-          <select
-            value={paidFilter}
-            onChange={(e) => setPaidFilter(e.target.value as any)}
-            className="w-full pl-8 pr-3.5 py-2 bg-slate-50 dark:bg-slate-950/50 border border-slate-200/80 dark:border-slate-800/80 rounded-xl text-slate-800 dark:text-slate-200 text-xs cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-          >
-            <option value="all">All Tuition Status</option>
-            <option value="paid">Paid Only</option>
-            <option value="unpaid">Unpaid Only</option>
-          </select>
-        </div>
-
-        {/* Access Status Filter */}
-        <div className="relative">
-          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
-          <select
-            value={accessFilter}
-            onChange={(e) => setAccessFilter(e.target.value as any)}
-            className="w-full pl-8 pr-3.5 py-2 bg-slate-50 dark:bg-slate-950/50 border border-slate-200/80 dark:border-slate-800/80 rounded-xl text-slate-800 dark:text-slate-200 text-xs cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-          >
-            <option value="all">All Access Permissions</option>
-            <option value="active">Active/Invoked</option>
-            <option value="revoked">Revoked Only</option>
-          </select>
-        </div>
       </div>
-
       {/* Student list grid */}
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-20 text-slate-400 gap-3">
@@ -569,45 +537,8 @@ export default function AdminStudents() {
                     </div>
                   </div>
                 </div>
-
                 {/* Bottom: Actions */}
-                <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-850 pt-3.5 mt-1">
-                  {/* Badges and Actions */}
-                  <div className="flex gap-2">
-                    {/* Paid Button */}
-                    <button
-                      onClick={() => handleTogglePaid(student.id, student.isPaid)}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[10px] font-bold uppercase tracking-wide cursor-pointer transition-all ${student.isPaid
-                          ? "bg-emerald-50/50 border-emerald-100/60 text-emerald-700 dark:bg-emerald-950/20 dark:border-emerald-900/30 dark:text-emerald-450 hover:bg-emerald-100 dark:hover:bg-emerald-950/30"
-                          : "bg-amber-50/50 border-amber-100/60 text-amber-700 dark:bg-amber-950/20 dark:border-amber-900/30 dark:text-amber-450 hover:bg-amber-100 dark:hover:bg-amber-950/30"
-                        }`}
-                    >
-                      <CreditCard className="w-3.5 h-3.5" />
-                      <span>{student.isPaid ? "Paid" : "Unpaid"}</span>
-                    </button>
-
-                    {/* Access Permission Button */}
-                    <button
-                      onClick={() => handleToggleAccess(student.id, student.isActive)}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[10px] font-bold uppercase tracking-wide cursor-pointer transition-all ${student.isActive
-                          ? "bg-indigo-50/50 border-indigo-105/60 text-indigo-700 dark:bg-indigo-950/20 dark:border-indigo-905/30 dark:text-indigo-450 hover:bg-indigo-100 dark:hover:bg-indigo-950/30"
-                          : "bg-rose-50/50 border-rose-100/60 text-rose-700 dark:bg-rose-955/20 dark:border-rose-900/30 dark:text-rose-450 hover:bg-rose-100 dark:hover:bg-rose-950/30"
-                        }`}
-                    >
-                      {student.isActive ? (
-                        <>
-                          <Unlock className="w-3.5 h-3.5" />
-                          <span>Active</span>
-                        </>
-                      ) : (
-                        <>
-                          <Lock className="w-3.5 h-3.5" />
-                          <span>Revoked</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-
+                <div className="flex items-center justify-end border-t border-slate-100 dark:border-slate-855 pt-3.5 mt-1">
                   {/* Delete button */}
                   <button
                     onClick={() => handleDeleteStudent(student.id)}

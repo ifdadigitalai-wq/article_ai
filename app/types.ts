@@ -19,6 +19,8 @@ export interface Article {
   featured?: boolean;
   isCustom?: boolean;
   createdBy?: string | null;
+  headingFont?: string;
+  paragraphFont?: string;
 }
 
 export interface Summary {

@@ -181,7 +181,7 @@ export default function AdminDashboard({ user, onProfileUpdate }: AdminDashboard
         {/* Profile Image display */}
         <div className="relative group/avatar">
           <div className="w-24 h-24 rounded-2xl bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/30 flex items-center justify-center text-3xl font-bold text-indigo-650 dark:text-indigo-400 shadow-inner overflow-hidden select-none">
-            {user?.avatar && (user.avatar.startsWith("http") || user.avatar.startsWith("data:")) ? (
+            {user?.avatar && (user.avatar.startsWith("/") || user.avatar.startsWith("http") || user.avatar.startsWith("data:")) ? (
               <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
             ) : (
               user?.name ? user.name.slice(0, 2).toUpperCase() : "U"

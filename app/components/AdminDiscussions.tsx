@@ -147,7 +147,7 @@ export default function AdminDiscussions({ onSelectArticle }: AdminDiscussionsPr
       authorRole?.toLowerCase().includes("faculty") ||
       authorRole?.toLowerCase().includes("administrator");
 
-    if (avatar && (avatar.startsWith("http") || avatar.startsWith("data:"))) {
+    if (avatar && (avatar.startsWith("/") || avatar.startsWith("http") || avatar.startsWith("data:"))) {
       return (
         <img
           src={avatar}

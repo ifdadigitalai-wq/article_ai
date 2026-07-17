@@ -65,7 +65,7 @@ export default function ProfilePage({ onProfileUpdate }: ProfilePageProps) {
   const fetchProfileAndStats = async () => {
     try {
       // Fetch profile
-      const resProf = await fetch("/api/user/profile");
+      const resProf = await fetch(`/api/user/profile?t=${Date.now()}`);
       if (resProf.ok) {
         const profData = await resProf.json();
         setProfile(profData);
@@ -409,40 +409,31 @@ export default function ProfilePage({ onProfileUpdate }: ProfilePageProps) {
             </div>
 
             {avatar === "custom" && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 dark:bg-slate-950/30 p-4 rounded-xl border border-slate-200/50 dark:border-slate-800/60 animate-fadeIn">
-                <div className="space-y-3">
-                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                    Upload image file
-                  </label>
-                  <label className="w-full h-10 border border-dashed border-indigo-200 dark:border-indigo-900 rounded-xl flex items-center justify-center gap-2 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/10 cursor-pointer transition">
-                    <Upload className="w-4 h-4 text-indigo-500" />
-                    <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
-                      {uploadingImage ? "Uploading..." : "Choose Image File"}
-                    </span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={handleImageUpload}
-                      disabled={uploadingImage}
-                    />
-                  </label>
-                </div>
-
-                <div className="space-y-3">
-                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                    Or paste image URL
-                  </label>
-                  <input
-                    type="url"
-                    placeholder="https://example.com/image.png"
-                    value={customAvatarUrl}
-                    onChange={(e) => {
-                      setCustomAvatarUrl(e.target.value);
-                      setAvatar("custom");
-                    }}
-                    className="w-full px-3.5 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-850 dark:text-slate-150 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-xs"
-                  />
+              <div className="bg-slate-50 dark:bg-slate-950/30 p-4 rounded-xl border border-slate-200/50 dark:border-slate-800/60 animate-fadeIn space-y-4">
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  {customAvatarUrl && (
+                    <div className="w-16 h-16 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shrink-0 bg-white dark:bg-slate-900 flex items-center justify-center">
+                      <img src={customAvatarUrl} alt="Uploaded preview" className="w-full h-full object-cover" />
+                    </div>
+                  )}
+                  <div className="space-y-3 flex-1 w-full max-w-md">
+                    <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                      Upload image file
+                    </label>
+                    <label className="w-full h-10 border border-dashed border-indigo-200 dark:border-indigo-900 rounded-xl flex items-center justify-center gap-2 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/10 cursor-pointer transition">
+                      <Upload className="w-4 h-4 text-indigo-500" />
+                      <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+                        {uploadingImage ? "Uploading..." : "Choose Image File"}
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleImageUpload}
+                        disabled={uploadingImage}
+                      />
+                    </label>
+                  </div>
                 </div>
 
                 {uploadMessage && (

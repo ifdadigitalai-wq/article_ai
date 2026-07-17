@@ -20,7 +20,7 @@ export default function ArticleCard({ article, onRead, onQuickSummary, isAssigne
 
   const getAvatarUrl = (avatar: string): string => {
     if (!avatar) return "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80";
-    if (avatar.startsWith("http://") || avatar.startsWith("https://") || avatar.startsWith("data:")) {
+    if (avatar.startsWith("/") || avatar.startsWith("http://") || avatar.startsWith("https://") || avatar.startsWith("data:")) {
       return avatar;
     }
     

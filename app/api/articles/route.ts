@@ -216,6 +216,8 @@ export async function GET(request: Request) {
     readTime: art.readTime || "5 min read",
     isCustom: true,
     createdBy: art.createdBy,
+    headingFont: art.headingFont,
+    paragraphFont: art.paragraphFont,
     date: new Date(art.createdAt).toLocaleDateString("en-US", {
       month: "long",
       day: "numeric",
@@ -378,6 +380,8 @@ export async function POST(request: Request) {
       authorRole,
       authorAvatar,
       readingListIds,
+      headingFont,
+      paragraphFont,
     } = body;
 
     if (!title || !subtitle || !category || !snippet || !content || !authorName || !authorRole) {
@@ -400,6 +404,8 @@ export async function POST(request: Request) {
         authorRole,
         authorAvatar: authorAvatar || undefined,
         createdBy: payload.userId as string,
+        headingFont: headingFont || undefined,
+        paragraphFont: paragraphFont || undefined,
       },
     });
 

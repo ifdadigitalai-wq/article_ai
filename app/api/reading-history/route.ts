@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { verifyJWT } from "@/lib/auth";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get("token")?.value;
@@ -19,15 +19,24 @@ export async function GET() {
 
     const userId = payload.userId as string;
 
-    const history = await prisma.readingHistory.findMany({
-      where: { userId },
-      orderBy: { readAt: "desc" },
-      select: { articleId: true },
-    });
+    const url = new URL(request.url);
+    const detailed = url.searchParams.get("detailed") === "true";
 
-    const articleIds = Array.from(new Set(history.map((h) => h.articleId)));
-
-    return NextResponse.json(articleIds);
+    if (detailed) {
+      const history = await prisma.readingHistory.findMany({
+        where: { userId },
+        orderBy: { readAt: "desc" },
+      });
+      return NextResponse.json(history);
+    } else {
+      const history = await prisma.readingHistory.findMany({
+        where: { userId },
+        orderBy: { readAt: "desc" },
+        select: { articleId: true },
+      });
+      const articleIds = Array.from(new Set(history.map((h) => h.articleId)));
+      return NextResponse.json(articleIds);
+    }
   } catch (error: any) {
     console.error("GET Reading History API Error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

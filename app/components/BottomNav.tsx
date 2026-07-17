@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Home, Bookmark, Layers, User, Award, ShieldAlert, MessageSquare, Users, BarChart3, PlusCircle, BookOpen } from "lucide-react";
+import { Home, Bookmark, Layers, User, Award, ShieldAlert, MessageSquare, Users, BarChart3, PlusCircle, BookOpen, Clock } from "lucide-react";
 
 export type TabId =
   | "home"
@@ -16,7 +16,8 @@ export type TabId =
   | "admin"
   | "dashboard"
   | "uploaded"
-  | "create-article";
+  | "create-article"
+  | "history";
 
 interface BottomNavProps {
   activeTab: TabId;
@@ -49,8 +50,8 @@ export default function BottomNav({ activeTab, onTabChange, userRole }: BottomNa
     navItems = [
       { id: "home" as TabId, label: "Home", icon: Home },
       { id: "reading-lists" as TabId, label: "Reading Lists", icon: BookOpen },
+      { id: "history" as TabId, label: "History", icon: Clock },
       { id: "saved" as TabId, label: "Saved", icon: Bookmark },
-      { id: "leaderboard" as TabId, label: "Leaderboard", icon: Award },
       { id: "profile" as TabId, label: "Profile", icon: User },
     ];
   }

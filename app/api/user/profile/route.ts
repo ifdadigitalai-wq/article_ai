@@ -83,17 +83,18 @@ export async function POST(req: Request) {
       }
     }
 
+    const updateData: any = {};
+    if (name !== undefined) updateData.name = name;
+    if (branch !== undefined) updateData.branch = branch;
+    if (batch !== undefined) updateData.batch = batch;
+    if (avatar !== undefined) updateData.avatar = avatar;
+    if (phoneNumber !== undefined) updateData.phoneNumber = phoneNumber || null;
+    if (email !== undefined) updateData.email = email || currentUser.email;
+    if (role !== undefined) updateData.role = role || currentUser.role;
+
     const updatedUser = await prisma.user.update({
       where: { id: payload.userId as string },
-      data: {
-        name,
-        branch,
-        batch,
-        avatar,
-        phoneNumber: phoneNumber || null,
-        email: email || currentUser.email,
-        role: role || currentUser.role,
-      },
+      data: updateData,
       select: {
         id: true,
         name: true,
@@ -105,6 +106,15 @@ export async function POST(req: Request) {
         role: true,
         avatar: true,
         createdAt: true,
+      },
+    });
+
+    // Sync author details in all CustomArticle records posted by this user
+    await prisma.customArticle.updateMany({
+      where: { createdBy: payload.userId as string },
+      data: {
+        authorAvatar: updatedUser.avatar,
+        authorName: updatedUser.name,
       },
     });
 

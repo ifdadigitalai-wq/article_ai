@@ -18,6 +18,7 @@ import SummaryModal from "./components/SummaryModal";
 import ProfilePage from "./components/ProfilePage";
 import Leaderboard from "./components/Leaderboard";
 import ReadingListTab from "./components/ReadingListTab";
+import ReadingHistoryTab from "./components/ReadingHistoryTab";
 import AdminDashboard from "./components/AdminDashboard";
 import AdminDiscussions from "./components/AdminDiscussions";
 import AdminStudents from "./components/AdminStudents";
@@ -94,43 +95,6 @@ export default function Home() {
 
   // Fetch dynamic articles on mount
   useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        if (typeof window !== "undefined" && !navigator.onLine) {
-          throw new Error("Offline");
-        }
-        const res = await fetch("/api/articles");
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.length > 0) {
-            setArticles(data);
-            return;
-          }
-        }
-        throw new Error("API failed");
-      } catch (err) {
-        console.log("Loading offline articles from cache...");
-        try {
-          if (typeof window !== "undefined" && "caches" in window) {
-            const cache = await caches.open("offline-articles");
-            const keys = await cache.keys();
-            const cachedArticles: Article[] = [];
-            for (const key of keys) {
-              const cachedRes = await cache.match(key);
-              if (cachedRes) {
-                const art = await cachedRes.json();
-                cachedArticles.push(art);
-              }
-            }
-            if (cachedArticles.length > 0) {
-              setArticles(cachedArticles);
-            }
-          }
-        } catch (cacheErr) {
-          console.error("Cache load failed:", cacheErr);
-        }
-      }
-    };
     fetchArticles();
 
     if (typeof window !== "undefined") {
@@ -197,13 +161,52 @@ export default function Home() {
     }
   };
 
+  const fetchArticles = async () => {
+    try {
+      if (typeof window !== "undefined" && !navigator.onLine) {
+        throw new Error("Offline");
+      }
+      const res = await fetch(`/api/articles?t=${Date.now()}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.length > 0) {
+          setArticles(data);
+          return;
+        }
+      }
+      throw new Error("API failed");
+    } catch (err) {
+      console.log("Loading offline articles from cache...");
+      try {
+        if (typeof window !== "undefined" && "caches" in window) {
+          const cache = await caches.open("offline-articles");
+          const keys = await cache.keys();
+          const cachedArticles: Article[] = [];
+          for (const key of keys) {
+            const cachedRes = await cache.match(key);
+            if (cachedRes) {
+              const art = await cachedRes.json();
+              cachedArticles.push(art);
+            }
+          }
+          if (cachedArticles.length > 0) {
+            setArticles(cachedArticles);
+          }
+        }
+      } catch (cacheErr) {
+        console.error("Cache load failed:", cacheErr);
+      }
+    }
+  };
+
   const refreshUser = async () => {
     try {
-      const resUser = await fetch("/api/auth/me");
+      const resUser = await fetch(`/api/auth/me?t=${Date.now()}`);
       if (resUser.ok) {
         const userData = await resUser.json();
         setUser(userData);
       }
+      fetchArticles();
     } catch (err) {
       console.error("Failed to refresh user profile:", err);
     }
@@ -504,6 +507,12 @@ export default function Home() {
               )}
               {activeTab === "profile" && <ProfilePage onProfileUpdate={refreshUser} />}
               {activeTab === "leaderboard" && <Leaderboard />}
+              {activeTab === "history" && (
+                <ReadingHistoryTab
+                  onRead={handleSelectArticleId}
+                  onClearHistory={fetchReadHistory}
+                />
+              )}
               {activeTab === "reading-lists" && (
                 <ReadingListTab
                   articles={articles}
