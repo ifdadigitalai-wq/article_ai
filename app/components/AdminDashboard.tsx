@@ -80,15 +80,24 @@ export default function AdminDashboard({ user, onProfileUpdate }: AdminDashboard
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const base64 = reader.result as string;
-      await updateAvatar(base64);
-    };
-    reader.onerror = () => {
-      setUploadMessage({ type: "error", text: "Failed to read file." });
-    };
-    reader.readAsDataURL(file);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const uploadRes = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!uploadRes.ok) {
+        throw new Error("Failed to upload image.");
+      }
+
+      const uploadData = await uploadRes.json();
+      await updateAvatar(uploadData.url);
+    } catch (err: any) {
+      setUploadMessage({ type: "error", text: err.message || "Failed to upload image." });
+    }
   };
 
   const handleRemoveImage = async () => {

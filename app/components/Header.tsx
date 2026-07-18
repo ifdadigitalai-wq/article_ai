@@ -94,7 +94,7 @@ export default function Header({
                 <span className="text-[9px] uppercase tracking-[0.25em] font-sans font-bold opacity-45">
                   Volume 04 // Issue 12
                 </span>
-                <h1 className="font-serif text-3xl font-black tracking-tighter leading-none text-charcoal sm:text-4xl mt-0.5">
+                <h1 className="font-serif text-3xl font-black tracking-tighter leading-none text-charcoal dark:text-white sm:text-4xl mt-0.5">
                   THE EDITORIAL
                 </h1>
               </>

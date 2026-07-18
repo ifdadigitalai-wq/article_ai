@@ -1,70 +1,9 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-import { prisma } from "@/lib/prisma";
-import { signJWT } from "@/lib/auth";
 
-export async function POST(req: Request) {
-  try {
-    const body = await req.json();
-    const { name, email, password, rollNumber, branch, batch, role } = body;
-
-    if (!name || !email || !password || !branch || !batch || !role) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
-
-    if (role === "student") {
-      return NextResponse.json({ error: "Student registration is disabled. Please contact your administrator." }, { status: 400 });
-    }
-
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
-
-    if (existingUser) {
-      return NextResponse.json({ error: "Email already registered" }, { status: 400 });
-    }
-
-    const passwordHash = await bcrypt.hash(password, 10);
-
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        passwordHash,
-        rollNumber: rollNumber || null,
-        branch,
-        batch,
-        role,
-      },
-    });
-
-    const token = await signJWT({
-      userId: user.id,
-      email: user.email,
-      role: user.role,
-    });
-
-    const response = NextResponse.json({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      branch: user.branch,
-      batch: user.batch,
-      rollNumber: user.rollNumber,
-    }, { status: 201 });
-
-    response.cookies.set("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      maxAge: 7 * 24 * 60 * 60, // 7 days
-      sameSite: "lax",
-    });
-
-    return response;
-  } catch (error: any) {
-    console.error("Registration API Error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-  }
+export async function POST() {
+  return NextResponse.json(
+    { error: "Public registration is disabled. Student accounts are provisioned by administrators. Faculty and admin credentials are seeded." },
+    { status: 403 }
+  );
 }
+

@@ -354,7 +354,7 @@ export default function NavigationSidebar({
 
     <button
       onClick={handleLogout}
-      className="flex items-center gap-2 text-white text-center bg-red-500  px-3 py-2 text-xs font-semibold text-slate-500 hover:bg-red-500 dark:hover:bg-slate-800 rounded-xl transition"
+      className="flex items-center gap-2 text-white text-center bg-red-500 px-3 py-2 text-xs font-semibold hover:bg-red-600 dark:hover:bg-red-600 rounded-xl transition cursor-pointer"
     >
       <LogOut className="h-4 w-4" />
       Logout

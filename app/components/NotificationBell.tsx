@@ -52,7 +52,8 @@ export default function NotificationBell({ userId, onSelectArticleId }: Notifica
     if (!userId) return;
 
     // Connect to WebSocket server on port 3001 using the current hostname
-    const ws = new WebSocket(`ws://${window.location.hostname}:3001?userId=${userId}`);
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const ws = new WebSocket(`${protocol}//${window.location.hostname}:3001?userId=${userId}`);
 
     ws.onopen = () => {
       console.log("Connected to notification WebSocket server");

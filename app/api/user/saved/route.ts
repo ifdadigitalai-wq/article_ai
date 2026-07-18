@@ -193,6 +193,19 @@ export async function PATCH(req: Request) {
         lastReadAt: record.lastReadAt.toISOString(),
       });
     } else {
+      // Auto-create a SavedArticle record for unbookmarked articles on completion
+      record = await prisma.savedArticle.create({
+        data: {
+          userId,
+          articleId,
+          articleTitle: articleTitle || null,
+          articleUrl: null,
+          completed: completed || false,
+          progressPercent: progressPercent !== undefined ? progressPercent : (completed ? 100 : 0),
+          lastReadAt,
+        },
+      });
+
       if (completed) {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -232,8 +245,13 @@ export async function PATCH(req: Request) {
       }
 
       return NextResponse.json({
-        message: "Article is not saved; completion progress not recorded in SavedArticle table.",
-        saved: false,
+        id: record.id,
+        articleId: record.articleId,
+        bookmarkedAt: record.savedAt.toISOString(),
+        completed: record.completed,
+        progressPercent: record.progressPercent,
+        lastReadAt: record.lastReadAt.toISOString(),
+        saved: true,
       });
     }
   } catch (error: any) {

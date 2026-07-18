@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   BookOpen,
@@ -144,14 +143,8 @@ export default function LoginPage() {
         </form>
 
         {/* Footer */}
-        <p className="text-center text-sm text-slate-500 dark:text-slate-400 mt-6">
-          Don’t have an account?{" "}
-          <Link
-            href="/register"
-            className="text-indigo-600 font-semibold hover:underline"
-          >
-            Sign up
-          </Link>
+        <p className="text-center text-xs text-slate-400 dark:text-slate-500 mt-6">
+          Credentials are provided by your institute administrator.
         </p>
       </div>
     </div>

@@ -90,7 +90,7 @@ export async function POST(req: Request) {
     if (avatar !== undefined) updateData.avatar = avatar;
     if (phoneNumber !== undefined) updateData.phoneNumber = phoneNumber || null;
     if (email !== undefined) updateData.email = email || currentUser.email;
-    if (role !== undefined) updateData.role = role || currentUser.role;
+    // Role changes are not permitted via profile updates (admin-seeded only)
 
     const updatedUser = await prisma.user.update({
       where: { id: payload.userId as string },

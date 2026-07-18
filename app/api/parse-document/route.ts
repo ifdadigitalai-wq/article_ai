@@ -6,8 +6,10 @@ import { PDFParse } from "pdf-parse";
 // @ts-ignore
 import { getPath } from "pdf-parse/worker";
 import mammoth from "mammoth";
+import { pathToFileURL } from "url";
 
-PDFParse.setWorker(getPath());
+// Convert Windows paths to a file:// URL structure for ES module loader compatibility
+PDFParse.setWorker(pathToFileURL(getPath()).href);
 
 export const dynamic = "force-dynamic";
 
