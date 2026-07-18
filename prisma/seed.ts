@@ -41,7 +41,7 @@ async function main() {
     const facultyPasswordHash = await bcrypt.hash("facultyPass123", 10);
     const faculty = await prisma.user.create({
       data: {
-        name: "Dr. Elena Vasquez",
+        name: "Faculty Member",
         email: facultyEmail,
         passwordHash: facultyPasswordHash,
         role: "faculty",

@@ -441,7 +441,7 @@ export default function ArticleView({
       // Fix inline list items (e.g., "text. * item" or "text. - item")
       .replace(/([^\n])\s+[\*\-]\s+/g, "$1\n* ")
       // Fix inline headings (e.g., "text. ## Heading")
-      .replace(/([^\n])\s*(#{1,6})\s+/g, "$1\n$2 ")
+      .replace(/([^\n#])\s*(#{1,6})\s+/g, "$1\n$2 ")
       // Normalize multiple newlines
       .replace(/\n{3,}/g, "\n\n");
   };
