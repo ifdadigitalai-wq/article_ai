@@ -51,9 +51,10 @@ export default function NotificationBell({ userId, onSelectArticleId }: Notifica
   useEffect(() => {
     if (!userId) return;
 
-    // Connect to WebSocket server on port 3001 using the current hostname
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const ws = new WebSocket(`${protocol}//${window.location.hostname}:3001?userId=${userId}`);
+    // Connect to WebSocket server using NEXT_PUBLIC_WS_URL if set, fallback to port 3001 locally
+    const fallbackWsUrl = `${window.location.protocol === "https:" ? "wss:" : "ws:"}//${window.location.hostname}:3001`;
+    const wsUrl = `${process.env.NEXT_PUBLIC_WS_URL || fallbackWsUrl}?userId=${userId}`;
+    const ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {
       console.log("Connected to notification WebSocket server");

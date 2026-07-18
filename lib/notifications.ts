@@ -27,8 +27,9 @@ export async function createNotification({
       },
     });
 
-    // Notify standalone WebSocket server on port 3001
-    fetch("http://localhost:3001/notify", {
+    // Notify standalone WebSocket server
+    const wsNotifyUrl = process.env.WS_INTERNAL_URL || "http://localhost:3001/notify";
+    fetch(wsNotifyUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
