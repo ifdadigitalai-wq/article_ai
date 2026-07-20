@@ -1052,7 +1052,7 @@ export default function ArticleView({
                 src={getAvatarUrl(article.author.avatar)}
                 alt={article.author.name}
                 referrerPolicy="no-referrer"
-                className="h-10 w-10 rounded-full object-cover grayscale"
+                className="h-10 w-10 rounded-full object-cover"
               />
               <div>
                 <p className={`text-sm font-bold ${themeClasses.title} transition-colors duration-300`}>

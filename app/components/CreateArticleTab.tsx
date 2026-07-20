@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Upload, CheckCircle2, AlertCircle, Sparkles, Check, RefreshCw, FileText } from "lucide-react";
+import { Upload, CheckCircle2, AlertCircle, Sparkles, Check, RefreshCw, FileText, X } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { isStandardCategory } from "../lib/categories";
 
 interface UserProfile {
@@ -32,7 +33,6 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
   const [formReadTime, setFormReadTime] = useState("");
   const [formAuthorName, setFormAuthorName] = useState("");
   const [formAuthorRole, setFormAuthorRole] = useState("");
-  const [formAuthorAvatar, setFormAuthorAvatar] = useState("scholar");
   const [headingFont, setHeadingFont] = useState("playfair");
   const [paragraphFont, setParagraphFont] = useState("lora");
 
@@ -40,7 +40,22 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  // Toast Feedback State
+  const [showToast, setShowToast] = useState(false);
+  const [toastTitle, setToastTitle] = useState("");
+  const [toastMessage, setToastMessage] = useState("");
+
   const [isUploading, setIsUploading] = useState(false);
+
+  // Auto-dismiss toast after 5s
+  useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => {
+        setShowToast(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showToast]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -151,7 +166,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
 
   // AI Generator Form State
   const [aiTopicContext, setAiTopicContext] = useState("");
-  const [aiLineCount, setAiLineCount] = useState<number | "">(30);
+  const [aiWordCount, setAiWordCount] = useState<number | "">(500);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationError, setGenerationError] = useState<string | null>(null);
   const [generationSuccess, setGenerationSuccess] = useState(false);
@@ -178,7 +193,6 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
     if (user) {
       setFormAuthorName(user.name);
       setFormAuthorRole(user.role === "admin" ? "Administrator" : "Faculty Member");
-      setFormAuthorAvatar(user.avatar || "scholar");
     }
   }, [user]);
 
@@ -188,8 +202,8 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
       setGenerationError("Please enter a topic context for the AI.");
       return;
     }
-    if (aiLineCount === "" || aiLineCount <= 0) {
-      setGenerationError("Please enter a valid line count greater than 0.");
+    if (aiWordCount === "" || aiWordCount <= 0) {
+      setGenerationError("Please enter a valid word count greater than 0.");
       return;
     }
 
@@ -205,7 +219,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
         },
         body: JSON.stringify({
           topicContext: aiTopicContext.trim(),
-          lineCount: aiLineCount
+          wordCount: aiWordCount
         })
       });
 
@@ -292,7 +306,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
           readTime: readTimeToSend,
           authorName: formAuthorName.trim() || user?.name || "Faculty Member",
           authorRole: formAuthorRole.trim() || "Staff Correspondent",
-          authorAvatar: formAuthorAvatar || undefined,
+          authorAvatar: user?.avatar || "scholar",
           readingListIds: selectedReadingLists,
           headingFont,
           paragraphFont,
@@ -304,6 +318,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
         throw new Error(errorData.error || "Failed to upload manual article.");
       }
 
+      const publishedTitle = formTitle.trim();
       setSubmitSuccess(true);
       setFormTitle("");
       setFormSubtitle("");
@@ -319,6 +334,10 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
         setFormCategory("Technology");
         setCustomCategory("");
       }
+
+      setToastTitle("Article Published!");
+      setToastMessage(`"${publishedTitle}" is now live in the syllabus feed.`);
+      setShowToast(true);
     } catch (err: any) {
       setSubmitError(err.message || "An unexpected error occurred.");
     } finally {
@@ -411,16 +430,16 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
 
                 <div>
                   <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-450 uppercase mb-1.5">
-                    Target Length (Lines)
+                    Target Length (Words)
                   </label>
                   <input
                     type="number"
-                    value={aiLineCount}
+                    value={aiWordCount}
                     onChange={(e) => {
                       const val = e.target.value;
-                      setAiLineCount(val === "" ? "" : parseInt(val, 10));
+                      setAiWordCount(val === "" ? "" : parseInt(val, 10));
                     }}
-                    placeholder="30"
+                    placeholder="500"
                     className="w-full px-3.5 py-2 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-xs"
                   />
                 </div>
@@ -671,7 +690,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
             <h4 className="text-xs font-bold text-slate-500 dark:text-slate-450 uppercase tracking-wider mb-3">
               Author Information
             </h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase mb-1.5">
                   Author Name
@@ -698,25 +717,6 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
                   placeholder="e.g. Professor of Computer Science"
                   className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
                 />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-400 dark:text-slate-500 uppercase mb-1.5">
-                  Avatar Theme
-                </label>
-                <select
-                  value={formAuthorAvatar}
-                  onChange={(e) => setFormAuthorAvatar(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200/80 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-550 text-sm cursor-pointer"
-                >
-                  {user?.avatar && (user.avatar.startsWith("/") || user.avatar.startsWith("http")) && (
-                    <option value={user.avatar}>My Custom Profile Picture</option>
-                  )}
-                  <option value="scholar">Scholar</option>
-                  <option value="mentor">Mentor</option>
-                  <option value="tech">Tech</option>
-                  <option value="creative">Creative</option>
-                </select>
               </div>
             </div>
           </div>
@@ -836,6 +836,53 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
           </div>
         </form>
       </div>
+
+      {/* Floating Confirmation Toast */}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
+            className="fixed bottom-6 right-6 z-[100] w-full max-w-sm md:max-w-md overflow-hidden rounded-2xl border border-emerald-550/20 dark:border-emerald-550/10 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl p-4 shadow-2xl flex flex-col"
+          >
+            <div className="flex gap-3 items-start">
+              {/* Animated Check Icon Ring */}
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-550 text-white shadow-md shadow-emerald-500/25">
+                <Check className="h-5 w-5" />
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 space-y-0.5">
+                <h4 className="text-sm font-bold text-slate-800 dark:text-white tracking-tight">
+                  {toastTitle}
+                </h4>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed pr-2">
+                  {toastMessage}
+                </p>
+              </div>
+
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={() => setShowToast(false)}
+                className="h-6 w-6 shrink-0 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-605 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            {/* Progress Bar Timer */}
+            <motion.div
+              initial={{ width: "100%" }}
+              animate={{ width: "0%" }}
+              transition={{ duration: 5, ease: "linear" }}
+              className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -146,7 +146,7 @@ export default function ArticleCard({ article, onRead, onQuickSummary, isAssigne
           src={getAvatarUrl(article.author.avatar)}
           alt={article.author.name}
           referrerPolicy="no-referrer"
-          className="h-9 w-9 rounded-full object-cover grayscale border border-charcoal/10 dark:border-slate-800"
+          className="h-9 w-9 rounded-full object-cover border border-charcoal/10 dark:border-slate-800"
         />
         <div>
           <p className="text-xs font-bold text-charcoal dark:text-slate-200">

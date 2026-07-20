@@ -25,22 +25,23 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { topicContext, lineCount } = body;
+    const { topicContext, wordCount, lineCount } = body;
+    const targetWords = wordCount || (lineCount ? lineCount * 15 : null);
 
-    if (!topicContext || !lineCount) {
+    if (!topicContext || !targetWords) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
     const systemPrompt = 
       "You are an academic curriculum editor. Generate a highly detailed educational article " +
-      "based on the topic context and requested line length. Respond ONLY with a raw JSON object. " +
+      "based on the topic context and requested word length. Respond ONLY with a raw JSON object. " +
       "Do not wrap the JSON output in markdown code blocks or triple backticks. " +
       "The JSON object must contain exactly these fields: " +
       "\"title\" (string), \"subtitle\" (string), \"category\" (string, e.g. Technology, Science, Environment, Architecture, Management), " +
-      "\"snippet\" (string, 1-2 sentence preview), \"content\" (string, detailed article body in Markdown containing headers (##), occasional bold text (**) used very sparingly for specific terms only, bullet points (*), and quotes (>). Keep paragraphs and general text in normal font weight, do not wrap entire sentences or paragraphs in bold. It must have roughly the requested number of lines/paragraphs), " +
+      "\"snippet\" (string, 1-2 sentence preview), \"content\" (string, detailed article body in Markdown containing headers (##), occasional bold text (**) used very sparingly for specific terms only, bullet points (*), and quotes (>). Keep paragraphs and general text in normal font weight, do not wrap entire sentences or paragraphs in bold. The content field must contain approximately the requested number of words), " +
       "and \"imageAlt\" (string, descriptive alt tag for a related cover image).";
 
-    const userPrompt = `Topic Context: ${topicContext}\nRequested length: ~${lineCount} lines/paragraphs.`;
+    const userPrompt = `Topic Context: ${topicContext}\nRequested length: ~${targetWords} words. You MUST write enough content so that the 'content' markdown field has a total word count of approximately ${targetWords} words.`;
 
     // 1. Try Groq API first
     const groqApiKey = process.env.GROQ_API_KEY;

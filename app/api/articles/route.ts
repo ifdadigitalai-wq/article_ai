@@ -388,6 +388,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
+    // Fetch the publishing user's details from the database
+    const dbUser = await prisma.user.findUnique({
+      where: { id: payload.userId as string },
+      select: { name: true, avatar: true },
+    });
+
+    const finalAuthorName = dbUser?.name || authorName;
+    const finalAuthorAvatar = dbUser?.avatar || authorAvatar || "scholar";
+
     const resolvedImgUrl = imageUrl ? await resolveImageUrl(imageUrl) : undefined;
 
     const customArticle = await prisma.customArticle.create({
@@ -400,9 +409,9 @@ export async function POST(request: Request) {
         imageUrl: resolvedImgUrl,
         imageAlt: imageAlt || undefined,
         readTime: readTime || undefined,
-        authorName,
+        authorName: finalAuthorName,
         authorRole,
-        authorAvatar: authorAvatar || undefined,
+        authorAvatar: finalAuthorAvatar,
         createdBy: payload.userId as string,
         headingFont: headingFont || undefined,
         paragraphFont: paragraphFont || undefined,
@@ -420,7 +429,7 @@ export async function POST(request: Request) {
         createNotification({
           userId: student.id,
           senderId: payload.userId as string,
-          senderName: authorName,
+          senderName: finalAuthorName,
           type: "post",
           message: `New article published: "${title}"`,
           articleId: customArticle.id,
