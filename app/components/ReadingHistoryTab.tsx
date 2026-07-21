@@ -189,7 +189,7 @@ export default function ReadingHistoryTab({ onRead, onClearHistory }: ReadingHis
                   <BookMarked className="w-4 h-4" />
                 </div>
                 <div className="text-lg font-extrabold text-slate-800 dark:text-white">{totalArticlesRead}</div>
-                <div className="text-[10px] text-slate-450 uppercase font-bold tracking-wider">Unique Read</div>
+                <div className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Unique Read</div>
               </div>
               
               <div className="bg-slate-50/50 dark:bg-slate-950/30 rounded-xl p-3.5 text-center border border-slate-100 dark:border-slate-800/50 hover:scale-105 transition-all">
@@ -197,7 +197,7 @@ export default function ReadingHistoryTab({ onRead, onClearHistory }: ReadingHis
                   <Hourglass className="w-4 h-4" />
                 </div>
                 <div className="text-lg font-extrabold text-slate-800 dark:text-white">{totalMinutes}m</div>
-                <div className="text-[10px] text-slate-450 uppercase font-bold tracking-wider">Time Spent</div>
+                <div className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Time Spent</div>
               </div>
 
               <div className="bg-slate-50/50 dark:bg-slate-950/30 rounded-xl p-3.5 text-center border border-slate-100 dark:border-slate-800/50 hover:scale-105 transition-all">
@@ -205,7 +205,7 @@ export default function ReadingHistoryTab({ onRead, onClearHistory }: ReadingHis
                   <Calendar className="w-4 h-4" />
                 </div>
                 <div className="text-lg font-extrabold text-slate-800 dark:text-white">{activeDays}</div>
-                <div className="text-[10px] text-slate-450 uppercase font-bold tracking-wider">Days Active</div>
+                <div className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Days Active</div>
               </div>
             </div>
           )}
@@ -221,13 +221,13 @@ export default function ReadingHistoryTab({ onRead, onClearHistory }: ReadingHis
       ) : error ? (
         <div className="text-center py-12 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-2xl p-6 text-slate-500">
           <p className="font-bold text-sm text-rose-600">Failed to load history</p>
-          <p className="text-xs text-slate-450 mt-1">{error}</p>
+          <p className="text-xs text-slate-500 mt-1">{error}</p>
         </div>
       ) : history.length === 0 ? (
-        <div className="text-center py-20 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-2xl p-8 text-slate-450 dark:text-slate-500">
+        <div className="text-center py-20 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-2xl p-8 text-slate-500 dark:text-slate-500">
           <History className="w-12 h-12 mx-auto text-slate-300 dark:text-slate-700 mb-4 animate-pulse" />
           <p className="font-extrabold text-base text-slate-700 dark:text-slate-350">No reading history found</p>
-          <p className="text-xs text-slate-450 dark:text-slate-500 mt-2 max-w-sm mx-auto">
+          <p className="text-xs text-slate-500 dark:text-slate-500 mt-2 max-w-sm mx-auto">
             Articles you open from the dashboard or syllabus feed will appear here grouped by day.
           </p>
         </div>

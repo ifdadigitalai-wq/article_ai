@@ -125,7 +125,7 @@ export default function ArticleView({
       pageBg: "bg-slate-50/50",
       text: "text-slate-800",
       title: "text-slate-950",
-      subtitle: "text-slate-550",
+      subtitle: "text-slate-500",
       border: "border-slate-200/60",
       meta: "text-slate-500",
       commentBg: "bg-slate-50",
@@ -1128,7 +1128,7 @@ export default function ArticleView({
               {isExpanding ? (
                 <div className="flex flex-col items-center justify-center py-20 text-center">
                   <Loader2 className="h-8 w-8 animate-spin text-indigo-500 mb-4" />
-                  <p className="text-sm font-semibold text-slate-550">Receiving full dispatch...</p>
+                  <p className="text-sm font-semibold text-slate-500">Receiving full dispatch...</p>
                 </div>
               ) : (
                 parseMarkdown(articleContent)

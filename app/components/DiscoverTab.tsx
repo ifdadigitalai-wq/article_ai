@@ -337,7 +337,7 @@ export default function DiscoverTab({
                     {art.title}
                   </h4>
                 </div>
-                <p className="text-[10px] text-slate-450 dark:text-slate-500 font-semibold uppercase mt-3">
+                <p className="text-[10px] text-slate-500 dark:text-slate-500 font-semibold uppercase mt-3">
                   {art.readTime} read
                 </p>
               </motion.div>

@@ -482,7 +482,7 @@ export default function AdminStudents() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search students by name, email, roll..."
-            className="w-full pl-9 pr-3.5 py-2 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800/80 rounded-xl text-slate-800 dark:text-slate-200 placeholder-slate-450 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-xs"
+            className="w-full pl-9 pr-3.5 py-2 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800/80 rounded-xl text-slate-800 dark:text-slate-250 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-xs"
           />
         </div>
       </div>
@@ -496,7 +496,7 @@ export default function AdminStudents() {
         <div className="text-center py-16 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-2xl p-6 text-slate-400 dark:text-slate-500">
           <Users className="w-10 h-10 mx-auto text-slate-300 dark:text-slate-700 mb-3" />
           <p className="font-bold text-sm">No students found</p>
-          <p className="text-xs text-slate-450 mt-1">
+          <p className="text-xs text-slate-500 mt-1">
             Try adjusting your search criteria or register a student above.
           </p>
         </div>
@@ -522,15 +522,15 @@ export default function AdminStudents() {
                         {student.name}
                       </h4>
                       {student.rollNumber && (
-                        <span className="text-[10px] bg-slate-50 dark:bg-slate-950 border border-slate-200/60 dark:border-slate-800 font-bold font-mono text-slate-500 px-1.5 py-0.5 rounded-md">
+                        <span className="text-[10px] bg-slate-50 dark:bg-slate-950 border border-slate-200/60 dark:border-slate-800 font-bold font-mono text-slate-500 dark:text-slate-400 px-1.5 py-0.5 rounded-md">
                           {student.rollNumber}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-slate-450 truncate" title={student.email}>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate" title={student.email}>
                       {student.email}
                     </p>
-                    <div className="flex gap-1.5 text-[9px] font-bold uppercase tracking-wider text-slate-400 pt-0.5">
+                    <div className="flex gap-1.5 text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 pt-0.5">
                       <span>{student.branch}</span>
                       <span>•</span>
                       <span>Batch {student.batch}</span>

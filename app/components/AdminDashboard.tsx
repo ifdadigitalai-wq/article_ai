@@ -222,18 +222,18 @@ export default function AdminDashboard({ user, onProfileUpdate }: AdminDashboard
 
       <div className="flex justify-between items-center relative z-10">
         <div>
-          <p className="text-xs uppercase font-semibold text-slate-500">
+          <p className="text-xs uppercase font-semibold text-slate-500 dark:text-slate-400">
             Total Users
           </p>
           <h4 className="text-3xl font-extrabold text-slate-800 dark:text-white mt-1">
             {data.totalUsers}
           </h4>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
             Registered in system
           </p>
         </div>
 
-        <div className="p-3 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600">
+        <div className="p-3 rounded-xl bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
           <Users className="w-6 h-6" />
         </div>
       </div>
@@ -245,20 +245,20 @@ export default function AdminDashboard({ user, onProfileUpdate }: AdminDashboard
 
       <div className="flex justify-between items-center relative z-10">
         <div>
-          <p className="text-xs uppercase font-semibold text-slate-500">
+          <p className="text-xs uppercase font-semibold text-slate-500 dark:text-slate-400">
             Active Readers
           </p>
           <h4 className="text-3xl font-extrabold text-slate-800 dark:text-white mt-1">
             {data.activeUsers}
           </h4>
-          <p className="text-xs text-emerald-500 font-medium mt-1">
+          <p className="text-xs text-emerald-500 dark:text-emerald-450 font-medium mt-1">
             {data.totalUsers > 0
               ? `${Math.round((data.activeUsers / data.totalUsers) * 100)}% engagement`
               : "0% engagement"}
           </p>
         </div>
 
-        <div className="p-3 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600">
+        <div className="p-3 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
           <TrendingUp className="w-6 h-6" />
         </div>
       </div>
@@ -270,7 +270,7 @@ export default function AdminDashboard({ user, onProfileUpdate }: AdminDashboard
 
     {/* Daily Reads */}
     <div className="p-6 rounded-2xl bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/60 dark:border-slate-800 shadow-sm">
-      <h3 className="text-xs font-bold uppercase text-slate-500 mb-4">
+      <h3 className="text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-4">
         Daily Readings
       </h3>
 
@@ -282,13 +282,13 @@ export default function AdminDashboard({ user, onProfileUpdate }: AdminDashboard
           return (
             <div key={d.date}>
               <div className="flex justify-between text-xs font-semibold mb-1">
-                <span className="text-slate-600">
+                <span className="text-slate-600 dark:text-slate-300">
                   {dateObj.toLocaleDateString("en-US", {
                     weekday: "short",
                     day: "numeric",
                   })}
                 </span>
-                <span className="text-indigo-500">
+                <span className="text-indigo-500 dark:text-indigo-400">
                   {d.count} reads
                 </span>
               </div>
@@ -307,12 +307,12 @@ export default function AdminDashboard({ user, onProfileUpdate }: AdminDashboard
 
     {/* Top Articles */}
     <div className="p-6 rounded-2xl bg-white/70 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/60 dark:border-slate-800 shadow-sm flex flex-col">
-      <h3 className="text-xs font-bold uppercase text-slate-500 mb-4">
+      <h3 className="text-xs font-bold uppercase text-slate-500 dark:text-slate-400 mb-4">
         Top Articles
       </h3>
 
       {data.topArticles.length === 0 ? (
-        <div className="flex-1 flex items-center justify-center text-xs text-slate-400">
+        <div className="flex-1 flex items-center justify-center text-xs text-slate-400 dark:text-slate-500">
           No data available
         </div>
       ) : (
@@ -320,18 +320,18 @@ export default function AdminDashboard({ user, onProfileUpdate }: AdminDashboard
           {data.topArticles.map((art, idx) => (
             <div
               key={art.articleId}
-              className="flex justify-between items-center p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+              className="flex justify-between items-center p-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/60 transition"
             >
               <div className="max-w-[75%]">
                 <p className="font-semibold text-slate-800 dark:text-white truncate">
                   #{idx + 1} {art.articleTitle}
                 </p>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-400 dark:text-slate-500">
                   {art.articleId}
                 </p>
               </div>
 
-              <span className="text-xs font-bold px-3 py-1 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600">
+              <span className="text-xs font-bold px-3 py-1 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
                 {art.reads}
               </span>
             </div>

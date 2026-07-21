@@ -152,7 +152,7 @@ export default function ArticleCard({ article, onRead, onQuickSummary, isAssigne
           <p className="text-xs font-bold text-charcoal dark:text-slate-200">
             {article.author.name}
           </p>
-          <p className="text-[11px] text-secondary-gray/80 dark:text-slate-450">
+          <p className="text-[11px] text-secondary-gray/80 dark:text-slate-500">
             {article.author.role} • {article.date}
           </p>
         </div>

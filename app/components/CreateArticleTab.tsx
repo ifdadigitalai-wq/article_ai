@@ -416,7 +416,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="md:col-span-3">
-                  <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-450 uppercase mb-1.5">
+                  <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-500 uppercase mb-1.5">
                     Topic Context / Explanation
                   </label>
                   <input
@@ -424,12 +424,12 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
                     value={aiTopicContext}
                     onChange={(e) => setAiTopicContext(e.target.value)}
                     placeholder="e.g. Advanced cryptography and lattice-based algorithms in quantum computing"
-                    className="w-full px-3.5 py-2 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-xs"
+                    className="w-full px-3.5 py-2 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-450 uppercase mb-1.5">
+                  <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-500 uppercase mb-1.5">
                     Target Length (Words)
                   </label>
                   <input
@@ -440,7 +440,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
                       setAiWordCount(val === "" ? "" : parseInt(val, 10));
                     }}
                     placeholder="500"
-                    className="w-full px-3.5 py-2 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-xs"
+                    className="w-full px-3.5 py-2 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-xs"
                   />
                 </div>
               </div>
@@ -497,7 +497,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
                 value={formTitle}
                 onChange={(e) => setFormTitle(e.target.value)}
                 placeholder="e.g. Introduction to Neural Networks"
-                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
+                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
               />
             </div>
 
@@ -511,7 +511,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
                 value={formSubtitle}
                 onChange={(e) => setFormSubtitle(e.target.value)}
                 placeholder="e.g. Core concepts, architectures, and backpropagation foundations"
-                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
+                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
               />
             </div>
           </div>
@@ -524,7 +524,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
               <select
                 value={formCategory}
                 onChange={(e) => setFormCategory(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm cursor-pointer"
+                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm cursor-pointer"
               >
                 {CATEGORIES.map((cat) => (
                   <option key={cat} value={cat}>{cat}</option>
@@ -544,7 +544,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
                   value={customCategory}
                   onChange={(e) => setCustomCategory(e.target.value)}
                   placeholder="e.g. Philosophy"
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
                 />
               </div>
             )}
@@ -558,7 +558,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
                 value={formReadTime}
                 onChange={(e) => setFormReadTime(e.target.value)}
                 placeholder="e.g. 5 min read (calculated if empty)"
-                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
+                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
               />
             </div>
           </div>
@@ -574,7 +574,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
                   value={formImageUrl}
                   onChange={(e) => setFormImageUrl(e.target.value)}
                   placeholder="https://images.unsplash.com/..."
-                  className="flex-1 min-w-0 px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
+                  className="flex-1 min-w-0 px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
                 />
                 <label className="flex items-center gap-1.5 px-4 py-2.5 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:hover:bg-indigo-950/60 border border-indigo-200/50 dark:border-indigo-800/80 rounded-xl text-xs font-semibold text-indigo-650 dark:text-indigo-400 cursor-pointer shadow-sm active:scale-95 transition-all select-none whitespace-nowrap">
                   {isUploading ? (
@@ -603,7 +603,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
                 value={formImageAlt}
                 onChange={(e) => setFormImageAlt(e.target.value)}
                 placeholder="e.g. Neural network diagram"
-                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
+                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
               />
             </div>
           </div>
@@ -611,7 +611,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
           {/* Premium UI Cover Image Preview */}
           {formImageUrl.trim() && (
             <div className="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 p-2">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-550 mb-2 px-1">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 px-1">
                 Cover Image Live Preview
               </div>
               <div className="relative aspect-video w-full max-h-56 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-950">
@@ -669,7 +669,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
               value={formContent}
               onChange={(e) => setFormContent(e.target.value)}
               placeholder="## Core Concept...&#10;&#10;Here you can write the full article content in markdown format..."
-              className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm font-mono"
+              className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm font-mono"
             />
             <div className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 flex justify-between">
               <span>Supports standard markdown headers (##), bold (**), blockquotes (&gt;)</span>
@@ -678,7 +678,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
           </div>
 
           <div className="border-t border-slate-100 dark:border-slate-800/80 pt-4">
-            <h4 className="text-xs font-bold text-slate-500 dark:text-slate-450 uppercase tracking-wider mb-3">
+            <h4 className="text-xs font-bold text-slate-500 dark:text-slate-500 uppercase tracking-wider mb-3">
               Author Information
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -692,7 +692,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
                   value={formAuthorName}
                   onChange={(e) => setFormAuthorName(e.target.value)}
                   placeholder="Your Name"
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
                 />
               </div>
 
@@ -706,7 +706,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
                   value={formAuthorRole}
                   onChange={(e) => setFormAuthorRole(e.target.value)}
                   placeholder="e.g. Professor of Computer Science"
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
                 />
               </div>
             </div>
@@ -714,7 +714,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
 
           {/* Typography Customization */}
           <div className="border-t border-slate-100 dark:border-slate-800/80 pt-4">
-            <h4 className="text-xs font-bold text-slate-500 dark:text-slate-450 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+            <h4 className="text-xs font-bold text-slate-500 dark:text-slate-500 uppercase tracking-wider mb-3 flex items-center gap-1.5">
               <span>Typography Styling</span>
               <span className="text-[10px] text-indigo-500 font-bold normal-case bg-indigo-50 dark:bg-indigo-950/20 px-2 py-0.5 rounded-md border border-indigo-100/30">Custom Fonts</span>
             </h4>
@@ -726,7 +726,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
                 <select
                   value={headingFont}
                   onChange={(e) => setHeadingFont(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm cursor-pointer"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm cursor-pointer"
                 >
                   <option value="playfair">Serif (Playfair Display)</option>
                   <option value="inter">Sans-Serif (Inter)</option>
@@ -744,7 +744,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
                 <select
                   value={paragraphFont}
                   onChange={(e) => setParagraphFont(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm cursor-pointer"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm cursor-pointer"
                 >
                   <option value="lora">Serif (Lora)</option>
                   <option value="inter">Sans-Serif (Inter)</option>

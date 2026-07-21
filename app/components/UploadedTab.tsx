@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Edit2, Trash2, Layers, Search, RefreshCw, AlertCircle, FileText, CheckCircle2, ArrowLeft, Save, HelpCircle, User, Upload } from "lucide-react";
 import { Article } from "../types";
+import { CATEGORIES } from "../lib/categories";
 
 interface UserProfile {
   id: string;
@@ -307,7 +308,7 @@ export default function UploadedTab({ user, onRead }: UploadedTabProps) {
                 required
                 value={formTitle}
                 onChange={(e) => setFormTitle(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
+                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
               />
             </div>
 
@@ -320,7 +321,7 @@ export default function UploadedTab({ user, onRead }: UploadedTabProps) {
                 required
                 value={formSubtitle}
                 onChange={(e) => setFormSubtitle(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
+                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
               />
             </div>
           </div>
@@ -333,13 +334,11 @@ export default function UploadedTab({ user, onRead }: UploadedTabProps) {
               <select
                 value={formCategory}
                 onChange={(e) => setFormCategory(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm cursor-pointer"
+                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm cursor-pointer"
               >
-                <option value="Technology">Technology</option>
-                <option value="Science">Science</option>
-                <option value="Environment">Environment</option>
-                <option value="Architecture">Architecture</option>
-                <option value="Management">Management</option>
+                {CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
                 <option value="Other">Other (Specify below)</option>
               </select>
             </div>
@@ -354,7 +353,7 @@ export default function UploadedTab({ user, onRead }: UploadedTabProps) {
                   required
                   value={customCategory}
                   onChange={(e) => setCustomCategory(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
                 />
               </div>
             )}
@@ -368,7 +367,7 @@ export default function UploadedTab({ user, onRead }: UploadedTabProps) {
                 value={formReadTime}
                 onChange={(e) => setFormReadTime(e.target.value)}
                 placeholder="e.g. 5 min read"
-                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
+                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
               />
             </div>
           </div>
@@ -384,7 +383,7 @@ export default function UploadedTab({ user, onRead }: UploadedTabProps) {
                   value={formImageUrl}
                   onChange={(e) => setFormImageUrl(e.target.value)}
                   placeholder="https://images.unsplash.com/..."
-                  className="flex-1 min-w-0 px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
+                  className="flex-1 min-w-0 px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
                 />
                 <label className="flex items-center gap-1.5 px-4 py-2.5 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:hover:bg-indigo-950/60 border border-indigo-200/50 dark:border-indigo-800/80 rounded-xl text-xs font-semibold text-indigo-650 dark:text-indigo-400 cursor-pointer shadow-sm active:scale-95 transition-all select-none whitespace-nowrap">
                   {isUploading ? (
@@ -413,14 +412,14 @@ export default function UploadedTab({ user, onRead }: UploadedTabProps) {
                 value={formImageAlt}
                 onChange={(e) => setFormImageAlt(e.target.value)}
                 placeholder="e.g. Neural network diagram"
-                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
+                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
               />
             </div>
           </div>
 
           {formImageUrl.trim() && (
             <div className="rounded-xl overflow-hidden border border-slate-200/60 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 p-2">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-550 mb-2 px-1">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 px-1">
                 Cover Image Preview
               </div>
               <div className="relative aspect-video w-full max-h-48 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-955">
@@ -445,7 +444,7 @@ export default function UploadedTab({ user, onRead }: UploadedTabProps) {
               rows={2}
               value={formSnippet}
               onChange={(e) => setFormSnippet(e.target.value)}
-              className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm resize-none"
+              className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm resize-none"
             />
           </div>
 
@@ -458,17 +457,17 @@ export default function UploadedTab({ user, onRead }: UploadedTabProps) {
               rows={8}
               value={formContent}
               onChange={(e) => setFormContent(e.target.value)}
-              className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm font-mono"
+              className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm font-mono"
             />
           </div>
 
           <div className="border-t border-slate-100 dark:border-slate-800/80 pt-4">
-            <h4 className="text-xs font-bold text-slate-500 dark:text-slate-450 uppercase tracking-wider mb-3">
+            <h4 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
               Author Information
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-400 dark:text-slate-550 mb-1.5">
+                <label className="block text-xs font-bold text-slate-400 dark:text-slate-400 mb-1.5">
                   Author Name
                 </label>
                 <input
@@ -476,12 +475,12 @@ export default function UploadedTab({ user, onRead }: UploadedTabProps) {
                   required
                   value={formAuthorName}
                   onChange={(e) => setFormAuthorName(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-400 dark:text-slate-550 mb-1.5">
+                <label className="block text-xs font-bold text-slate-400 dark:text-slate-400 mb-1.5">
                   Author Role
                 </label>
                 <input
@@ -489,7 +488,7 @@ export default function UploadedTab({ user, onRead }: UploadedTabProps) {
                   required
                   value={formAuthorRole}
                   onChange={(e) => setFormAuthorRole(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
                 />
               </div>
             </div>
@@ -629,16 +628,16 @@ export default function UploadedTab({ user, onRead }: UploadedTabProps) {
             <div className="p-5 space-y-2">
               <h4
                 onClick={() => onRead(art)}
-                className="font-bold text-lg leading-tight hover:text-indigo-600 cursor-pointer line-clamp-2"
+                className="font-bold text-lg leading-tight text-slate-800 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer line-clamp-2"
               >
                 {art.title}
               </h4>
 
-              <p className="text-sm text-slate-500 line-clamp-2">
+              <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-2">
                 {art.subtitle}
               </p>
 
-              <p className="text-xs text-slate-400 bg-slate-100 dark:bg-slate-800 p-2 rounded-lg line-clamp-2">
+              <p className="text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/60 p-2 rounded-lg line-clamp-2">
                 {art.snippet}
               </p>
             </div>
@@ -652,8 +651,8 @@ export default function UploadedTab({ user, onRead }: UploadedTabProps) {
                   <User size={14} />
                 </div>
                 <div className="text-xs">
-                  <p className="font-semibold">{art.author?.name}</p>
-                  <p className="text-slate-400">{art.date}</p>
+                  <p className="font-semibold text-slate-800 dark:text-white">{art.author?.name}</p>
+                  <p className="text-slate-400 dark:text-slate-500">{art.date}</p>
                 </div>
               </div>
 

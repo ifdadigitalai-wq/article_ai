@@ -218,7 +218,7 @@ return (
     </div>
 
     {/* 🔍 Search + Filter */}
-    <div className="backdrop-blur-xl bg-white/70 dark:bg-slate-900/70 border border-white/30 dark:border-slate-800 rounded-2xl p-4 flex flex-col md:flex-row gap-4 shadow-sm">
+    <div className="backdrop-blur-xl bg-white/70 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800 rounded-2xl p-4 flex flex-col md:flex-row gap-4 shadow-sm">
 
       <div className="flex-1 relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
@@ -226,17 +226,17 @@ return (
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search student, complaint, topic..."
-          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/80 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-indigo-500/30 outline-none"
+          className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/80 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:ring-2 focus:ring-indigo-500/30 outline-none"
         />
       </div>
 
       <select
         value={selectedTopic}
         onChange={(e) => setSelectedTopic(e.target.value)}
-        className="px-4 py-2.5 rounded-xl bg-white/80 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-sm"
+        className="px-4 py-2.5 rounded-xl bg-white/80 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-sm cursor-pointer"
       >
         {uniqueTopics.map((topic) => (
-          <option key={topic} value={topic}>{topic}</option>
+          <option key={topic} value={topic} className="dark:bg-slate-950 dark:text-slate-200">{topic}</option>
         ))}
       </select>
 
@@ -382,7 +382,7 @@ return (
                     }))
                   }
                   placeholder="Write official reply..."
-                  className="flex-1 px-4 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none"
+                  className="flex-1 px-4 py-2 rounded-xl bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-205 placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none"
                 />
 
                 <button
