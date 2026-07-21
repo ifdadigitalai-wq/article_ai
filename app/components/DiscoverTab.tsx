@@ -32,8 +32,13 @@ export default function DiscoverTab({
   const [selectedBranch, setSelectedBranch] = useState<string>("All");
   const [readingLists, setReadingLists] = useState<any[]>([]);
 
-  // Get dynamic categories from articles data
-  const categories = ["All", ...getAvailableCategories()];
+  // Build dynamic categories: merge static list with categories found in article data
+  const categories = React.useMemo(() => {
+    const staticCats = getAvailableCategories();
+    const articleCats = Array.from(new Set((articles || []).map(a => a.category).filter(Boolean)));
+    const merged = Array.from(new Set([...staticCats, ...articleCats]));
+    return ["All", ...merged];
+  }, [articles]);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);

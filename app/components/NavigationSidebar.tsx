@@ -189,16 +189,10 @@ export default function NavigationSidebar({
     >
       <div className="rounded-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-4 flex items-center gap-3">
         <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-indigo-100 dark:bg-indigo-900 text-xl shadow-inner overflow-hidden select-none">
-          {user.role === "admin" || user.role === "faculty" ? (
-            user.avatar && (user.avatar.startsWith("/") || user.avatar.startsWith("http") || user.avatar.startsWith("data:")) ? (
-              <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
-            ) : (
-              <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
-                {user.name.slice(0, 2).toUpperCase()}
-              </span>
-            )
+          {user.avatar && (user.avatar.startsWith("/") || user.avatar.startsWith("http") || user.avatar.startsWith("data:")) ? (
+            <img src={user.avatar} alt="Profile" className="w-full h-full object-cover" />
           ) : (
-            activeAvatar.emoji
+            <span>{activeAvatar.emoji}</span>
           )}
         </div>
 

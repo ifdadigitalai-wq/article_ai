@@ -72,7 +72,7 @@ export default function Header({
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border-outline bg-paper/95 backdrop-blur-md">
+    <header className="sticky top-0 z-40 w-full border-b border-border-outline dark:border-slate-800 bg-paper/95 dark:bg-slate-950/95 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl flex-col px-4 sm:px-6 lg:px-8">
         {/* Top bar */}
         <div className="flex h-20 items-center justify-between">

@@ -1,4 +1,5 @@
 export const CATEGORIES = [
+  "AI",
   "Accounting",
   "SAP",
   "HR Executive",

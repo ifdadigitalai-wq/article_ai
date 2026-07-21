@@ -448,32 +448,74 @@ export default function ArticleView({
 
   const renderInlineMarkdown = (text: string): React.ReactNode => {
     if (!text) return "";
-    const tokenRegex = /(\*\*.*?\*\*|\*.*?\*|`.*?`)/g;
+    // Extended regex: links, bold, italic, inline code
+    const tokenRegex = /(\[([^\]]+)\]\(([^)]+)\)|\*\*.*?\*\*|\*.*?\*|`.*?`)/g;
     const parts = text.split(tokenRegex);
-    return parts.map((part, i) => {
-      if (part.startsWith("**") && part.endsWith("**")) {
-        return (
-          <strong key={i} className="font-extrabold text-slate-950 dark:text-white transition-colors duration-300">
-            {part.slice(2, -2)}
+    const elements: React.ReactNode[] = [];
+    // Use matchAll to properly handle link groups
+    let lastIndex = 0;
+    const matches = Array.from(text.matchAll(tokenRegex));
+    
+    if (matches.length === 0) return text;
+    
+    matches.forEach((match, idx) => {
+      // Add text before this match
+      if (match.index !== undefined && match.index > lastIndex) {
+        elements.push(text.slice(lastIndex, match.index));
+      }
+      const fullMatch = match[0];
+      
+      // Markdown link: [text](url)
+      if (match[2] && match[3]) {
+        elements.push(
+          <a key={`link-${idx}`} href={match[3]} target="_blank" rel="noopener noreferrer" className="text-indigo-600 dark:text-indigo-400 underline decoration-indigo-500/30 hover:decoration-indigo-500 transition-colors">
+            {match[2]}
+          </a>
+        );
+      } else if (fullMatch.startsWith("**") && fullMatch.endsWith("**")) {
+        elements.push(
+          <strong key={`b-${idx}`} className="font-extrabold text-slate-950 dark:text-white transition-colors duration-300">
+            {fullMatch.slice(2, -2)}
           </strong>
         );
-      }
-      if (part.startsWith("*") && part.endsWith("*")) {
-        return (
-          <em key={i} className="italic text-slate-800 dark:text-slate-200 transition-colors duration-300">
-            {part.slice(1, -1)}
+      } else if (fullMatch.startsWith("*") && fullMatch.endsWith("*")) {
+        elements.push(
+          <em key={`i-${idx}`} className="italic text-slate-800 dark:text-slate-200 transition-colors duration-300">
+            {fullMatch.slice(1, -1)}
           </em>
         );
-      }
-      if (part.startsWith("`") && part.endsWith("`")) {
-        return (
-          <code key={i} className="px-1.5 py-0.5 rounded bg-slate-100/80 dark:bg-slate-800/80 font-mono text-sm text-indigo-600 dark:text-indigo-400">
-            {part.slice(1, -1)}
+      } else if (fullMatch.startsWith("`") && fullMatch.endsWith("`")) {
+        elements.push(
+          <code key={`c-${idx}`} className="px-1.5 py-0.5 rounded bg-slate-100/80 dark:bg-slate-800/80 font-mono text-sm text-indigo-600 dark:text-indigo-400">
+            {fullMatch.slice(1, -1)}
           </code>
         );
+      } else {
+        elements.push(fullMatch);
       }
-      return part;
+      
+      lastIndex = (match.index || 0) + fullMatch.length;
     });
+    
+    // Add remaining text after last match
+    if (lastIndex < text.length) {
+      elements.push(text.slice(lastIndex));
+    }
+    
+    return elements;
+  };
+  
+  // Render text with line breaks preserved (splits on \n and inserts <br/>)
+  const renderWithLineBreaks = (text: string): React.ReactNode => {
+    if (!text) return "";
+    const lines = text.split("\n");
+    if (lines.length === 1) return renderInlineMarkdown(text);
+    return lines.map((line, i) => (
+      <React.Fragment key={i}>
+        {renderInlineMarkdown(line)}
+        {i < lines.length - 1 && <br />}
+      </React.Fragment>
+    ));
   };
 
   // Line-by-line streaming block parser to prevent single-newline heading errors
@@ -633,7 +675,7 @@ export default function ArticleView({
               key={blockIndex}
               className={`border-l-4 border-indigo-500 pl-5 py-2 my-8 ${bodyFont} italic ${themeClasses.text} bg-indigo-500/5 dark:bg-indigo-950/20 rounded-r-xl pr-5 leading-relaxed transition-colors duration-300`}
             >
-              {renderInlineMarkdown(textContent)}
+              {renderWithLineBreaks(textContent)}
             </blockquote>
           );
         case "ul":
@@ -671,7 +713,7 @@ export default function ArticleView({
               key={blockIndex}
               className={`${bodyFont} ${sizeClasses} ${themeClasses.text} font-normal mb-6 tracking-normal transition-colors duration-300`}
             >
-              {renderInlineMarkdown(textContent)}
+              {renderWithLineBreaks(textContent)}
             </p>
           );
       }

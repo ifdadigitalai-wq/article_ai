@@ -40,8 +40,10 @@ body {
   min-height: 100vh;
 }
 
-.dark body {
+:where(.dark) body,
+body:where(.dark *) {
   background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #090d16 100%);
+  background-attachment: fixed;
   color: #f8fafc;
 }
 

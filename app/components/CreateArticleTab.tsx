@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Upload, CheckCircle2, AlertCircle, Sparkles, Check, RefreshCw, FileText, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { isStandardCategory } from "../lib/categories";
+import { isStandardCategory, CATEGORIES } from "../lib/categories";
 
 interface UserProfile {
   id: string;
@@ -24,7 +24,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
   // Form State for Manual Article Upload
   const [formTitle, setFormTitle] = useState("");
   const [formSubtitle, setFormSubtitle] = useState("");
-  const [formCategory, setFormCategory] = useState("Technology");
+  const [formCategory, setFormCategory] = useState(CATEGORIES[0]);
   const [customCategory, setCustomCategory] = useState("");
   const [formSnippet, setFormSnippet] = useState("");
   const [formContent, setFormContent] = useState("");
@@ -331,7 +331,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
       setHeadingFont("playfair");
       setParagraphFont("lora");
       if (formCategory === "Other") {
-        setFormCategory("Technology");
+        setFormCategory(CATEGORIES[0]);
         setCustomCategory("");
       }
 
@@ -526,18 +526,9 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
                 onChange={(e) => setFormCategory(e.target.value)}
                 className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-855 dark:text-slate-145 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm cursor-pointer"
               >
-                <option value="AI">AI</option>
-                <option value="Accounting">Accounting</option>
-                <option value="SAP">SAP</option>
-                <option value="HR Executive">HR Executive</option>
-                <option value="Data Analytics & Business Intelligence">Data Analytics & Business Intelligence</option>
-                <option value="Stock Market & Forex">Stock Market & Forex</option>
-                <option value="Cyber Security & Ethical Hacking">Cyber Security & Ethical Hacking</option>
-                <option value="Digital Marketing">Digital Marketing</option>
-                <option value="Web Design & Development">Web Design & Development</option>
-                <option value="Mobile App Development">Mobile App Development</option>
-                <option value="Multimedia">Multimedia</option>
-                <option value="Design & Animation">Design & Animation</option>
+                {CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
                 <option value="Other">Other (Specify below)</option>
               </select>
             </div>

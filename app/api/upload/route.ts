@@ -1,6 +1,4 @@
 import { NextResponse } from "next/server";
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
 import { cookies } from "next/headers";
 import { verifyJWT } from "@/lib/auth";
 
@@ -20,10 +18,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const userRole = payload.role as string;
-    if (userRole !== "faculty" && userRole !== "admin") {
-      return NextResponse.json({ error: "Forbidden: Admins/Faculty only" }, { status: 403 });
-    }
+    // No role restriction — all authenticated users can upload images
 
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
@@ -37,7 +32,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Only image files are allowed" }, { status: 400 });
     }
 
-    // Validate size (e.g. 5MB)
+    // Validate size (5MB max)
     if (file.size > 5 * 1024 * 1024) {
       return NextResponse.json({ error: "File size exceeds 5MB limit" }, { status: 400 });
     }
@@ -45,22 +40,13 @@ export async function POST(request: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Ensure the uploads directory exists
-    const uploadsDir = join(process.cwd(), "public", "uploads");
-    await mkdir(uploadsDir, { recursive: true });
+    // Convert to base64 data URL — deployment-safe, no filesystem dependency
+    const base64 = buffer.toString("base64");
+    const mimeType = file.type || "image/png";
+    const dataUrl = `data:${mimeType};base64,${base64}`;
 
-    // Generate unique file name
-    const timestamp = Date.now();
-    const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
-    const filename = `${timestamp}_${safeName}`;
-    const filePath = join(uploadsDir, filename);
-
-    // Save file
-    await writeFile(filePath, buffer);
-
-    // Return the public URL
-    const url = `/uploads/${filename}`;
-    return NextResponse.json({ url });
+    // Return the data URL directly
+    return NextResponse.json({ url: dataUrl });
   } catch (error: any) {
     console.error("Upload API Error:", error);
     return NextResponse.json({ error: "Failed to upload file" }, { status: 500 });
