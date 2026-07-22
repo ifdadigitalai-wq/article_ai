@@ -16,7 +16,7 @@ import {
 import { motion } from "motion/react";
 
 interface ReadingHistoryTabProps {
-  onRead: (articleId: string) => void;
+  onRead: (articleId: string, articleTitle?: string) => void;
   onClearHistory: () => void;
 }
 
@@ -272,7 +272,7 @@ export default function ReadingHistoryTab({ onRead, onClearHistory }: ReadingHis
                   return (
                     <div
                       key={entry.id}
-                      onClick={() => onRead(entry.articleId)}
+                      onClick={() => onRead(entry.articleId, entry.articleTitle)}
                       className="group relative flex items-center justify-between p-4 bg-white dark:bg-slate-900 border border-slate-200/50 hover:border-indigo-500/40 dark:border-slate-800/60 dark:hover:border-indigo-500/30 rounded-xl transition-all duration-200 hover:-translate-y-0.5 shadow-2xs hover:shadow-sm cursor-pointer select-none"
                     >
                       {/* Left: icon + content details */}

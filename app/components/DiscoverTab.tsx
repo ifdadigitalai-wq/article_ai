@@ -29,8 +29,6 @@ export default function DiscoverTab({
   onSelectCategory,
 }: DiscoverTabProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedBranch, setSelectedBranch] = useState<string>("All");
-  const [readingLists, setReadingLists] = useState<any[]>([]);
 
   // Build dynamic categories: merge static list with categories found in article data
   const categories = React.useMemo(() => {
@@ -84,20 +82,7 @@ export default function DiscoverTab({
 
 
 
-  useEffect(() => {
-    const fetchLists = async () => {
-      try {
-        const res = await fetch("/api/reading-lists");
-        if (res.ok) {
-          const data = await res.json();
-          setReadingLists(data);
-        }
-      } catch (err) {
-        console.error("Failed to load reading lists in DiscoverTab:", err);
-      }
-    };
-    fetchLists();
-  }, []);
+
 
   const suggestionPool = Array.from(
     new Set([
@@ -208,17 +193,9 @@ export default function DiscoverTab({
   const filteredArticles = baseArticles.filter((article) => {
     if (!article || !article.category) return false;
 
-    const matchesCategory =
-      selectedCategory === "All" || article.category.toLowerCase() === selectedCategory.toLowerCase();
-
-    const matchesBranch =
-      selectedBranch === "All" ||
-      readingLists
-        .filter((l) => l.branch.toLowerCase() === selectedBranch.toLowerCase())
-        .flatMap((l) => l.articleIds)
-        .includes(article.id);
-
-    return matchesCategory && matchesBranch;
+    return (
+      selectedCategory === "All" || article.category.toLowerCase() === selectedCategory.toLowerCase()
+    );
   });
 
   const trendingArticles = articles.slice(0, 3);
@@ -289,15 +266,6 @@ export default function DiscoverTab({
           )}
         </div>
 
-        <select
-          value={selectedBranch}
-          onChange={(e) => setSelectedBranch(e.target.value)}
-          className="rounded-2xl border border-slate-200/50 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3.5 text-xs font-bold text-slate-600 dark:text-slate-300 focus:outline-none transition-all cursor-pointer"
-        >
-          <option value="All">All Branches</option>
-          <option value="Kalkalji">Kalkalji Branch</option>
-          <option value="Badarpur">Badarpur Branch</option>
-        </select>
 
         <button
           type="submit"

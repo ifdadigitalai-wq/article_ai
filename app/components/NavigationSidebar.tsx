@@ -81,7 +81,6 @@ export default function NavigationSidebar({
   if (isAdmin) {
     navItems = [
       { id: "dashboard" as TabId, label: "Dashboard", icon: BarChart3 },
-      { id: "reading-lists" as TabId, label: "Reading Lists", icon: BookOpen },
       { id: "uploaded" as TabId, label: "Uploaded", icon: Layers },
       { id: "discussions" as TabId, label: "Discussions", icon: MessageSquare },
       { id: "create-article" as TabId, label: "Create Article", icon: PlusCircle },
@@ -91,7 +90,6 @@ export default function NavigationSidebar({
   } else if (isFaculty) {
     navItems = [
       { id: "dashboard" as TabId, label: "Dashboard", icon: BarChart3 },
-      { id: "reading-lists" as TabId, label: "Reading Lists", icon: BookOpen },
       { id: "uploaded" as TabId, label: "Uploaded", icon: Layers },
       { id: "discussions" as TabId, label: "Discussions", icon: MessageSquare },
       { id: "create-article" as TabId, label: "Create Article", icon: PlusCircle },
@@ -100,7 +98,6 @@ export default function NavigationSidebar({
   } else {
     navItems = [
       { id: "home" as TabId, label: "Home Edition", icon: Home },
-      { id: "reading-lists" as TabId, label: "Reading Lists", icon: BookOpen },
       { id: "history" as TabId, label: "Reading History", icon: Clock },
       { id: "saved" as TabId, label: "Saved Articles", icon: Bookmark },
       { id: "leaderboard" as TabId, label: "Leaderboard", icon: Award },
@@ -170,7 +167,6 @@ export default function NavigationSidebar({
     <h2 className="font-serif text-2xl font-black tracking-tight bg-gradient-to-r from-indigo-500 to-cyan-500 bg-clip-text text-transparent">
       ARTICLEAI
     </h2>
-    <DarkModeToggle />
   </div>
 
   <span className="text-[10px] text-slate-500 mt-1 uppercase tracking-wider font-semibold">

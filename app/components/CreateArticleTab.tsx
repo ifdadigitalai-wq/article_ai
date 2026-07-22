@@ -159,11 +159,6 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
       e.target.value = "";
     }
   };
-
-  // Curated Reading List States
-  const [readingLists, setReadingLists] = useState<any[]>([]);
-  const [selectedReadingLists, setSelectedReadingLists] = useState<string[]>([]);
-
   // AI Generator Form State
   const [aiTopicContext, setAiTopicContext] = useState("");
   const [aiWordCount, setAiWordCount] = useState<number | "">(500);
@@ -171,23 +166,6 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
   const [generationError, setGenerationError] = useState<string | null>(null);
   const [generationSuccess, setGenerationSuccess] = useState(false);
   const [showAiGenerator, setShowAiGenerator] = useState(false);
-
-  const fetchReadingLists = async () => {
-    try {
-      const res = await fetch("/api/reading-lists");
-      if (res.ok) {
-        const payload = await res.json();
-        setReadingLists(payload);
-      }
-    } catch (err) {
-      console.error("Failed to fetch reading lists in CreateArticleTab:", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchReadingLists();
-  }, []);
-
   // Prefill author details when user loads
   useEffect(() => {
     if (user) {
@@ -307,7 +285,6 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
           authorName: formAuthorName.trim() || user?.name || "Faculty Member",
           authorRole: formAuthorRole.trim() || "Staff Correspondent",
           authorAvatar: user?.avatar || "scholar",
-          readingListIds: selectedReadingLists,
           headingFont,
           paragraphFont,
         })
@@ -327,7 +304,6 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
       setFormImageUrl("");
       setFormImageAlt("");
       setFormReadTime("");
-      setSelectedReadingLists([]);
       setHeadingFont("playfair");
       setParagraphFont("lora");
       if (formCategory === "Other") {
@@ -757,54 +733,7 @@ export default function CreateArticleTab({ user }: CreateArticleTabProps) {
             </div>
           </div>
 
-          {/* Reading List Selector */}
-          <div className="border-t border-slate-100 dark:border-slate-800/80 pt-4">
-            <h4 className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">
-              Add to Curated Reading List(s) (Optional)
-            </h4>
-            {readingLists.length === 0 ? (
-              <p className="text-xs text-slate-400 italic">
-                No reading lists found. Curate a list from the "Reading Lists" tab first.
-              </p>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-36 overflow-y-auto p-1 border border-slate-200 dark:border-slate-800 rounded-xl">
-                {readingLists.map((list) => {
-                  const isChecked = selectedReadingLists.includes(list.id);
-                  return (
-                    <button
-                      type="button"
-                      key={list.id}
-                      onClick={() => {
-                        if (isChecked) {
-                          setSelectedReadingLists(selectedReadingLists.filter((id) => id !== list.id));
-                        } else {
-                          setSelectedReadingLists([...selectedReadingLists, list.id]);
-                        }
-                      }}
-                      className={`flex items-center justify-between p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer ${
-                        isChecked
-                          ? "border-indigo-650 bg-indigo-500/5 text-indigo-650 dark:text-indigo-450 font-bold animate-pulseFast"
-                          : "border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-850/50"
-                      }`}
-                    >
-                      <span className="truncate max-w-[85%]">
-                        {list.title} ({list.branch})
-                      </span>
-                      <div
-                        className={`w-4 h-4 rounded-full flex items-center justify-center border transition-all ${
-                          isChecked
-                            ? "border-indigo-650 bg-indigo-600 text-white animate-scaleIn"
-                            : "border-slate-300 dark:border-slate-700"
-                        }`}
-                      >
-                        {isChecked && <Check className="w-2.5 h-2.5" />}
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+
 
           <div className="flex justify-end pt-2">
             <button

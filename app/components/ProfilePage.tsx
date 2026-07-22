@@ -349,19 +349,6 @@ export default function ProfilePage({ onProfileUpdate }: ProfilePageProps) {
                 <option value="Badarpur">Badarpur</option>
               </select>
             </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">
-                Batch
-              </label>
-              <input
-                type="text"
-                required
-                value={batch}
-                onChange={(e) => setBatch(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-850 dark:text-slate-150 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm"
-              />
-            </div>
           </div>
 
           {/* Avatar Settings */}

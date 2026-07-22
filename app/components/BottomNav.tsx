@@ -10,7 +10,6 @@ export type TabId =
   | "digests"
   | "profile"
   | "leaderboard"
-  | "reading-lists"
   | "discussions"
   | "students"
   | "admin"
@@ -30,7 +29,6 @@ export default function BottomNav({ activeTab, onTabChange, userRole }: BottomNa
   if (userRole === "admin") {
     navItems = [
       { id: "dashboard" as TabId, label: "Dashboard", icon: BarChart3 },
-      { id: "reading-lists" as TabId, label: "Reading Lists", icon: BookOpen },
       { id: "uploaded" as TabId, label: "Uploaded", icon: Layers },
       { id: "discussions" as TabId, label: "Discussion", icon: MessageSquare },
       { id: "create-article" as TabId, label: "Create Article", icon: PlusCircle },
@@ -40,7 +38,6 @@ export default function BottomNav({ activeTab, onTabChange, userRole }: BottomNa
   } else if (userRole === "faculty") {
     navItems = [
       { id: "dashboard" as TabId, label: "Dashboard", icon: BarChart3 },
-      { id: "reading-lists" as TabId, label: "Reading Lists", icon: BookOpen },
       { id: "uploaded" as TabId, label: "Uploaded", icon: Layers },
       { id: "discussions" as TabId, label: "Discussion", icon: MessageSquare },
       { id: "create-article" as TabId, label: "Create Article", icon: PlusCircle },
@@ -49,7 +46,6 @@ export default function BottomNav({ activeTab, onTabChange, userRole }: BottomNa
   } else {
     navItems = [
       { id: "home" as TabId, label: "Home", icon: Home },
-      { id: "reading-lists" as TabId, label: "Reading Lists", icon: BookOpen },
       { id: "history" as TabId, label: "History", icon: Clock },
       { id: "saved" as TabId, label: "Saved", icon: Bookmark },
       { id: "profile" as TabId, label: "Profile", icon: User },

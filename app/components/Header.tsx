@@ -86,7 +86,7 @@ export default function Header({
 
           <div className="flex flex-col items-center text-center">
             {isStaff ? (
-              <h1 className="font-serif text-2xl font-black tracking-tighter leading-none text-charcoal dark:text-blue sm:text-3xl mt-0.5 uppercase">
+              <h1 className="font-serif text-2xl font-black tracking-tighter leading-none text-charcoal dark:text-white sm:text-3xl mt-0.5 uppercase">
                 {isAdmin ? "Admin Console" : "Faculty Console"}
               </h1>
             ) : (

@@ -17,7 +17,6 @@ import NavigationSidebar from "./components/NavigationSidebar";
 import SummaryModal from "./components/SummaryModal";
 import ProfilePage from "./components/ProfilePage";
 import Leaderboard from "./components/Leaderboard";
-import ReadingListTab from "./components/ReadingListTab";
 import ReadingHistoryTab from "./components/ReadingHistoryTab";
 import AdminDashboard from "./components/AdminDashboard";
 import AdminDiscussions from "./components/AdminDiscussions";
@@ -58,7 +57,6 @@ export default function Home() {
 
   const [user, setUser] = useState<UserProfile | null>(null);
   const [stats, setStats] = useState<LibraryStats>({ minutesRead: 0, articlesCompleted: 0, streakDays: 0 });
-  const [readingLists, setReadingLists] = useState<any[]>([]);
   const [isLoadingSession, setIsLoadingSession] = useState(true);
 
   const categories = ["All", ...CATEGORIES];
@@ -75,11 +73,10 @@ export default function Home() {
             setActiveTab("dashboard");
           }
           
-          // Load bookmarks, history, stats, lists from DB
+          // Load bookmarks, history, stats from DB
           fetchBookmarks();
           fetchReadHistory();
           fetchLibraryStats();
-          fetchReadingLists();
         } else {
           window.location.href = "/login";
         }
@@ -149,17 +146,6 @@ export default function Home() {
     }
   };
 
-  const fetchReadingLists = async () => {
-    try {
-      const res = await fetch("/api/reading-lists");
-      if (res.ok) {
-        const data = await res.json();
-        setReadingLists(data);
-      }
-    } catch (err) {
-      console.error("Error fetching reading lists:", err);
-    }
-  };
 
   const fetchArticles = async () => {
     try {
@@ -315,27 +301,52 @@ export default function Home() {
     });
   };
 
-  const handleSelectArticleId = async (articleId: string, scrollToComments: boolean = false) => {
+  const handleSelectArticleId = async (
+    articleId: string,
+    scrollToComments: boolean = false,
+    fallbackTitle?: string
+  ) => {
     let targetArt = articles.find((a) => a.id === articleId) || ARTICLES.find((a) => a.id === articleId);
 
     if (!targetArt) {
       try {
-        const res = await fetch("/api/articles");
-        if (res.ok) {
-          const list: Article[] = await res.json();
-          targetArt = list.find((a) => a.id === articleId);
+        const resSingle = await fetch(`/api/articles/${encodeURIComponent(articleId)}`);
+        if (resSingle.ok) {
+          targetArt = await resSingle.json();
+        } else {
+          const res = await fetch("/api/articles");
+          if (res.ok) {
+            const list: Article[] = await res.json();
+            targetArt = list.find((a) => a.id === articleId);
+          }
         }
       } catch (err) {
-        console.error("Error loading articles to select:", err);
+        console.error("Error loading article to select:", err);
       }
     }
 
-    if (targetArt) {
-      setShouldScrollToComments(scrollToComments);
-      handleReadArticle(targetArt);
-    } else {
-      console.warn(`Could not resolve article ID: ${articleId}`);
+    if (!targetArt) {
+      targetArt = {
+        id: articleId,
+        category: "General",
+        title: fallbackTitle || "Archived Article",
+        subtitle: "Published Dispatch",
+        snippet: "Click to view article contents.",
+        content: `## ${fallbackTitle || "Archived Article"}\n\nThis article dispatch was loaded from your reading history archive.`,
+        imageUrl: "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&q=80",
+        imageAlt: fallbackTitle || "Archived Article",
+        readTime: "3 min read",
+        date: "Archived",
+        author: {
+          name: "Editorial Office",
+          role: "Staff Correspondent",
+          avatar: "scholar"
+        }
+      };
     }
+
+    setShouldScrollToComments(scrollToComments);
+    handleReadArticle(targetArt);
   };
 
   const handleQuickSummary = (article: Article, e: React.MouseEvent<any>) => {
@@ -404,11 +415,7 @@ export default function Home() {
       : articles.filter((a) => a.category.toLowerCase() === selectedCategory.toLowerCase());
 
   // Extract assigned articles for the student's branch
-  const assignedArticleIds = user
-    ? readingLists
-        .filter((l) => l.branch.toLowerCase() === user.branch.toLowerCase())
-        .flatMap((l) => l.articleIds)
-    : [];
+  const assignedArticleIds: string[] = [];
 
   if (isLoadingSession) {
     return (
@@ -509,16 +516,8 @@ export default function Home() {
               {activeTab === "leaderboard" && <Leaderboard />}
               {activeTab === "history" && (
                 <ReadingHistoryTab
-                  onRead={handleSelectArticleId}
+                  onRead={(articleId, articleTitle) => handleSelectArticleId(articleId, false, articleTitle)}
                   onClearHistory={fetchReadHistory}
-                />
-              )}
-              {activeTab === "reading-lists" && (
-                <ReadingListTab
-                  articles={articles}
-                  onRead={handleReadArticle}
-                  userRole={user?.role || "student"}
-                  userBranch={user?.branch || "Kalkalji"}
                 />
               )}
               {activeTab === "dashboard" && (

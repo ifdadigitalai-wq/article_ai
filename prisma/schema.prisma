@@ -1,6 +1,7 @@
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 generator client {
@@ -60,6 +61,8 @@ model ReadingHistory {
   timeSpentSeconds  Int
   
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, articleId])
 }
 
 model Comment {
@@ -103,14 +106,6 @@ model QuizAttempt {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model ReadingList {
-  id         String   @id @default(uuid())
-  createdBy  String   // userId of faculty
-  title      String
-  articleIds String[]
-  isPublic   Boolean  @default(true)
-  branch     String
-}
 
 model Newsletter {
   id           String   @id @default(uuid())

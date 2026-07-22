@@ -379,7 +379,6 @@ export async function POST(request: Request) {
       authorName,
       authorRole,
       authorAvatar,
-      readingListIds,
       headingFont,
       paragraphFont,
     } = body;
@@ -440,25 +439,6 @@ export async function POST(request: Request) {
       console.error("Failed to send article notifications:", notifyErr);
     }
 
-    // Append to selected reading lists if specified
-    if (Array.isArray(readingListIds) && readingListIds.length > 0) {
-      for (const listId of readingListIds) {
-        try {
-          const list = await prisma.readingList.findUnique({
-            where: { id: listId }
-          });
-          if (list) {
-            const updatedIds = Array.from(new Set([...list.articleIds, customArticle.id]));
-            await prisma.readingList.update({
-              where: { id: listId },
-              data: { articleIds: updatedIds }
-            });
-          }
-        } catch (listErr) {
-          console.error(`Failed to append article to reading list ${listId}:`, listErr);
-        }
-      }
-    }
 
     return NextResponse.json(customArticle, { status: 201 });
   } catch (error: any) {

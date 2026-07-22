@@ -78,18 +78,32 @@ export async function POST(req: Request) {
       },
     });
 
-    // Add article to reading history when the student submits the quiz
+    // Add or update article in reading history when the student submits the quiz
     try {
-      const articleTitle = await getArticleTitle(quiz.articleId);
-      await prisma.readingHistory.create({
-        data: {
-          userId,
-          articleId: quiz.articleId,
-          articleTitle,
-          timeSpentSeconds: 60, // standard duration for completing a quiz
-        },
+      const existingHistory = await prisma.readingHistory.findFirst({
+        where: { userId, articleId: quiz.articleId },
       });
-      console.log(`Successfully added article ${quiz.articleId} to reading history for user ${userId}`);
+
+      if (existingHistory) {
+        await prisma.readingHistory.update({
+          where: { id: existingHistory.id },
+          data: {
+            readAt: new Date(),
+            timeSpentSeconds: Math.max(existingHistory.timeSpentSeconds, 60),
+          },
+        });
+      } else {
+        const articleTitle = await getArticleTitle(quiz.articleId);
+        await prisma.readingHistory.create({
+          data: {
+            userId,
+            articleId: quiz.articleId,
+            articleTitle,
+            timeSpentSeconds: 60,
+          },
+        });
+      }
+      console.log(`Successfully updated reading history for user ${userId} on article ${quiz.articleId}`);
     } catch (historyErr) {
       console.error("Failed to append reading history on quiz submit:", historyErr);
     }
